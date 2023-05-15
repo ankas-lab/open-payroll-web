@@ -7,6 +7,7 @@ import { Archivo, Podkova } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useInkathon } from "@scio-labs/use-inkathon";
+const podkova = Podkova({ subsets: ["latin"] });
 const archivo = Archivo({ subsets: ["latin"] });
 
 import StepOne from "./steps/stepOne";
@@ -83,16 +84,22 @@ export default function Create() {
   // multipliers of the contract
   const [multipliers, setMultipliers] = useState<Multiplier[]>([]);
   //Can pass to step three
+  const [isNextToThreeButtonEnabled, setIsNextToThreeButtonEnabled] =
+    useState(false);
   const handleMultipliersChange = (multipliers: Multiplier[]) => {
     const hasName = multipliers.some(
       (multiplier) => multiplier.name.trim() !== ""
     );
+    setIsNextToThreeButtonEnabled(hasName);
     setMultipliers(multipliers);
   };
 
   // Beneficiaeries
   // beneficiaries of the contract
   const [beneficieries, setBeneficiaries] = useState<Beneficiary[]>([]);
+
+  // TotalPayment
+  const [totalPayment, setTotalPayment] = useState<number>(0);
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -103,7 +110,10 @@ export default function Create() {
           <StepOne handleContractBaseChange={handleContractBaseChange} />
         )}
         {steps === 1 && (
-          <StepTwo onMultipliersChange={handleMultipliersChange} />
+          <StepTwo
+            onMultipliersChange={handleMultipliersChange}
+            onContractMultipliers={multipliers}
+          />
         )}
         {steps === 2 && (
           <StepThree

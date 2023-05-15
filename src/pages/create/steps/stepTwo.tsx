@@ -12,13 +12,15 @@ interface Multiplier {
 // Props
 interface StepTwoProps {
   onMultipliersChange: (multipliers: Multiplier[]) => void;
+  onContractMultipliers: Multiplier[];
 }
 
-const StepTwo: React.FC<StepTwoProps> = ({ onMultipliersChange }) => {
+const StepTwo: React.FC<StepTwoProps> = ({
+  onMultipliersChange,
+  onContractMultipliers,
+}) => {
   //States
-  const [multipliers, setMultipliers] = useState<Multiplier[]>([
-    { id: 1, value: 0, name: "" },
-  ]);
+  const [multipliers, setMultipliers] = useState<Multiplier[]>([]);
 
   //Handles
   const handleMultiplierChange = (id: number, name: string) => {
@@ -46,6 +48,13 @@ const StepTwo: React.FC<StepTwoProps> = ({ onMultipliersChange }) => {
       onMultipliersChange(updatedMultipliers);
     }
   };
+
+  //Pull created multipliers
+  useEffect(() => {
+    onContractMultipliers[0].name !== ""
+      ? setMultipliers(onContractMultipliers)
+      : setMultipliers([{ id: 1, value: 1, name: "" }]);
+  }, [onContractMultipliers]);
 
   //See changes
   useEffect(() => {
