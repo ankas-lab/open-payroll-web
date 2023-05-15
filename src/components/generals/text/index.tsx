@@ -5,11 +5,11 @@ const podkova = Podkova({ subsets: ["latin"] });
 
 const index = ({ type, text }: { type: string; text: string }) => {
   return type === "h1" ? (
-    <h1
+    <p
       className={`text-[82px] font-normal text-black tracking-[-1.5px] ${podkova.className}`}
     >
       {text}
-    </h1>
+    </p>
   ) : type === "h2" ? (
     <h2
       className={`text-[51px] font-normal text-black tracking-[-0.5px] ${podkova.className}`}

@@ -2,16 +2,24 @@ import React, { useEffect, useState } from "react";
 import { OPPurple } from "../../assets/logo/OPPurple.jsx";
 import Button from "../generals/button";
 import { useRouter } from "next/router";
-
+import { usePathname } from "next/navigation";
 import { useInkathon } from "@scio-labs/use-inkathon";
+import Link from "next/link.js";
 
 const index = () => {
   const { connect, disconnect, activeAccount } = useInkathon();
+
+  const pathname = usePathname();
 
   const router = useRouter();
 
   const [truncateActiveAccount, setTruncateActiveAccount] =
     React.useState<string>("");
+  const [showMenu, setshowMenu] = React.useState<boolean>(false);
+
+  const openCloseMenu = () => {
+    setshowMenu(!showMenu);
+  };
 
   useEffect(() => {
     activeAccount
@@ -23,71 +31,97 @@ const index = () => {
           "..." +
           activeAccount.address.toString().slice(-4)
       );
-    activeAccount !== undefined && router.push("/contracts");
   }, [activeAccount]);
 
-  useEffect(() => {
-    connect !== undefined ? router.push("/contracts") : router.push("/");
-  }, [connect]);
-
   return (
-    //DESKTOP NO CONNECTED
+    //NO CONNECTED
     !activeAccount ? (
-      <nav className="bg-opwhite flex justify-between w-full px-[40px] py-[20px] drop-shadow-md">
-        <OPPurple width={50} height={46.6} />
-
-        <Button
-          type="active"
-          text="connect wallet"
-          icon=""
-          action={() => connect?.(undefined, undefined)}
-        />
-      </nav>
-    ) : (
-      <nav className="bg-opwhite flex flex-col justify-between w-[330px] h-screen px-[40px] py-[20px] drop-shadow-md">
-        <OPPurple width={50} height={46.6} />
-        <div className="flex flex-col gap-[10px]">
-          <div>
-            <Button type="active" text="my contracts" icon="" />
-          </div>
-          <div>
-            <Button type="active" text="claim" icon="" />
-          </div>
+      <nav className="bg-opwhite flex justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md">
+        <div className="flex md:hidden">
+          <OPPurple width={40} height={36.6} />
+        </div>
+        <div className="hidden md:flex">
+          <OPPurple width={50} height={46.6} />
         </div>
         <div>
           <Button
             type="active"
-            text={truncateActiveAccount}
+            text="connect wallet"
             icon=""
-            action={disconnect}
+            action={() => connect?.(undefined, undefined)}
           />
         </div>
       </nav>
+    ) : (
+      //CONNECTED
+      <nav className="bg-opwhite flex flex-col md:flex-row w-full md:w-3/12 lg:w-2/12 h-fit md:h-screen py-[10px] px-[20px] md:px-[40px] md:py-[20px] drop-shadow-md">
+        <div className="w-full flex md:flex-col justify-between items-center">
+          <div className="flex md:hidden">
+            <OPPurple width={40} height={36.6} />
+          </div>
+          <div className="hidden md:flex">
+            <OPPurple width={50} height={46.6} />
+          </div>
+          <div className="hidden md:flex md:flex-col gap-[10px]">
+            <Link href="/contracts">
+              {pathname === "/contracts" ? (
+                <Button type="active" text="my contracts" icon="" />
+              ) : (
+                <Button type="outlined" text="my contracts" icon="" />
+              )}
+            </Link>
+            <Link href="/claim">
+              {pathname === "/claim" ? (
+                <Button type="active" text="claim" icon="" />
+              ) : (
+                <Button type="outlined" text="claim" icon="" />
+              )}
+            </Link>
+          </div>
+          <div className="hidden md:flex">
+            <Button
+              type="active"
+              text={truncateActiveAccount}
+              icon=""
+              action={disconnect}
+            />
+          </div>
+          <div className="flex md:hidden">
+            <Button type="active" text="" icon="menu" action={openCloseMenu} />
+          </div>
+        </div>
+        {showMenu && (
+          <div className="w-full h-[91vh] flex flex-col justify-between">
+            <div></div>
+            <div className="flex flex-col gap-[20px]">
+              <Link href="/contracts" onClick={openCloseMenu}>
+                {pathname === "/contracts" ? (
+                  <Button type="active" text="my contracts" icon="" />
+                ) : (
+                  <Button type="outlined" text="my contracts" icon="" />
+                )}
+              </Link>
+              <Link href="/claim" onClick={openCloseMenu}>
+                {pathname === "/claim" ? (
+                  <Button type="active" text="claim" icon="" />
+                ) : (
+                  <Button type="outlined" text="claim" icon="" />
+                )}
+              </Link>
+            </div>
+            <div className="flex">
+              <Button
+                type="active"
+                text={truncateActiveAccount}
+                icon=""
+                action={disconnect}
+              />
+            </div>
+          </div>
+        )}
+      </nav>
     )
   );
-  //DESKTOP CONNECTED
-  /*
-    
-    */
 };
 
 export default index;
-
-/*
-
-
-
-      //MOBILE
-      <nav className="bg-opwhite w-full min-h-[60px] px-[20px] py-[10px] drop-shadow-md">
-      <div className="flex justify-between">
-      <OPPurple width={40} height={38.6} />
-      
-      <div onClick={() => setShow(!show)}>
-      <Button type="text" text="menu" icon="" />
-      </div>
-      </div>
-      <div className={show ? "h-screen" : "hidden"}></div>
-      </nav>
-
-
-*/

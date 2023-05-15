@@ -1,27 +1,32 @@
 import Image from "next/image";
-
 import Text from "../components/generals/text";
-import Button from "../components/generals/button";
 import Nav from "../components/nav";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useInkathon } from "@scio-labs/use-inkathon";
+import { Archivo, Podkova } from "next/font/google";
+const archivo = Archivo({ subsets: ["latin"] });
 
 export default function Home() {
+  const router = useRouter();
+  const { isConnected, disconnect, activeAccount } = useInkathon();
+  useEffect(() => {
+    isConnected === true ? router.push("/contracts") : router.push("/");
+  }, [isConnected]);
   return (
-    <main>
+    <main
+      className={
+        isConnected
+          ? `flex flex-col md:flex-row ${archivo.className}`
+          : `flex flex-col ${archivo.className}`
+      }
+    >
       <Nav />
-      <Text type="h1" text="Text" />
-      <Text type="h2" text="Text" />
-      <Text type="h3" text="Text" />
-      <Text type="h4" text="Text" />
-      <Text type="h5" text="Text" />
-      <Text type="h6" text="Text" />
-      <Text type="overline" text="Text" />
-      <Text type="caption" text="Text" />
-      <Text type="caption" text="Text" />
-      <Button type="active" text="button" icon="" />
-      <Button type="disabled" text="button" icon="" />
-      <Button type="outlined" text="button" icon="" />
-      <Button type="text" text="button" icon="" />
-      <Button type="danger" text="button" icon="" />
+      <div className="w-8/12 mx-auto flex flex-col gap-[40px] mt-[100px]">
+        <div className="mx-auto">
+          <Text type="h2" text="Please, connect your wallet to continue" />
+        </div>
+      </div>
     </main>
   );
 }
