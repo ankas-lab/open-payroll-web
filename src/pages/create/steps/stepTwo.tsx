@@ -51,7 +51,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
 
   //Pull created multipliers
   useEffect(() => {
-    onContractMultipliers[0].name !== ""
+    onContractMultipliers.length > 0
       ? setMultipliers(onContractMultipliers)
       : setMultipliers([{ id: 1, value: 1, name: "" }]);
   }, [onContractMultipliers]);
