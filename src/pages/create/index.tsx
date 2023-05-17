@@ -1,33 +1,21 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import Nav from "../../components/nav";
-import Text from "../../components/generals/text";
-import Button from "../../components/generals/button";
-import { Archivo, Podkova } from "next/font/google";
-
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
 import { useInkathon } from "@scio-labs/use-inkathon";
-const podkova = Podkova({ subsets: ["latin"] });
+
+import { Archivo } from "next/font/google";
 const archivo = Archivo({ subsets: ["latin"] });
 
+import Nav from "../../components/nav";
+import Button from "../../components/generals/button";
 import StepOne from "./steps/stepOne";
 import StepTwo from "./steps/stepTwo";
 import StepThree from "./steps/stepThree";
 import StepFour from "./steps/stepFour";
 import StepFive from "./steps/stepFive";
 
-//Interfaces
-
-//Contract base
-interface ContractBase {
-  contractName: string;
-  basePayment: number;
-  periodicity: string;
-  ownerEmail: string;
-}
-
-type handleContractBaseChangeType = (arg0: ContractBase) => void;
-
+//---------------------------------Interfaces---------------------------------
 //Multipliers
 interface Multiplier {
   id: number;
@@ -46,14 +34,14 @@ interface Beneficiary {
 }
 
 export default function Create() {
-  // Security
+  //---------------------------------Security---------------------------------
   const router = useRouter();
   const { isConnected } = useInkathon();
   useEffect(() => {
     isConnected === false && router.push("/");
   }, [isConnected]);
 
-  // Steps
+  //---------------------------------Steps
   // steps to advance in the creation of the contract
   const [steps, setSteps] = useState(0);
   const step = (step: any) => {
@@ -64,42 +52,86 @@ export default function Create() {
     }
   };
 
-  // Contract base
+  //---------------------------------Contract base---------------------------------
   // the base of the contract
   const [contractBase, setContractBase] = useState({
     contractName: "",
     basePayment: 0,
-    periodicity: "",
+    periodicity: 0,
     ownerEmail: "",
   });
-  const handleContractBaseChange: handleContractBaseChangeType = (arg0) => {
-    setContractBase(arg0);
+
+  const handleContractBaseChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = event.target;
+
+    let updatedValue: any;
+
+    if (name === "basePayment") {
+      updatedValue = parseFloat(value);
+    } else {
+      updatedValue = value;
+    }
+    if (name === "periodicity") {
+      updatedValue = parseFloat(value);
+    } else {
+      updatedValue = value;
+    }
+
+    setContractBase((prevValues) => ({
+      ...prevValues,
+      [name]: updatedValue,
+    }));
   };
+
   //See changes in console
   useEffect(() => {
     console.log("From pather", contractBase);
   }, [contractBase]);
 
-  // Multipliers
+  //---------------------------------Multipliers---------------------------------
   // multipliers of the contract
   const [multipliers, setMultipliers] = useState<Multiplier[]>([]);
-  //Can pass to step three
-  const [isNextToThreeButtonEnabled, setIsNextToThreeButtonEnabled] =
-    useState(false);
+
   const handleMultipliersChange = (multipliers: Multiplier[]) => {
     const hasName = multipliers.some(
       (multiplier) => multiplier.name.trim() !== ""
     );
-    setIsNextToThreeButtonEnabled(hasName);
     setMultipliers(multipliers);
   };
 
-  // Beneficiaeries
-  // beneficiaries of the contract
-  const [beneficieries, setBeneficiaries] = useState<Beneficiary[]>([]);
+  //See changes in console
+  useEffect(() => {
+    console.log("From pather", multipliers);
+  }, [multipliers]);
 
-  // TotalPayment
-  const [totalPayment, setTotalPayment] = useState<number>(0);
+  //---------------------------------Beneficiaeries---------------------------------
+  // beneficiaries of the contract
+  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+
+  const handleBeneficiariesChange = (beneficiaries: Beneficiary[]) => {
+    setBeneficiaries(beneficiaries);
+  };
+  //See changes in console
+  useEffect(() => {
+    console.log("From pather", beneficiaries);
+  }, [beneficiaries]);
+
+  //---------------------------------Can continue---------------------------------
+  const [canContinue, setCanContinue] = useState(false);
+
+  const handleCanContiue = (can: boolean) => {
+    setCanContinue(can);
+  };
+
+  //---------------------------------Total to pay---------------------------------
+  const [totalToPay, setTotalToPay] = useState<number>(0);
+  const handleCalculateTotalPayment = (total: number) => {
+    setTotalToPay(total);
+  };
+
+  //---------------------------------UI---------------------------------
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -107,26 +139,36 @@ export default function Create() {
       <div className="w-10/12 md:w-8/12 mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[100px]">
         {/* Steps  */}
         {steps === 0 && (
-          <StepOne handleContractBaseChange={handleContractBaseChange} />
+          <StepOne
+            handleContractBaseChange={handleContractBaseChange}
+            onContractContractBase={contractBase}
+            handleCanContiue={handleCanContiue}
+          />
         )}
         {steps === 1 && (
           <StepTwo
             onMultipliersChange={handleMultipliersChange}
             onContractMultipliers={multipliers}
+            handleCanContiue={handleCanContiue}
           />
         )}
         {steps === 2 && (
           <StepThree
-            onContractMultipliers={multipliers}
+            handleBeneficiariesChange={handleBeneficiariesChange}
             onContractBaseContract={contractBase}
+            onContractMultipliers={multipliers}
+            onContractBeneficiaries={beneficiaries}
+            handleCanContiue={handleCanContiue}
+            handleCalculateTotalPayment={handleCalculateTotalPayment}
+            totalToPay={totalToPay}
           />
         )}
-        {steps === 3 && <StepFour />}
+        {steps === 3 && <StepFour totalToPay={totalToPay} />}
         {steps === 4 && (
           <StepFive
             onContractMultipliers={multipliers}
             onContractBaseContract={contractBase}
-            onContractBeneficiaries={beneficieries}
+            onContractBeneficiaries={beneficiaries}
           />
         )}
         <div className="flex w-6/12 md:w-2/12 gap-5">
@@ -140,7 +182,11 @@ export default function Create() {
             </div>
           )}
           <div>
-            <Button type="active" text="next" action={() => step("next")} />
+            {canContinue ? (
+              <Button type="active" text="next" action={() => step("next")} />
+            ) : (
+              <Button type="disabled" text="next" action={() => step("next")} />
+            )}
           </div>
         </div>
       </div>

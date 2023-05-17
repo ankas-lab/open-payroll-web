@@ -1,10 +1,14 @@
 import React from "react";
+
 import Button from "../../../components/generals/button";
 import Text from "../../../components/generals/text";
 
-const StepFour = () => {
-  //ADD FUNDS
+//---------------------------------Props---------------------------------
+interface StepFourProps {
+  totalToPay: number;
+}
 
+const StepFour: React.FC<StepFourProps> = ({ totalToPay }) => {
   return (
     <>
       <div>
@@ -32,7 +36,7 @@ const StepFour = () => {
         </div>
         <div className="flex flex-col gap-[10px]">
           <Text type="h6" text="Total required" />
-          <Text type="" text="000 DOT" />
+          <Text type="" text={`${totalToPay} DOT`} />
         </div>
       </div>
       <div className="w-[200px]">

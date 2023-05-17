@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
+
 import Button from "../../../components/generals/button";
 import Text from "../../../components/generals/text";
 
-//Interfaces
+//---------------------------------Interfaces---------------------------------
 interface ContractBase {
   contractName: string;
   basePayment: number;
-  periodicity: string;
+  periodicity: number;
   ownerEmail: string;
 }
 
@@ -25,17 +26,27 @@ interface Beneficiary {
   finalPayment: number;
 }
 
-//Props
+//---------------------------------Props---------------------------------
 interface StepThreeProps {
+  handleBeneficiariesChange: (beneficiaries: Beneficiary[]) => void;
   onContractMultipliers: Multiplier[];
   onContractBaseContract: ContractBase;
+  onContractBeneficiaries: Beneficiary[];
+  handleCanContiue: any;
+  handleCalculateTotalPayment: any;
+  totalToPay: number;
 }
 
 const StepThree: React.FC<StepThreeProps> = ({
-  onContractMultipliers,
+  handleBeneficiariesChange,
   onContractBaseContract,
+  onContractMultipliers,
+  onContractBeneficiaries,
+  handleCanContiue,
+  handleCalculateTotalPayment,
+  totalToPay,
 }) => {
-  //States
+  //---------------------------------States---------------------------------
   const [baseContract, setBaseContract] = useState<ContractBase>(
     onContractBaseContract
   );
@@ -59,7 +70,7 @@ const StepThree: React.FC<StepThreeProps> = ({
     },
   ]);
 
-  //Handles
+  //---------------------------------Handles---------------------------------
   const handleAddBeneficiary = () => {
     const newBeneficiary: Beneficiary = {
       name: "",
@@ -73,6 +84,7 @@ const StepThree: React.FC<StepThreeProps> = ({
       basePayment: Number(baseContract.basePayment),
       finalPayment: 1,
     };
+
     setBeneficiaries([...beneficiaries, newBeneficiary]);
   };
 
@@ -121,29 +133,88 @@ const StepThree: React.FC<StepThreeProps> = ({
     );
 
     setBeneficiaries(updatedBeneficiaries);
+    handleBeneficiariesChange(updatedBeneficiaries);
   };
 
   const handleBeneficiaryMultiplierChange = (
     beneficiaryIndex: number,
     multiplierIndex: number,
-    value: number
+    value: string
   ) => {
     const updatedBeneficiaries = [...beneficiaries];
     const beneficiary = updatedBeneficiaries[beneficiaryIndex];
     const updatedMultipliers = [...beneficiary.multipliers];
+
+    const sanitizedValue = value.replace(/,/g, ".").replace(/[^0-9.]/g, "");
+    const parsedValue = parseFloat(sanitizedValue);
+
     updatedMultipliers[multiplierIndex] = {
       ...updatedMultipliers[multiplierIndex],
-      value: value,
+      value: parsedValue,
     };
     beneficiary.multipliers = updatedMultipliers;
+
+    // Calculate the total multipliers for the beneficiary
+    const totalMultipliers = updatedMultipliers.reduce(
+      (accumulator, currentMultiplier) => accumulator + currentMultiplier.value,
+      0
+    );
+
+    beneficiary.totalMultipliers = totalMultipliers;
+
+    // Calculate the final payment for the beneficiary
+    const finalPayment = totalMultipliers * baseContract.basePayment;
+
+    beneficiary.finalPayment = finalPayment;
+
     setBeneficiaries(updatedBeneficiaries);
+    calculateTotalPayment();
   };
 
-  //See changes
+  const calculateTotalPayment = () => {
+    let totalPayment = 0;
+    beneficiaries.forEach((beneficiary) => {
+      totalPayment += beneficiary.finalPayment;
+    });
+    handleCalculateTotalPayment(totalPayment);
+  };
+
+  //---------------------------------Effects---------------------------------
+  //Disable can continue
+  useEffect(() => {
+    handleCanContiue(false);
+  }, []);
+
+  //Pull created multipliers
+  useEffect(() => {
+    const base = [
+      {
+        name: "",
+        address: "",
+        multipliers: multipliers.map((multiplier) => ({
+          id: multiplier.id,
+          value: multiplier.value,
+          name: multiplier.name,
+        })),
+        totalMultipliers: 1,
+        basePayment: Number(baseContract.basePayment),
+        finalPayment: 1,
+      },
+    ];
+    if (onContractBeneficiaries !== base) {
+      setBeneficiaries(onContractBeneficiaries);
+      handleCanContiue(true);
+    }
+  }, [onContractBeneficiaries]);
+
+  //See changes + active/disable can continue
   useEffect(() => {
     console.log(beneficiaries);
+    const hasEmptyBeneficiarie = beneficiaries.some((b) => b.address === "");
+    hasEmptyBeneficiarie ? handleCanContiue(false) : handleCanContiue(true);
   }, [beneficiaries]);
 
+  //---------------------------------UI---------------------------------
   return (
     <>
       <div>
@@ -164,7 +235,7 @@ const StepThree: React.FC<StepThreeProps> = ({
           text={`Base payment: ${baseContract.basePayment} DOT`}
         />
       </div>
-      <div className="flex flex-col gap-[10px] overflow-x-scroll">
+      <div className="flex flex-col gap-[10px] overflow-x-scroll pb-5">
         {/* Header table row */}
         <div className="flex gap-[20px] text-left w-fit md:w-12/12">
           <div className="w-[150px]">
@@ -189,7 +260,10 @@ const StepThree: React.FC<StepThreeProps> = ({
         {/* Beneficiarie row */}
         <form className="flex flex-col gap-[5px]">
           {beneficiaries.map((b, index) => (
-            <div className="flex gap-[20px] text-left w-fit items-center">
+            <div
+              key={index}
+              className="flex gap-[20px] text-left w-fit items-center"
+            >
               <div className="w-[150px]">
                 <input
                   className="w-full bg-opwhite border-2 rounded-[5px] p-1"
@@ -224,7 +298,7 @@ const StepThree: React.FC<StepThreeProps> = ({
                       handleBeneficiaryMultiplierChange(
                         index,
                         multiplierIndex,
-                        parseInt(e.target.value)
+                        e.target.value
                       )
                     }
                   />
@@ -251,7 +325,7 @@ const StepThree: React.FC<StepThreeProps> = ({
         <hr className="border-2 rounded my-[10px] w-full md:w-10/12 "></hr>
         <div className="flex w-full md:w-9/12 justify-between px-1">
           <Text type="h4" text="Total pay" />
-          <Text type="h4" text="000 DOT" />
+          <Text type="h4" text={`${totalToPay} DOT`} />
         </div>
         <div className="w-[200px]">
           <Button

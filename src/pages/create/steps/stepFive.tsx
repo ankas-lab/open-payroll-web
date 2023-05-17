@@ -1,23 +1,23 @@
 import React, { useState } from "react";
+
 import Button from "../../../components/generals/button";
 import Text from "../../../components/generals/text";
+
 import { Podkova } from "next/font/google";
 const podkova = Podkova({ subsets: ["latin"] });
 
-//Interfaces
+//---------------------------------Interfaces---------------------------------
 interface ContractBase {
   contractName: string;
   basePayment: number;
-  periodicity: string;
+  periodicity: number;
   ownerEmail: string;
 }
-
 interface Multiplier {
   id: number;
   value: number;
   name: string;
 }
-
 interface Beneficiary {
   name: string;
   address: string;
@@ -27,7 +27,7 @@ interface Beneficiary {
   finalPayment: number;
 }
 
-//Props
+//---------------------------------Props---------------------------------
 interface stepFiveProps {
   onContractMultipliers: Multiplier[];
   onContractBaseContract: ContractBase;
@@ -39,19 +39,18 @@ const StepFive: React.FC<stepFiveProps> = ({
   onContractBaseContract,
   onContractBeneficiaries,
 }) => {
-  //States
+  //---------------------------------States---------------------------------
   const [baseContract, setBaseContract] = useState<ContractBase>(
     onContractBaseContract
   );
-
   const [multipliers, setMultipliers] = useState<Multiplier[]>(
     onContractMultipliers
   );
-
   const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>(
     onContractBeneficiaries
   );
 
+  //---------------------------------UI---------------------------------
   return (
     <div>
       <div>

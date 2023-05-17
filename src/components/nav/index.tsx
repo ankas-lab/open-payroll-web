@@ -7,7 +7,7 @@ import { useInkathon } from "@scio-labs/use-inkathon";
 import Link from "next/link.js";
 
 const index = () => {
-  const { connect, disconnect, activeAccount } = useInkathon();
+  const { connect, disconnect, activeAccount, isConnecting } = useInkathon();
 
   const pathname = usePathname();
 
@@ -44,12 +44,22 @@ const index = () => {
           <OPPurple width={50} height={46.6} />
         </div>
         <div>
-          <Button
-            type="active"
-            text="connect wallet"
-            icon=""
-            action={() => connect?.(undefined, undefined)}
-          />
+          {disconnect && !isConnecting && (
+            <Button
+              type="active"
+              text="connect wallet"
+              icon=""
+              action={() => connect?.(undefined, undefined)}
+            />
+          )}
+          {isConnecting && (
+            <Button
+              type="active"
+              text="connecting"
+              icon="loading"
+              action={() => connect?.(undefined, undefined)}
+            />
+          )}
         </div>
       </nav>
     ) : (
@@ -110,12 +120,22 @@ const index = () => {
               </Link>
             </div>
             <div className="flex">
-              <Button
-                type="active"
-                text={truncateActiveAccount}
-                icon=""
-                action={disconnect}
-              />
+              {connect && (
+                <Button
+                  type="active"
+                  text={truncateActiveAccount}
+                  icon=""
+                  action={disconnect}
+                />
+              )}
+              {isConnecting && (
+                <Button
+                  type="active"
+                  text="connecting"
+                  icon="loading"
+                  action={() => connect?.(undefined, undefined)}
+                />
+              )}
             </div>
           </div>
         )}

@@ -1,28 +1,31 @@
 import React, { useEffect, useState } from "react";
+
 import Button from "../../../components/generals/button";
 import Text from "../../../components/generals/text";
 
-// Interfaces
+//---------------------------------Interfaces---------------------------------
 interface Multiplier {
   id: number;
   value: number;
   name: string;
 }
 
-// Props
+//---------------------------------Props---------------------------------
 interface StepTwoProps {
   onMultipliersChange: (multipliers: Multiplier[]) => void;
   onContractMultipliers: Multiplier[];
+  handleCanContiue: any;
 }
 
 const StepTwo: React.FC<StepTwoProps> = ({
   onMultipliersChange,
   onContractMultipliers,
+  handleCanContiue,
 }) => {
-  //States
+  //---------------------------------States---------------------------------
   const [multipliers, setMultipliers] = useState<Multiplier[]>([]);
 
-  //Handles
+  //---------------------------------Handles---------------------------------
   const handleMultiplierChange = (id: number, name: string) => {
     const updatedMultipliers = multipliers.map((multiplier) =>
       multiplier.id === id ? { ...multiplier, name } : multiplier
@@ -49,18 +52,30 @@ const StepTwo: React.FC<StepTwoProps> = ({
     }
   };
 
+  //---------------------------------Effects---------------------------------
+  //Disable can continue
+  useEffect(() => {
+    handleCanContiue(false);
+  }, []);
   //Pull created multipliers
   useEffect(() => {
-    onContractMultipliers.length > 0
-      ? setMultipliers(onContractMultipliers)
-      : setMultipliers([{ id: 1, value: 1, name: "" }]);
+    if (onContractMultipliers.length > 0) {
+      setMultipliers(onContractMultipliers);
+      handleCanContiue(true);
+    } else {
+      setMultipliers([{ id: 1, value: 1, name: "" }]);
+    }
   }, [onContractMultipliers]);
-
-  //See changes
+  //See changes + active/disable can continue
   useEffect(() => {
     console.log(multipliers);
+    const hasEmptyMultiplier = multipliers.some(
+      (multiplier) => multiplier.name === ""
+    );
+    hasEmptyMultiplier ? handleCanContiue(false) : handleCanContiue(true);
   }, [multipliers]);
 
+  //---------------------------------UI---------------------------------
   return (
     <div>
       <div>
