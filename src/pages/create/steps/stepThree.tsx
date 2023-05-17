@@ -201,7 +201,7 @@ const StepThree: React.FC<StepThreeProps> = ({
         finalPayment: 1,
       },
     ];
-    if (onContractBeneficiaries !== base) {
+    if (onContractBeneficiaries.length > 0) {
       setBeneficiaries(onContractBeneficiaries);
       handleCanContiue(true);
     }

@@ -21,12 +21,16 @@ interface stepOneProps {
   ) => void;
   handleCanContiue: any;
   onContractContractBase: ContractBase;
+  periodicityType: string;
+  setPeriodicityType: any;
 }
 
 const StepOne: React.FC<stepOneProps> = ({
   handleContractBaseChange,
   handleCanContiue,
   onContractContractBase,
+  periodicityType,
+  setPeriodicityType,
 }) => {
   //---------------------------------States---------------------------------
   const [contractBase, setContractBase] = useState<ContractBase>({
@@ -35,8 +39,6 @@ const StepOne: React.FC<stepOneProps> = ({
     periodicity: 0,
     ownerEmail: "",
   });
-
-  const [periodicityType, setPeriodicityType] = useState<string>("fixed");
 
   //---------------------------------Effects---------------------------------
   //Pull created multipliers

@@ -36,7 +36,7 @@ const index = () => {
   return (
     //NO CONNECTED
     !activeAccount ? (
-      <nav className="bg-opwhite flex justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md">
+      <nav className="bg-opwhite flex justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md top-0 left-0 sticky">
         <div className="flex md:hidden">
           <OPPurple width={40} height={36.6} />
         </div>
@@ -64,7 +64,7 @@ const index = () => {
       </nav>
     ) : (
       //CONNECTED
-      <nav className="bg-opwhite flex flex-col md:flex-row w-full md:w-3/12 lg:w-2/12 h-fit md:h-screen py-[10px] px-[20px] md:px-[40px] md:py-[20px] drop-shadow-md">
+      <nav className="bg-opwhite flex flex-col md:flex-row w-full md:w-3/12 lg:w-2/12 h-fit md:h-screen py-[10px] px-[20px] md:px-[40px] md:py-[20px] drop-shadow-md top-0 left-0 sticky">
         <div className="w-full flex md:flex-col justify-between items-center">
           <div className="flex md:hidden">
             <OPPurple width={40} height={36.6} />

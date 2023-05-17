@@ -33,6 +33,28 @@ interface Beneficiary {
   finalPayment: number;
 }
 
+//BeneficiariesBC
+interface BeneficiaryBC {
+  address: string;
+  multipliers: Multiplier[];
+  totalMultipliers: number;
+  basePayment: number;
+  finalPayment: number;
+}
+
+//ContractBC
+interface ContractBC {
+  basePayment: number;
+  periodicity: number;
+  totalPayment: number;
+}
+
+interface InfoForBlockchain {
+  multipliers: Multiplier[];
+  beneficiaries: BeneficiaryBC[];
+  contract: ContractBC;
+}
+
 export default function Create() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
@@ -60,6 +82,8 @@ export default function Create() {
     periodicity: 0,
     ownerEmail: "",
   });
+
+  const [periodicityType, setPeriodicityType] = useState<string>("fixed");
 
   const handleContractBaseChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -125,24 +149,65 @@ export default function Create() {
     setCanContinue(can);
   };
 
+  useEffect(() => {
+    steps === 4 && setCanContinue(false);
+  }, [steps]);
+
   //---------------------------------Total to pay---------------------------------
   const [totalToPay, setTotalToPay] = useState<number>(0);
   const handleCalculateTotalPayment = (total: number) => {
     setTotalToPay(total);
   };
 
+  //---------------------------------infoForBlockchain---------------------------------
+  const [infoForBlockchain, setInfoForBlockchain] =
+    useState<InfoForBlockchain | null>(null);
+
+  const handleCreateAllInfoBC = () => {
+    const contract: ContractBC = {
+      basePayment: contractBase.basePayment,
+      periodicity: contractBase.periodicity,
+      totalPayment: totalToPay,
+    };
+
+    const beneficiariesBC: BeneficiaryBC[] = beneficiaries.map(
+      (beneficiary) => ({
+        address: beneficiary.address,
+        multipliers: beneficiary.multipliers,
+        totalMultipliers: beneficiary.totalMultipliers,
+        basePayment: beneficiary.basePayment,
+        finalPayment: beneficiary.finalPayment,
+      })
+    );
+
+    const infoBC: InfoForBlockchain = {
+      multipliers,
+      beneficiaries: beneficiariesBC,
+      contract,
+    };
+
+    setInfoForBlockchain(infoBC);
+  };
+
+  useEffect(() => {
+    console.log(infoForBlockchain);
+  }, [infoForBlockchain]);
+
   //---------------------------------UI---------------------------------
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <div className="w-10/12 md:w-8/12 mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[100px]">
+
+      <div className="w-10/12 md:w-8/12 mx-auto flex flex-col gap-[20px] md:gap-[40px] my-[50px] md:my-[100px]">
         {/* Steps  */}
         {steps === 0 && (
           <StepOne
             handleContractBaseChange={handleContractBaseChange}
             onContractContractBase={contractBase}
             handleCanContiue={handleCanContiue}
+            periodicityType={periodicityType}
+            setPeriodicityType={setPeriodicityType}
           />
         )}
         {steps === 1 && (
@@ -166,9 +231,16 @@ export default function Create() {
         {steps === 3 && <StepFour totalToPay={totalToPay} />}
         {steps === 4 && (
           <StepFive
-            onContractMultipliers={multipliers}
             onContractBaseContract={contractBase}
+            handleContractBaseChange={handleContractBaseChange}
+            onContractMultipliers={multipliers}
+            onMultipliersChange={handleMultipliersChange}
             onContractBeneficiaries={beneficiaries}
+            handleBeneficiariesChange={handleBeneficiariesChange}
+            totalToPay={totalToPay}
+            handleCalculateTotalPayment={handleCalculateTotalPayment}
+            periodicityType={periodicityType}
+            setPeriodicityType={setPeriodicityType}
           />
         )}
         <div className="flex w-6/12 md:w-2/12 gap-5">
@@ -182,10 +254,18 @@ export default function Create() {
             </div>
           )}
           <div>
-            {canContinue ? (
+            {canContinue && steps !== 4 && (
               <Button type="active" text="next" action={() => step("next")} />
-            ) : (
+            )}
+            {!canContinue && steps !== 4 && (
               <Button type="disabled" text="next" action={() => step("next")} />
+            )}
+            {steps === 4 && (
+              <Button
+                type="active"
+                text="done"
+                action={handleCreateAllInfoBC}
+              />
             )}
           </div>
         </div>
