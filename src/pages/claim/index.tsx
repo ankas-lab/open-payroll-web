@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Nav from "../../components/nav";
 import Text from "../../components/generals/text";
 import Button from "../../components/generals/button";
@@ -6,6 +6,12 @@ import { Archivo, Calistoga } from "next/font/google";
 const archivo = Archivo({ subsets: ["latin"] });
 
 export default function Claim() {
+  const [address, setAddress] = useState<string>("");
+
+  const handleFindContract = (address: string) => {
+    console.log(address);
+  };
+
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
@@ -19,14 +25,30 @@ export default function Claim() {
           />
           <form className="flex flex-col gap-[10px]">
             <input
-              id="GET-name"
+              id="address"
               type="text"
-              name="name"
+              name="address"
               placeholder="Contract address"
               className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
             />
             <div className="flex">
-              <Button type="active" text="find" icon="" />
+              {address.length > 0 ? (
+                <Button
+                  type="active"
+                  text="find"
+                  icon=""
+                  action={() => handleFindContract(address)}
+                />
+              ) : (
+                <Button
+                  type="disabled"
+                  text="find"
+                  icon=""
+                  action={() => handleFindContract(address)}
+                />
+              )}
             </div>
           </form>
         </div>

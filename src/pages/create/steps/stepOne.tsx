@@ -41,6 +41,10 @@ const StepOne: React.FC<stepOneProps> = ({
   });
 
   //---------------------------------Effects---------------------------------
+  //disable can continue
+  useEffect(() => {
+    handleCanContiue(false);
+  }, [contractBase]);
   //Pull created multipliers
   useEffect(() => {
     const base = {
@@ -63,7 +67,7 @@ const StepOne: React.FC<stepOneProps> = ({
   }, [onContractContractBase]);
   //active/disable can continue
   useEffect(() => {
-    contractBase.basePayment !== 0 && handleCanContiue(true);
+    contractBase.basePayment > 0 && handleCanContiue(true);
   }, [contractBase]);
 
   //---------------------------------UI---------------------------------
