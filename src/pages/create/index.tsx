@@ -14,6 +14,7 @@ import StepTwo from "./steps/stepTwo";
 import StepThree from "./steps/stepThree";
 import StepFour from "./steps/stepFour";
 import StepFive from "./steps/stepFive";
+import Result from "./results";
 
 //---------------------------------Interfaces---------------------------------
 //Multipliers
@@ -66,7 +67,7 @@ export default function Create() {
   //---------------------------------Steps
   // steps to advance in the creation of the contract
   const [steps, setSteps] = useState(0);
-  const step = (step: any) => {
+  const step = (step: string) => {
     if (step === "next") {
       steps < 4 && setSteps(steps + 1);
     } else if (step === "back") {
@@ -187,89 +188,126 @@ export default function Create() {
     };
 
     setInfoForBlockchain(infoBC);
+    setTimeout(() => {
+      setResult("loading");
+    }, 1000);
+    setTimeout(() => {
+      setResult("done");
+    }, 7000);
   };
 
   useEffect(() => {
     console.log(infoForBlockchain);
   }, [infoForBlockchain]);
 
+  //---------------------------------Results---------------------------------
+  const [result, setResult] = useState<
+    "creating" | "loading" | "done" | "error"
+  >("creating");
+
+  const handleEmptyAll = () => {
+    setSteps(0);
+    setContractBase({
+      contractName: "",
+      basePayment: 0,
+      periodicity: 0,
+      ownerEmail: "",
+    });
+    setMultipliers([]);
+    setBeneficiaries([]);
+    setTotalToPay(0);
+    setInfoForBlockchain(null);
+  };
+
   //---------------------------------UI---------------------------------
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-
-      <div className="w-10/12 md:w-8/12 mx-auto flex flex-col gap-[20px] md:gap-[40px] my-[50px] md:my-[100px]">
-        {/* Steps  */}
-        {steps === 0 && (
-          <StepOne
-            handleContractBaseChange={handleContractBaseChange}
-            onContractContractBase={contractBase}
-            handleCanContiue={handleCanContiue}
-            periodicityType={periodicityType}
-            setPeriodicityType={setPeriodicityType}
-          />
-        )}
-        {steps === 1 && (
-          <StepTwo
-            onMultipliersChange={handleMultipliersChange}
-            onContractMultipliers={multipliers}
-            handleCanContiue={handleCanContiue}
-          />
-        )}
-        {steps === 2 && (
-          <StepThree
-            handleBeneficiariesChange={handleBeneficiariesChange}
-            onContractBaseContract={contractBase}
-            onContractMultipliers={multipliers}
-            onContractBeneficiaries={beneficiaries}
-            handleCanContiue={handleCanContiue}
-            handleCalculateTotalPayment={handleCalculateTotalPayment}
-            totalToPay={totalToPay}
-          />
-        )}
-        {steps === 3 && <StepFour totalToPay={totalToPay} />}
-        {steps === 4 && (
-          <StepFive
-            onContractBaseContract={contractBase}
-            handleContractBaseChange={handleContractBaseChange}
-            onContractMultipliers={multipliers}
-            onMultipliersChange={handleMultipliersChange}
-            onContractBeneficiaries={beneficiaries}
-            handleBeneficiariesChange={handleBeneficiariesChange}
-            totalToPay={totalToPay}
-            handleCalculateTotalPayment={handleCalculateTotalPayment}
-            periodicityType={periodicityType}
-            setPeriodicityType={setPeriodicityType}
-          />
-        )}
-        <div className="flex w-6/12 md:w-2/12 gap-5">
-          {steps === 0 ? (
-            <Link href={"/"}>
-              <Button type="outlined" text="cancel" />
-            </Link>
-          ) : (
-            <div>
-              <Button type="outlined" text="back" action={() => step("back")} />
-            </div>
+      {result === "creating" && (
+        <div className="w-10/12 md:w-8/12 mx-auto flex flex-col gap-[20px] md:gap-[40px] my-[50px] md:my-[100px]">
+          {/* Steps  */}
+          {steps === 0 && (
+            <StepOne
+              handleContractBaseChange={handleContractBaseChange}
+              onContractContractBase={contractBase}
+              handleCanContiue={handleCanContiue}
+              periodicityType={periodicityType}
+              setPeriodicityType={setPeriodicityType}
+            />
           )}
-          <div>
-            {canContinue && steps !== 4 && (
-              <Button type="active" text="next" action={() => step("next")} />
+          {steps === 1 && (
+            <StepTwo
+              onMultipliersChange={handleMultipliersChange}
+              onContractMultipliers={multipliers}
+              handleCanContiue={handleCanContiue}
+            />
+          )}
+          {steps === 2 && (
+            <StepThree
+              handleBeneficiariesChange={handleBeneficiariesChange}
+              onContractBaseContract={contractBase}
+              onContractMultipliers={multipliers}
+              onContractBeneficiaries={beneficiaries}
+              handleCanContiue={handleCanContiue}
+              handleCalculateTotalPayment={handleCalculateTotalPayment}
+              totalToPay={totalToPay}
+            />
+          )}
+          {steps === 3 && <StepFour totalToPay={totalToPay} />}
+          {steps === 4 && (
+            <StepFive
+              onContractBaseContract={contractBase}
+              handleContractBaseChange={handleContractBaseChange}
+              onContractMultipliers={multipliers}
+              onMultipliersChange={handleMultipliersChange}
+              onContractBeneficiaries={beneficiaries}
+              handleBeneficiariesChange={handleBeneficiariesChange}
+              totalToPay={totalToPay}
+              handleCalculateTotalPayment={handleCalculateTotalPayment}
+              periodicityType={periodicityType}
+              setPeriodicityType={setPeriodicityType}
+            />
+          )}
+          <div className="flex w-6/12 md:w-2/12 gap-5">
+            {steps === 0 ? (
+              <Link href={"/"}>
+                <Button type="outlined" text="cancel" />
+              </Link>
+            ) : (
+              <div>
+                <Button
+                  type="outlined"
+                  text="back"
+                  action={() => step("back")}
+                />
+              </div>
             )}
-            {!canContinue && steps !== 4 && (
-              <Button type="disabled" text="next" action={() => step("next")} />
-            )}
-            {steps === 4 && (
-              <Button
-                type="active"
-                text="done"
-                action={handleCreateAllInfoBC}
-              />
-            )}
+            <div>
+              {canContinue && steps !== 4 && (
+                <Button type="active" text="next" action={() => step("next")} />
+              )}
+              {!canContinue && steps !== 4 && (
+                <Button
+                  type="disabled"
+                  text="next"
+                  action={() => step("next")}
+                />
+              )}
+              {steps === 4 && (
+                <Button
+                  type="active"
+                  text="done"
+                  action={handleCreateAllInfoBC}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+      {result !== "creating" && (
+        <Result result={result} handleEmptyAll={handleEmptyAll} />
+      )}
     </main>
   );
 }

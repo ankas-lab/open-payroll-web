@@ -178,6 +178,10 @@ const StepFive: React.FC<stepFiveProps> = ({
     }
   }, [onContractBaseContract]);
 
+  useEffect(() => {
+    calculateTotalPayment();
+  }, []);
+
   //---------------------------------UI---------------------------------
   return (
     <div className="">
@@ -197,135 +201,140 @@ const StepFive: React.FC<stepFiveProps> = ({
         <div className="w-full">
           <form className="flex flex-col gap-[40px]">
             {/* ---------------------------------Contract--------------------------------- */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-[10px] md:gap-[20px]">
-              <div className="grid grid-cols-1 gap-[10px]">
+            <div className="flex flex-col md:flex-row gap-[30px] md:gap-[20px]">
+              <div className="grid grid-cols-1 gap-[10px] w-full md:w-8/12">
                 <Text type="h4" text="Contract" />
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="contractName"
-                    className={`text-[17px] font-normal text-black tracking-[0.15px] mb-[10px] ${podkova.className}`}
-                  >
-                    Contract name
-                  </label>
-                  <input
-                    value={contractBase.contractName}
-                    type="text"
-                    name="contractName"
-                    id="contractName"
-                    className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
-                    onChange={handleContractBaseChange}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <label
-                    className={`text-[17px] font-normal text-black tracking-[0.15px] mb-[10px] ${podkova.className}`}
-                  >
-                    Email
-                  </label>
-                  <input
-                    value={contractBase.ownerEmail}
-                    type="email"
-                    name="ownerEmail"
-                    id="ownerEmail"
-                    className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
-                    onChange={handleContractBaseChange}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <label
-                    className={`text-[17px] font-normal text-black tracking-[0.15px] mb-[10px] ${podkova.className}`}
-                  >
-                    Base payment
-                  </label>
-                  <div className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 flex">
+                <div className="flex flex-col md:flex-row w-full justify-between gap-[15px]">
+                  <div className="flex flex-col w-full">
+                    <label
+                      htmlFor="contractName"
+                      className={`text-[17px] font-normal text-black tracking-[0.15px] mb-[10px] ${podkova.className}`}
+                    >
+                      Contract name
+                    </label>
                     <input
-                      value={contractBase.basePayment}
-                      type="number"
-                      name="basePayment"
-                      id="basePayment"
-                      className="bg-opwhite without-ring w-full"
+                      value={contractBase.contractName}
+                      type="text"
+                      name="contractName"
+                      id="contractName"
+                      className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
                       onChange={handleContractBaseChange}
                     />
-                    <p className="mx-5">DOT</p>
                   </div>
-                </div>
-                <div className="flex flex-col gap-[10px]">
-                  <label
-                    className={`text-[17px] font-normal text-black tracking-[0.15px] ${podkova.className}`}
-                  >
-                    Periodicity
-                  </label>
-                  <div className="flex gap-[10px]">
-                    {periodicityType === "fixed" ? (
-                      <Button
-                        type="active"
-                        text="fixed"
-                        action={() => setPeriodicityType("fixed")}
-                      />
-                    ) : (
-                      <Button
-                        type="outlined"
-                        text="fixed"
-                        action={() => setPeriodicityType("fixed")}
-                      />
-                    )}
-                    {periodicityType === "custom" ? (
-                      <Button
-                        type="active"
-                        text="custom"
-                        action={() => setPeriodicityType("custom")}
-                      />
-                    ) : (
-                      <Button
-                        type="outlined"
-                        text="custom"
-                        action={() => setPeriodicityType("custom")}
-                      />
-                    )}
-                  </div>
-                  <div className="flex">
-                    {periodicityType === "fixed" ? (
-                      <select
-                        name="periodicity"
-                        value={contractBase.periodicity}
-                        onChange={handleContractBaseChange}
-                        className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] py-2.5 px-1.5 flex"
-                      >
-                        <option value="7200">Daily</option>
-                        {/* x 5 days */}
-                        <option value="36000">Weekly</option>
-                        {/* x 30 days */}
-                        <option value="216000">Monthly</option>
-                      </select>
-                    ) : (
-                      <input
-                        value={contractBase.periodicity}
-                        type="number"
-                        name="periodicity"
-                        className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 flex"
-                        onChange={handleContractBaseChange}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-              {/* ---------------------------------Multipliers--------------------------------- */}
-              <div className="flex flex-col gap-[10px]">
-                <Text type="h4" text="Multipliers" />
-                {multipliers.map((multiplier) => (
-                  <div className="flex">
+                  <div className="flex flex-col w-full">
+                    <label
+                      className={`text-[17px] font-normal text-black tracking-[0.15px] mb-[10px] ${podkova.className}`}
+                    >
+                      Email
+                    </label>
                     <input
-                      key={multiplier.id}
-                      type="text"
-                      value={multiplier.name}
-                      onChange={(e) =>
-                        handleMultiplierChange(multiplier.id, e.target.value)
-                      }
-                      className="bg-opwhite w-full border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
+                      value={contractBase.ownerEmail}
+                      type="email"
+                      name="ownerEmail"
+                      id="ownerEmail"
+                      className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
+                      onChange={handleContractBaseChange}
                     />
                   </div>
-                ))}
+                </div>
+                <div className="flex flex-col md:flex-row w-full justify-between gap-[15px]">
+                  <div className="flex flex-col w-full">
+                    <label
+                      className={`text-[17px] font-normal text-black tracking-[0.15px] mb-[10px] ${podkova.className}`}
+                    >
+                      Base payment
+                    </label>
+                    <div className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 flex">
+                      <input
+                        value={contractBase.basePayment}
+                        type="number"
+                        name="basePayment"
+                        id="basePayment"
+                        className="bg-opwhite without-ring w-full"
+                        onChange={handleContractBaseChange}
+                      />
+                      <p className="mx-5">DOT</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-[10px] w-full">
+                    <label
+                      className={`text-[17px] font-normal text-black tracking-[0.15px] ${podkova.className}`}
+                    >
+                      Periodicity
+                    </label>
+                    <div className="flex gap-[10px]">
+                      {periodicityType === "fixed" ? (
+                        <Button
+                          type="active"
+                          text="fixed"
+                          action={() => setPeriodicityType("fixed")}
+                        />
+                      ) : (
+                        <Button
+                          type="outlined"
+                          text="fixed"
+                          action={() => setPeriodicityType("fixed")}
+                        />
+                      )}
+                      {periodicityType === "custom" ? (
+                        <Button
+                          type="active"
+                          text="custom"
+                          action={() => setPeriodicityType("custom")}
+                        />
+                      ) : (
+                        <Button
+                          type="outlined"
+                          text="custom"
+                          action={() => setPeriodicityType("custom")}
+                        />
+                      )}
+                    </div>
+                    <div className="flex">
+                      {periodicityType === "fixed" ? (
+                        <select
+                          name="periodicity"
+                          value={contractBase.periodicity}
+                          onChange={handleContractBaseChange}
+                          className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] py-2.5 px-1.5 flex"
+                        >
+                          <option value="7200">Daily</option>
+                          {/* x 5 days */}
+                          <option value="36000">Weekly</option>
+                          {/* x 30 days */}
+                          <option value="216000">Monthly</option>
+                        </select>
+                      ) : (
+                        <input
+                          value={contractBase.periodicity}
+                          type="number"
+                          name="periodicity"
+                          className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 flex"
+                          onChange={handleContractBaseChange}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {/* ---------------------------------Multipliers--------------------------------- */}
+                <div className="flex flex-col gap-[10px]">
+                  <Text type="h4" text="Multipliers" />
+                  {multipliers.map((multiplier) => (
+                    <div className="flex w-full md:w-6/12">
+                      <input
+                        key={multiplier.id}
+                        type="text"
+                        value={multiplier.name}
+                        onChange={(e) =>
+                          handleMultiplierChange(multiplier.id, e.target.value)
+                        }
+                        className="bg-opwhite w-full border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
+
               {/* ---------------------------------Funds--------------------------------- */}
               <div className="flex flex-col gap-[10px] md:border-l-2 md:border-oppurple md:pl-[20px]">
                 <Text type="h4" text="Funds" />

@@ -185,27 +185,9 @@ const StepThree: React.FC<StepThreeProps> = ({
     handleCanContiue(false);
   }, []);
 
-  //Pull created multipliers
   useEffect(() => {
-    const base = [
-      {
-        name: "",
-        address: "",
-        multipliers: multipliers.map((multiplier) => ({
-          id: multiplier.id,
-          value: multiplier.value,
-          name: multiplier.name,
-        })),
-        totalMultipliers: 1,
-        basePayment: Number(baseContract.basePayment),
-        finalPayment: 1,
-      },
-    ];
-    if (onContractBeneficiaries.length > 0) {
-      setBeneficiaries(onContractBeneficiaries);
-      handleCanContiue(true);
-    }
-  }, [onContractBeneficiaries]);
+    handleCanContiue(false);
+  }, []);
 
   //See changes + active/disable can continue
   useEffect(() => {
@@ -213,6 +195,11 @@ const StepThree: React.FC<StepThreeProps> = ({
     const hasEmptyBeneficiarie = beneficiaries.some((b) => b.address === "");
     hasEmptyBeneficiarie ? handleCanContiue(false) : handleCanContiue(true);
   }, [beneficiaries]);
+
+  //Calculate total payment
+  useEffect(() => {
+    handleCalculateTotalPayment;
+  }, []);
 
   //---------------------------------UI---------------------------------
   return (
@@ -281,7 +268,7 @@ const StepThree: React.FC<StepThreeProps> = ({
                   className="w-full bg-opwhite border-2 rounded-[5px] p-1"
                   type="text"
                   value={b.address}
-                  placeholder="Name"
+                  placeholder="Address"
                   name="address"
                   onChange={(e) =>
                     handleBeneficiaryChange(index, "address", e.target.value)

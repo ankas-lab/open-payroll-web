@@ -60,7 +60,7 @@ export default function Contracts() {
             </th>
           </tr>
           {/* .map of contracts */}
-          <tr className="flex gap-[50px] items-center">
+          <tr className="flex gap-[50px] items-center px-3">
             <td className="w-[150px]">
               <Text type="" text="state" />
             </td>
@@ -87,14 +87,14 @@ export default function Contracts() {
             </td>
             <td className="w-[100px]">
               <Link href={"/contracts/contract"}>
-                <Button type="text" text="state" icon="" />
+                <Button type="text" text="view" icon="" />
               </Link>
             </td>
             <td className="w-[100px]">
               <IoIosAlert className="w-5 h-5 text-opdanger" />
             </td>
           </tr>
-          <tr className="flex gap-[50px] items-center bg-[#ECECEC]">
+          <tr className="flex gap-[50px] items-center bg-[#ECECEC] px-3">
             <td className="w-[150px]">
               <Text type="" text="state" />
             </td>
@@ -120,7 +120,7 @@ export default function Contracts() {
               <Text type="" text="state" />
             </td>
             <td className="w-[100px]">
-              <Button type="text" text="state" icon="" />
+              <Button type="text" text="view" icon="" />
             </td>
             <td className="w-[100px]">
               <IoIosAlert className="w-5 h-5 text-opdanger" />

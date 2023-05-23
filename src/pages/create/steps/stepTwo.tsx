@@ -77,7 +77,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
 
   //---------------------------------UI---------------------------------
   return (
-    <div>
+    <>
       <div>
         <div className="flex justify-between items-center">
           <Text type="h2" text="Create multipliers" />
@@ -90,8 +90,8 @@ const StepTwo: React.FC<StepTwoProps> = ({
           />
         </div>
       </div>
-      <form className="w-12/12 md:w-6/12 lg:w-4/12 flex flex-col gap-[10px] md:gap-[20px]">
-        <div className="flex flex-col gap-[20px]">
+      <div className="flex flex-col gap-[20px]">
+        <form className="w-12/12 md:w-6/12 lg:w-4/12 flex flex-col gap-[10px] md:gap-[20px]">
           <Text type="h6" text="Multipliers" />
           {multipliers.map((multiplier) => (
             <div key={multiplier.id} className="flex gap-[10px]">
@@ -113,8 +113,8 @@ const StepTwo: React.FC<StepTwoProps> = ({
               </div>
             </div>
           ))}
-        </div>
-      </form>
+        </form>
+      </div>
       <div className="w-fit mt-[40px]">
         <Button
           type="outlined"
@@ -123,7 +123,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
           action={handleAddMultiplier}
         />
       </div>
-    </div>
+    </>
   );
 };
 
