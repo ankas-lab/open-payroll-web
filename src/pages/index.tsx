@@ -3,9 +3,9 @@ import Text from "../components/generals/text";
 import Nav from "../components/nav";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useInkathon } from "@scio-labs/use-inkathon";
 import { Archivo, Podkova } from "next/font/google";
 const archivo = Archivo({ subsets: ["latin"] });
+import { useInkathon } from "@scio-labs/use-inkathon";
 
 export default function Home() {
   const router = useRouter();
