@@ -7,62 +7,48 @@ import Link from "next/link.js";
 import { IoIosAlert } from "react-icons/io";
 const archivo = Archivo({ subsets: ["latin"] });
 
-import { useCall, useCallSubscription, useDryRun } from "useink";
+import { useContract, useCall, useWallet } from "useink";
 import { pickDecoded } from "useink/utils";
-import { useContract } from "useink";
 import metadata from "../../contract/open_payroll.json";
+import { useRouter } from "next/router";
 
 const CONTRACT_ADDRESS = "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H";
 
-interface getContractBalance {
-  MessageResult: string;
+interface GetListPayees {
+  payees: string[];
 }
 
-import { useBalance, useWallet } from "useink";
-import { Chain } from "useink/chains";
-
 export default function Contracts() {
-  const RococoContractsTestnet: Chain = {
-    id: "rococo-contracts-testnet",
-    name: "Contracts",
-    account: "*25519",
-    rpcs: ["wss://rococo-contracts-rpc.polkadot.io"],
-    paraId: 1002,
-    relay: { id: "rococo-testnet" },
-  };
+  //---------------------------------Security---------------------------------
+  const router = useRouter();
   const { account } = useWallet();
-  const balance = useBalance(account);
-  const rococoBalance = useBalance(account, "rococo-contracts-testnet");
-  const contract = useContract(CONTRACT_ADDRESS, metadata);
-  const getBeneficiaries = useDryRun<getContractBalance>(
+  useEffect(() => {
+    !account && router.push("/");
+  }, [account]);
+
+  //---------------------------------Connect to contract---------------------------------
+  const contract = useContract(
+    CONTRACT_ADDRESS,
+    metadata,
+    "rococo-contracts-testnet"
+  );
+
+  console.log(contract);
+
+  const getBeneficiaries = useCall<any | undefined>(
     contract?.contract,
-    "getContractBalance"
-  );
-  //const alephContract = useContract(ALEPH_CONTRACT_ADDRESS, metadata, 'aleph')
-  /*
-  const [contract, setContract] = useState(
-    useContract(CONTRACT_ADDRESS, metadata)
+    "getListPayees"
   );
 
-  const seeContract = () => {
-    contract && console.log("contract", contract);
-  };
+  console.log(getBeneficiaries);
 
-  const seeBeneficiaries = () => {
-    getBeneficiaries && console.log("getBeneficiaries", getBeneficiaries);
-  };
-  */
+  const seeContract = async () =>
+    console.log(pickDecoded(await getBeneficiaries.send()));
 
   useEffect(() => {
-    // getBeneficiaries && seeBeneficiaries();
-    contract && console.log(contract);
-  }, [contract]);
-  useEffect(() => {
-    getBeneficiaries && console.log(getBeneficiaries);
-  }, [getBeneficiaries]);
+    seeContract();
+  }, []);
 
-  //const get = useCall<SuccessfulResponse>(contract, "get");
-  //const args = ["arg-1", 2];
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />

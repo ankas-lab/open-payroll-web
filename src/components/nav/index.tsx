@@ -8,7 +8,6 @@ import { useWallet, useAllWallets } from "useink";
 
 const index = () => {
   const { account, connect, disconnect } = useWallet();
-  const wallets = useAllWallets();
 
   const pathname = usePathname();
   const [showMenu, setshowMenu] = React.useState<boolean>(false);
@@ -16,13 +15,9 @@ const index = () => {
     setshowMenu(!showMenu);
   };
 
-  useEffect(() => {
-    //wallets.map((w) => console.log(w));
-  }, []);
-
   return (
     //NO CONNECTED
-    !account ? (
+    account === undefined ? (
       <nav className="bg-opwhite flex justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md top-0 left-0 sticky">
         <div className="flex md:hidden">
           <OPPurple width={40} height={36.6} />
@@ -31,9 +26,7 @@ const index = () => {
           <OPPurple width={50} height={46.6} />
         </div>
         <div>
-          {!account && (
-            <Button text="connect" action={() => connect("polkadot-js")} />
-          )}
+          <Button text="connect" action={() => connect("polkadot-js")} />
         </div>
       </nav>
     ) : (
@@ -67,7 +60,7 @@ const index = () => {
               type="active"
               text="disconnect"
               icon=""
-              action={disconnect}
+              action={() => disconnect()}
             />
           </div>
           <div className="flex md:hidden">
@@ -99,7 +92,7 @@ const index = () => {
                   type="active"
                   text="disconnect"
                   icon=""
-                  action={disconnect()}
+                  action={() => disconnect()}
                 />
               )}
             </div>
