@@ -3,39 +3,26 @@ import { OPPurple } from "../../assets/logo/OPPurple.jsx";
 import Button from "../generals/button";
 import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
-import { useInkathon } from "@scio-labs/use-inkathon";
 import Link from "next/link.js";
+import { useWallet, useAllWallets } from "useink";
 
 const index = () => {
-  const { connect, disconnect, activeAccount, isConnecting } = useInkathon();
+  const { account, connect, disconnect } = useWallet();
+  const wallets = useAllWallets();
 
   const pathname = usePathname();
-
-  const router = useRouter();
-
-  const [truncateActiveAccount, setTruncateActiveAccount] =
-    React.useState<string>("");
   const [showMenu, setshowMenu] = React.useState<boolean>(false);
-
   const openCloseMenu = () => {
     setshowMenu(!showMenu);
   };
 
   useEffect(() => {
-    activeAccount
-      ? console.log(activeAccount)
-      : console.log("cuenta desactivada");
-    activeAccount !== undefined &&
-      setTruncateActiveAccount(
-        activeAccount.address.toString().slice(0, 4) +
-          "..." +
-          activeAccount.address.toString().slice(-4)
-      );
-  }, [activeAccount]);
+    //wallets.map((w) => console.log(w));
+  }, []);
 
   return (
     //NO CONNECTED
-    !activeAccount ? (
+    !account ? (
       <nav className="bg-opwhite flex justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md top-0 left-0 sticky">
         <div className="flex md:hidden">
           <OPPurple width={40} height={36.6} />
@@ -44,21 +31,8 @@ const index = () => {
           <OPPurple width={50} height={46.6} />
         </div>
         <div>
-          {disconnect && !isConnecting && (
-            <Button
-              type="active"
-              text="connect wallet"
-              icon=""
-              action={() => connect?.(undefined, undefined)}
-            />
-          )}
-          {isConnecting && (
-            <Button
-              type="active"
-              text="connecting"
-              icon="loading"
-              action={() => connect?.(undefined, undefined)}
-            />
+          {!account && (
+            <Button text="connect" action={() => connect("polkadot-js")} />
           )}
         </div>
       </nav>
@@ -91,7 +65,7 @@ const index = () => {
           <div className="hidden md:flex">
             <Button
               type="active"
-              text={truncateActiveAccount}
+              text="disconnect"
               icon=""
               action={disconnect}
             />
@@ -120,20 +94,12 @@ const index = () => {
               </Link>
             </div>
             <div className="flex">
-              {connect && (
+              {account && (
                 <Button
                   type="active"
-                  text={truncateActiveAccount}
+                  text="disconnect"
                   icon=""
-                  action={disconnect}
-                />
-              )}
-              {isConnecting && (
-                <Button
-                  type="active"
-                  text="connecting"
-                  icon="loading"
-                  action={() => connect?.(undefined, undefined)}
+                  action={disconnect()}
                 />
               )}
             </div>

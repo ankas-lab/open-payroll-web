@@ -2,20 +2,41 @@ import React, { useEffect } from "react";
 import Nav from "../../components/nav";
 import Text from "../../components/generals/text";
 import Button from "../../components/generals/button";
-import { Archivo, Podkova } from "next/font/google";
-import { useRouter } from "next/router";
-import { useInkathon } from "@scio-labs/use-inkathon";
+import { Archivo } from "next/font/google";
 import Link from "next/link.js";
 import { IoIosAlert } from "react-icons/io";
-const podkova = Podkova({ subsets: ["latin"] });
 const archivo = Archivo({ subsets: ["latin"] });
 
+import { useCall } from "useink";
+import { pickDecoded } from "useink/utils";
+import { useContract } from "useink";
+import metadata from "../../contract/open_payroll.json";
+
+const CONTRACT_ADDRESS = "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H";
+
+interface GetListPayees {
+  beneficiaries: [];
+}
+
 export default function Contracts() {
-  const router = useRouter();
-  const { isConnected, disconnect, activeAccount } = useInkathon();
+  const contract = useContract(CONTRACT_ADDRESS, metadata);
+  /*
+  const getBeneficiaries = useCall<GetListPayees>(
+    contract?.contract,
+    "getListPayees"
+  );
+*/
+  const seeContract = () => {
+    //getBeneficiaries && console.log("getBeneficiaries", getBeneficiaries);
+    contract && console.log("contract", contract);
+  };
+
   useEffect(() => {
-    isConnected === false && router.push("/");
-  }, [isConnected]);
+    seeContract();
+  }, []);
+
+  //const get = useCall<SuccessfulResponse>(contract, "get");
+  //const args = ["arg-1", 2];
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />

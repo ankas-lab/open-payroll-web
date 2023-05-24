@@ -2,20 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import Nav from "../../components/nav";
 import Text from "../../components/generals/text";
 import Button from "../../components/generals/button";
-import { Archivo, Podkova } from "next/font/google";
+import { Archivo } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useInkathon } from "@scio-labs/use-inkathon";
 import { CiMenuKebab } from "react-icons/ci";
 const archivo = Archivo({ subsets: ["latin"] });
+import { useWallet } from "useink";
 
 export default function Contract() {
   // Security
   const router = useRouter();
-  const { isConnected, disconnect, activeAccount } = useInkathon();
+  const { account } = useWallet();
   useEffect(() => {
-    isConnected === false && router.push("/");
-  }, [isConnected]);
+    !account && router.push("/");
+  }, [account]);
 
   // Show menu
   const [showMenu, setShowMenu] = useState<boolean>(false);

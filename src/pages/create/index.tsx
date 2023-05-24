@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useInkathon } from "@scio-labs/use-inkathon";
-
 import { Archivo } from "next/font/google";
 const archivo = Archivo({ subsets: ["latin"] });
 
@@ -15,6 +13,8 @@ import StepThree from "./steps/stepThree";
 import StepFour from "./steps/stepFour";
 import StepFive from "./steps/stepFive";
 import Result from "./results";
+
+import { useWallet } from "useink";
 
 //---------------------------------Interfaces---------------------------------
 //Multipliers
@@ -59,10 +59,10 @@ interface InfoForBlockchain {
 export default function Create() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
-  const { isConnected } = useInkathon();
+  const { account } = useWallet();
   useEffect(() => {
-    isConnected === false && router.push("/");
-  }, [isConnected]);
+    !account && router.push("/");
+  }, [account]);
 
   //---------------------------------Steps
   // steps to advance in the creation of the contract

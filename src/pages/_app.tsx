@@ -1,12 +1,36 @@
-import "@/styles/globals.css";
+import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import React from "react";
+import dynamic from "next/dynamic";
+import { InkConfig } from "useink";
+import {
+  RococoContractsTestnet,
+  RococoTestnet,
+  ShibuyaTestnet,
+  Astar,
+  Phala,
+  Aleph,
+} from "useink/chains";
+import { NotificationsProvider } from "useink/notifications";
 
-import { development, UseInkathonProvider } from "@scio-labs/use-inkathon";
+const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> =
+  dynamic(() => import("useink").then(({ UseInkProvider }) => UseInkProvider), {
+    ssr: false,
+  });
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
-    <UseInkathonProvider appName="ink!athon" defaultChain={development}>
-      <Component {...pageProps} />
-    </UseInkathonProvider>
+    <UseInkProvider
+      config={{
+        dappName: "useink Kitchen Sink",
+        chains: [RococoContractsTestnet],
+      }}
+    >
+      <NotificationsProvider>
+        <Component {...pageProps} />
+      </NotificationsProvider>
+    </UseInkProvider>
   );
 }
+
+export default App;

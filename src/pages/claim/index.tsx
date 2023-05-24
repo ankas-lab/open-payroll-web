@@ -2,10 +2,18 @@ import React, { useEffect, useState } from "react";
 import Nav from "../../components/nav";
 import Text from "../../components/generals/text";
 import Button from "../../components/generals/button";
-import { Archivo, Calistoga } from "next/font/google";
+import { Archivo } from "next/font/google";
+import { useRouter } from "next/router";
 const archivo = Archivo({ subsets: ["latin"] });
+import { useWallet } from "useink";
 
 export default function Claim() {
+  const router = useRouter();
+  const { account } = useWallet();
+  useEffect(() => {
+    !account && router.push("/");
+  }, [account]);
+
   const [address, setAddress] = useState<string>("");
 
   const handleFindContract = (address: string) => {

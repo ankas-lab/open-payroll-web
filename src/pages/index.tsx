@@ -1,22 +1,21 @@
-import Image from "next/image";
+import { useRouter } from "next/router";
 import Text from "../components/generals/text";
 import Nav from "../components/nav";
+import { Archivo } from "next/font/google";
+import { useWallet } from "useink";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
-import { Archivo, Podkova } from "next/font/google";
 const archivo = Archivo({ subsets: ["latin"] });
-import { useInkathon } from "@scio-labs/use-inkathon";
 
 export default function Home() {
   const router = useRouter();
-  const { isConnected, disconnect, activeAccount } = useInkathon();
+  const { account } = useWallet();
   useEffect(() => {
-    isConnected === true ? router.push("/contracts") : router.push("/");
-  }, [isConnected]);
+    account ? router.push("/contracts") : router.push("/");
+  }, [account]);
   return (
     <main
       className={
-        isConnected
+        account
           ? `flex flex-col md:flex-row ${archivo.className}`
           : `flex flex-col ${archivo.className}`
       }

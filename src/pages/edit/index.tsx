@@ -4,17 +4,17 @@ import Text from "../../components/generals/text";
 import Button from "../../components/generals/button";
 import { Archivo, Podkova } from "next/font/google";
 import { useRouter } from "next/router";
-import { useInkathon } from "@scio-labs/use-inkathon";
+import { useWallet } from "useink";
 const podkova = Podkova({ subsets: ["latin"] });
 const archivo = Archivo({ subsets: ["latin"] });
 
 export default function Edit() {
   // Security
   const router = useRouter();
-  const { isConnected } = useInkathon();
+  const { account } = useWallet();
   useEffect(() => {
-    isConnected === false && router.push("/");
-  }, [isConnected]);
+    !account && router.push("/");
+  }, [account]);
 
   // Find in localStorage
 
