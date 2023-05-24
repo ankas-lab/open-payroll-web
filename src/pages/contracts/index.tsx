@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Nav from "../../components/nav";
 import Text from "../../components/generals/text";
 import Button from "../../components/generals/button";
@@ -7,33 +7,59 @@ import Link from "next/link.js";
 import { IoIosAlert } from "react-icons/io";
 const archivo = Archivo({ subsets: ["latin"] });
 
-import { useCall } from "useink";
+import { useCall, useCallSubscription, useDryRun } from "useink";
 import { pickDecoded } from "useink/utils";
 import { useContract } from "useink";
 import metadata from "../../contract/open_payroll.json";
 
 const CONTRACT_ADDRESS = "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H";
 
-interface GetListPayees {
-  beneficiaries: [];
+interface getContractBalance {
+  MessageResult: string;
 }
 
+import { useBalance, useWallet } from "useink";
+import { Chain } from "useink/chains";
+
 export default function Contracts() {
+  const RococoContractsTestnet: Chain = {
+    id: "rococo-contracts-testnet",
+    name: "Contracts",
+    account: "*25519",
+    rpcs: ["wss://rococo-contracts-rpc.polkadot.io"],
+    paraId: 1002,
+    relay: { id: "rococo-testnet" },
+  };
+  const { account } = useWallet();
+  const balance = useBalance(account);
+  const rococoBalance = useBalance(account, "rococo-contracts-testnet");
   const contract = useContract(CONTRACT_ADDRESS, metadata);
-  /*
-  const getBeneficiaries = useCall<GetListPayees>(
+  const getBeneficiaries = useDryRun<getContractBalance>(
     contract?.contract,
-    "getListPayees"
+    "getContractBalance"
   );
-*/
+  //const alephContract = useContract(ALEPH_CONTRACT_ADDRESS, metadata, 'aleph')
+  /*
+  const [contract, setContract] = useState(
+    useContract(CONTRACT_ADDRESS, metadata)
+  );
+
   const seeContract = () => {
-    //getBeneficiaries && console.log("getBeneficiaries", getBeneficiaries);
     contract && console.log("contract", contract);
   };
 
+  const seeBeneficiaries = () => {
+    getBeneficiaries && console.log("getBeneficiaries", getBeneficiaries);
+  };
+  */
+
   useEffect(() => {
-    seeContract();
-  }, []);
+    // getBeneficiaries && seeBeneficiaries();
+    contract && console.log(contract);
+  }, [contract]);
+  useEffect(() => {
+    getBeneficiaries && console.log(getBeneficiaries);
+  }, [getBeneficiaries]);
 
   //const get = useCall<SuccessfulResponse>(contract, "get");
   //const args = ["arg-1", 2];
