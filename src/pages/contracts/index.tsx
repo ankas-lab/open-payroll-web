@@ -7,16 +7,17 @@ import Link from "next/link.js";
 import { IoIosAlert } from "react-icons/io";
 const archivo = Archivo({ subsets: ["latin"] });
 
-import { useContract, useCall, useWallet } from "useink";
+import {
+  useContract,
+  useCall,
+  useWallet,
+  ContractPromise,
+  useBlockHeader,
+} from "useink";
 import { pickDecoded } from "useink/utils";
 import metadata from "../../contract/open_payroll.json";
 import { useRouter } from "next/router";
-
 const CONTRACT_ADDRESS = "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H";
-
-interface GetListPayees {
-  payees: string[];
-}
 
 export default function Contracts() {
   //---------------------------------Security---------------------------------
@@ -27,27 +28,24 @@ export default function Contracts() {
   }, [account]);
 
   //---------------------------------Connect to contract---------------------------------
-  const contract = useContract(
+  const blockHeader = useBlockHeader();
+  const _contract = useContract(
     CONTRACT_ADDRESS,
     metadata,
     "rococo-contracts-testnet"
   );
 
-  console.log(contract);
-
   const getBeneficiaries = useCall<any | undefined>(
-    contract?.contract,
+    _contract?.contract,
     "getListPayees"
   );
 
-  console.log(getBeneficiaries);
-
-  const seeContract = async () =>
-    console.log(pickDecoded(await getBeneficiaries.send()));
+  const seeBeneficiaries = async () =>
+    console.log("beneficiaries: ", pickDecoded(await getBeneficiaries.send()));
 
   useEffect(() => {
-    seeContract();
-  }, []);
+    if (blockHeader?.blockNumber) seeBeneficiaries();
+  }, [blockHeader?.blockNumber]);
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
