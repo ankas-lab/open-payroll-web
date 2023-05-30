@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import Link from "next/link.js";
+
 import Nav from "../../components/nav";
 import Text from "../../components/generals/text";
 import Button from "../../components/generals/button";
+
+import ContractRow from "./contractRow";
+
 import { Archivo } from "next/font/google";
-import Link from "next/link.js";
-import { IoIosAlert } from "react-icons/io";
 const archivo = Archivo({ subsets: ["latin"] });
 
-import {
-  useContract,
-  useCall,
-  useWallet,
-  ContractPromise,
-  useBlockHeader,
-} from "useink";
-import { pickDecoded } from "useink/utils";
-import metadata from "../../contract/open_payroll.json";
+import { useWallet } from "useink";
 import { useRouter } from "next/router";
-const CONTRACT_ADDRESS = "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H";
 
 export default function Contracts() {
   //---------------------------------Security---------------------------------
@@ -27,25 +21,13 @@ export default function Contracts() {
     !account && router.push("/");
   }, [account]);
 
-  //---------------------------------Connect to contract---------------------------------
-  const blockHeader = useBlockHeader();
-  const _contract = useContract(
-    CONTRACT_ADDRESS,
-    metadata,
-    "rococo-contracts-testnet"
-  );
-
-  const getBeneficiaries = useCall<any | undefined>(
-    _contract?.contract,
-    "getListPayees"
-  );
-
-  const seeBeneficiaries = async () =>
-    console.log("beneficiaries: ", pickDecoded(await getBeneficiaries.send()));
-
-  useEffect(() => {
-    if (blockHeader?.blockNumber) seeBeneficiaries();
-  }, [blockHeader?.blockNumber]);
+  /* contracts Array */
+  const contracts = [
+    {
+      name: "My Contract",
+      address: "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H",
+    },
+  ];
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -91,40 +73,16 @@ export default function Contracts() {
             </th>
           </tr>
           {/* .map of contracts */}
-          <tr className="flex gap-[50px] items-center px-3">
-            <td className="w-[150px]">
-              <Text type="" text="state" />
-            </td>
-            <td className="w-[100px]">
-              <Text type="" text="state" />
-            </td>
-            <td className="w-[80px]">
-              <Text type="" text="state" />
-            </td>
-            <td className="w-[80px]">
-              <Text type="" text="state" />
-            </td>
-            <td className="w-[80px]">
-              <Text type="" text="state" />
-            </td>
-            <td className="w-[80px]">
-              <Text type="" text="state" />
-            </td>
-            <td className="w-[80px]">
-              <Text type="" text="state" />
-            </td>
-            <td className="w-[80px]">
-              <Text type="" text="state" />
-            </td>
-            <td className="w-[100px]">
-              <Link href={"/contracts/contract"}>
-                <Button type="text" text="view" icon="" />
-              </Link>
-            </td>
-            <td className="w-[100px]">
-              <IoIosAlert className="w-5 h-5 text-opdanger" />
-            </td>
-          </tr>
+          {contracts.map((c) => (
+            <ContractRow c={c} />
+          ))}
+        </table>
+      </div>
+    </main>
+  );
+}
+
+/*
           <tr className="flex gap-[50px] items-center bg-[#ECECEC] px-3">
             <td className="w-[150px]">
               <Text type="" text="state" />
@@ -157,8 +115,4 @@ export default function Contracts() {
               <IoIosAlert className="w-5 h-5 text-opdanger" />
             </td>
           </tr>
-        </table>
-      </div>
-    </main>
-  );
-}
+*/
