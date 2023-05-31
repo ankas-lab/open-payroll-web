@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link.js";
 
 import Button from "../../components/generals/button";
-import Text from "../../components/generals/text";
 
 import { IoIosAlert } from "react-icons/io";
 import { AiOutlineLoading } from "react-icons/ai";
@@ -88,14 +87,14 @@ const ContractRow = ({ c }: ContractRowProps) => {
       seeContractBalance();
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
       seeTotalDebts();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      console.log(_contract?.contract);
+    //if (blockHeader?.blockNumber && _contract?.contract !== undefined)
+    //console.log(_contract?.contract);
   }, [blockHeader?.blockNumber]);
 
   //---------------------------------See in console---------------------------------
   useEffect(() => {
-    api &&
-      console.log("API: ", api?.api.registry.getChainProperties().toHuman());
+    //api &&
+    //console.log("API: ", api?.api.registry.getChainProperties().toHuman());
   }, [api]);
   useEffect(() => {
     _contract?.contract !== undefined && setLoading("done");
@@ -108,7 +107,13 @@ const ContractRow = ({ c }: ContractRowProps) => {
         <p>{c.name}</p>
       </td>
       <td className="w-[100px]">
-        <p>{amountBeneficiaries}</p>
+        {amountBeneficiaries ? (
+          <p>{amountBeneficiaries}</p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
       </td>
       <td className="w-[80px]">
         {/* Is correct? */}

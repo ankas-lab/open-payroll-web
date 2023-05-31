@@ -8,7 +8,7 @@ import {
 } from "react-icons/md";
 import { IoIosAlert, IoIosCopy } from "react-icons/io";
 import { CiMenuKebab } from "react-icons/ci";
-import { AiOutlineLoading } from "react-icons/ai";
+import { AiOutlineCheckCircle, AiOutlineLoading } from "react-icons/ai";
 const archivo = Archivo({ subsets: ["latin"] });
 const podkova = Podkova({ subsets: ["latin"] });
 
@@ -33,7 +33,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === "copy" && <IoIosCopy className="w-5 h-5" />}
       {icon === "alert" && <IoIosAlert className="w-5 h-5" />}
       {icon === "kebab" && <CiMenuKebab className="w-5 h-5" />}
-      {icon === "kebab" && <CiMenuKebab className="w-5 h-5" />}
+      {icon === "check" && <AiOutlineCheckCircle className="w-5 h-5" />}
       {icon === "loading" && (
         <AiOutlineLoading className="w-5 h-5 animate-spin" />
       )}

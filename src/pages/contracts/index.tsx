@@ -13,6 +13,11 @@ const archivo = Archivo({ subsets: ["latin"] });
 import { useWallet } from "useink";
 import { useRouter } from "next/router";
 
+interface StorageContract {
+  name: string;
+  address: string;
+}
+
 export default function Contracts() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
@@ -22,7 +27,7 @@ export default function Contracts() {
   }, [account]);
 
   /* contracts Array */
-  const contracts = [
+  const contracts: StorageContract[] = [
     {
       name: "My Contract",
       address: "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H",
