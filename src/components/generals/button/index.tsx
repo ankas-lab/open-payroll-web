@@ -8,7 +8,11 @@ import {
 } from "react-icons/md";
 import { IoIosAlert, IoIosCopy } from "react-icons/io";
 import { CiMenuKebab } from "react-icons/ci";
-import { AiOutlineCheckCircle, AiOutlineLoading } from "react-icons/ai";
+import {
+  AiFillCheckCircle,
+  AiOutlineCheckCircle,
+  AiOutlineLoading,
+} from "react-icons/ai";
 const archivo = Archivo({ subsets: ["latin"] });
 const podkova = Podkova({ subsets: ["latin"] });
 
@@ -51,6 +55,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === "copy" && <IoIosCopy className="w-5 h-5" />}
       {icon === "alert" && <IoIosAlert className="w-5 h-5" />}
       {icon === "kebab" && <CiMenuKebab className="w-5 h-5" />}
+      {icon === "check" && <AiOutlineCheckCircle className="w-5 h-5" />}
       {icon === "pause" && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
     </button>
   ) : type === "outlined" ? (
@@ -66,6 +71,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === "copy" && <IoIosCopy className="w-5 h-5" />}
       {icon === "alert" && <IoIosAlert className="w-5 h-5" />}
       {icon === "kebab" && <CiMenuKebab className="w-5 h-5" />}
+      {icon === "check" && <AiOutlineCheckCircle className="w-5 h-5" />}
       {icon === "pause" && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
     </button>
   ) : type === "text" ? (
@@ -81,6 +87,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === "copy" && <IoIosCopy className="w-5 h-5" />}
       {icon === "alert" && <IoIosAlert className="w-5 h-5" />}
       {icon === "kebab" && <CiMenuKebab className="w-5 h-5" />}
+      {icon === "check" && <AiFillCheckCircle className="w-5 h-5" />}
       {icon === "pause" && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
     </button>
   ) : type === "danger" ? (
@@ -96,6 +103,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === "copy" && <IoIosCopy className="w-5 h-5" />}
       {icon === "alert" && <IoIosAlert className="w-5 h-5" />}
       {icon === "kebab" && <CiMenuKebab className="w-5 h-5" />}
+      {icon === "check" && <AiOutlineCheckCircle className="w-5 h-5" />}
       {icon === "pause" && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
     </button>
   ) : (
@@ -111,6 +119,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === "copy" && <IoIosCopy className="w-5 h-5" />}
       {icon === "alert" && <IoIosAlert className="w-5 h-5" />}
       {icon === "kebab" && <CiMenuKebab className="w-5 h-5" />}
+      {icon === "check" && <AiOutlineCheckCircle className="w-5 h-5" />}
       {icon === "pause" && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
     </button>
   );

@@ -23,6 +23,7 @@ export default function Contracts() {
     !account && router.push("/");
   }, [account]);
 
+  //---------------------------------Get contracts from context---------------------------------
   const context = useContext(DappContext);
 
   if (!context) {
@@ -30,10 +31,6 @@ export default function Contracts() {
   }
 
   const { contracts } = context;
-
-  useEffect(() => {
-    console.log(contracts);
-  }, [contracts]);
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -81,7 +78,7 @@ export default function Contracts() {
             </tr>
             {/* .map of contracts */}
             {contracts.map((c, i) => (
-              <ContractRow contract={c} i={i} />
+              <ContractRow key={i} contract={c} i={i} />
             ))}
           </table>
         ) : (

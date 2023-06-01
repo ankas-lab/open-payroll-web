@@ -70,6 +70,11 @@ export default function Contract() {
     "getTotalDebts"
   );
 
+  // 🤟🤟🤟 Get periodicity from contract
+  // 🤟🤟🤟 Get base payment from contract
+  // 🤟🤟🤟 Get beneficiaries from contract
+  // 🤟🤟🤟 Get multipliers from contract
+
   //---------------------------------Set in states---------------------------------
   const seeBeneficiaries = async () =>
     setBeneficiaries(pickDecoded(await getBeneficiaries.send()));
@@ -132,7 +137,7 @@ export default function Contract() {
     const textToCopy = contract;
     textToCopy !== undefined && navigator.clipboard.writeText(textToCopy);
   };
-
+  //---------------------------------Truncate numbers---------------------------------
   function trunc(x: number, p = 0) {
     var s = x.toString();
     var l = s.length;
@@ -194,12 +199,12 @@ export default function Contract() {
         >
           <div className="capitalize">
             <Text type="overline" text="periodicity" />
-            <p>
-              {/*_contract?.contract.abi.constructors[0].args[0].type.info*/}
-            </p>
+            {/* 🤟🤟🤟 Add loader 🤟🤟🤟 */}
+            <p>{/* 🤟🤟🤟 Show periodicty 🤟🤟🤟 */}</p>
           </div>
           <div className="capitalize">
             <Text type="overline" text="next pay in (days)" />
+            {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
             {nextBlockPeriod !== null ? (
               <p className="text-ellipsis overflow-hidden">
                 {trunc(nextBlockPeriod / 7200)}
@@ -212,15 +217,30 @@ export default function Contract() {
           </div>
           <div className="capitalize">
             <Text type="overline" text="beneficiaries" />
-            <p>{beneficiaries?.length}</p>
+            {beneficiaries !== null ? (
+              <p>{beneficiaries?.length}</p>
+            ) : (
+              <div className="flex items-center w-full">
+                <AiOutlineLoading className="animate-spin" />
+              </div>
+            )}
           </div>
           <div className="capitalize">
             <Text type="overline" text="base payment" />
-            <Text type="" text="periodicity" />
+            {/* 🤟🤟🤟 Add loader 🤟🤟🤟 */}
+            <p>{/* 🤟🤟🤟 Show base payment 🤟🤟🤟 */}</p>
           </div>
           <div className="capitalize">
             <Text type="overline" text="funds in contract" />
-            {contractBalance} {chainInfo?.tokenSymbol}
+            {contractBalance !== null ? (
+              <p>
+                {contractBalance} {chainInfo?.tokenSymbol}
+              </p>
+            ) : (
+              <div className="flex items-center w-full">
+                <AiOutlineLoading className="animate-spin" />
+              </div>
+            )}
           </div>
           <div className="capitalize">
             <Text type="overline" text="total funds needed" />
@@ -246,6 +266,7 @@ export default function Contract() {
         <div className="overflow-x-auto">
           <Text type="h4" text="Beneficiaries" />
           <table className="mt-[30px]">
+            {/* 🤟🤟🤟 Add loader 🤟🤟🤟 */}
             <tr className="flex gap-[50px] text-left px-2">
               <th className="w-[150px]">
                 <Text type="overline" text="name" />
@@ -270,7 +291,7 @@ export default function Contract() {
               </th>
             </tr>
             {beneficiaries?.map((b, i) => (
-              <BeneficiarieRow i={i} />
+              <BeneficiarieRow key={i} i={i} />
             ))}
           </table>
         </div>

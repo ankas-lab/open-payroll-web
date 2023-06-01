@@ -1,10 +1,18 @@
 import React, { createContext, useState, useEffect } from "react";
 
+//My contracts
 interface StorageContract {
   name: string;
   address: string;
 }
 
+//Contracts I can claim
+interface StorageContractCanClaim {
+  name: string;
+  address: string;
+}
+
+//DappContext
 interface DappContextData {
   getStoredContracts: () => void;
   contracts: StorageContract[];
@@ -16,6 +24,9 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const [contracts, setContracts] = useState<StorageContract[]>([]);
+  const [contractsCanClaim, setContractsCanClaim] = useState<
+    StorageContractCanClaim[]
+  >([]);
 
   useEffect(() => {
     getStoredContracts();
@@ -37,6 +48,8 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
     setContracts(contracts);
   }
+
+  // 👇 function that reads the contracts that I can claim, stored in localStorage
 
   const contextValue: DappContextData = {
     contracts,

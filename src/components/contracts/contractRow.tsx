@@ -62,6 +62,9 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
     _contract?.contract,
     "getTotalDebts"
   );
+  // 🤟🤟🤟 Get periodicity from contract
+  // 🤟🤟🤟 Get network from contract
+  // 🤟🤟🤟 Get state from contract
 
   //---------------------------------Set in states---------------------------------
   const seeBeneficiaries = async () =>
@@ -94,12 +97,17 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
 
   //---------------------------------See in console---------------------------------
   useEffect(() => {
-    //api &&
-    //console.log("API: ", api?.api.registry.getChainProperties().toHuman());
-  }, [api]);
-  useEffect(() => {
     _contract?.contract !== undefined && setLoading("done");
   }, [_contract]);
+
+  //---------------------------------Truncate numbers---------------------------------
+  function trunc(x: number, p = 0) {
+    var s = x.toString();
+    var l = s.length;
+    var decimalLength = s.indexOf(".") + 1;
+    var numStr = s.substr(0, decimalLength + p);
+    return Number(numStr);
+  }
 
   return loading === "done" ? (
     <tr
@@ -122,21 +130,30 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         )}
       </td>
       <td className="w-[80px]">
-        {/* Is correct? */}
-        <p>{_contract?.contract.abi.constructors[0].args[0].type.info}</p>
+        {/* 🤟🤟🤟 Add loader 🤟🤟🤟 */}
+        <p>{/* 🤟🤟🤟 Show periodicty 🤟🤟🤟 */}</p>
       </td>
       <td className="w-[80px]">
-        <p>
-          {contractBalance} {chainInfo?.tokenSymbol}
-        </p>
+        {contractBalance !== null ? (
+          <p>
+            {contractBalance} {chainInfo?.tokenSymbol}
+          </p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
       </td>
       <td className="w-[80px]">
         {fundsNeeded !== null && chainInfo !== undefined ? (
           <p className="text-ellipsis overflow-hidden">
-            {Math.pow(
-              parseInt(fundsNeeded) * 10,
-              parseInt(chainInfo.tokenDecimals[0])
-            )}
+            {trunc(
+              Math.pow(
+                parseInt(fundsNeeded) * 10,
+                parseInt(chainInfo.tokenDecimals[0])
+              ),
+              2
+            )}{" "}
             {chainInfo?.tokenSymbol}
           </p>
         ) : (
@@ -146,9 +163,10 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         )}
       </td>
       <td className="w-[80px]">
+        {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
         {nextBlockPeriod !== null ? (
           <p className="text-ellipsis overflow-hidden">
-            {nextBlockPeriod / 7200}
+            {trunc(nextBlockPeriod / 7200)}
           </p>
         ) : (
           <div className="flex items-center w-full">
@@ -157,11 +175,12 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         )}
       </td>
       <td className="w-[80px]">
-        {/* To do */}
-        <p>state</p>
+        {/* 🤟🤟🤟 Show network 🤟🤟🤟 */}
+        <p>network</p>
       </td>
       <td className="w-[80px]">
-        {/* To do */}
+        {/* 🤟🤟🤟 Show state 🤟🤟🤟 */}
+
         <p>state</p>
       </td>
       <td className="w-[100px]">
