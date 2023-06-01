@@ -15,6 +15,7 @@ import StepFive from "./steps/stepFive";
 import Result from "./results";
 
 import { useWallet } from "useink";
+import WalletManager from "@/components/walletManager";
 
 //---------------------------------Interfaces---------------------------------
 //Multipliers
@@ -226,6 +227,7 @@ export default function Create() {
       <Nav />
       {result === "creating" && (
         <div className="w-10/12 md:w-8/12 mx-auto flex flex-col gap-[20px] md:gap-[40px] my-[50px] md:my-[100px]">
+          <WalletManager />
           {/* Steps  */}
           {steps === 0 && (
             <StepOne

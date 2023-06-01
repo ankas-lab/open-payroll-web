@@ -19,6 +19,7 @@ import { pickDecoded } from "useink/utils";
 import metadata from "../../contract/open_payroll.json";
 import { useRouter } from "next/router";
 import BeneficiarieRow from "@/components/contracts/beneficiarieRow";
+import WalletManager from "@/components/walletManager";
 
 export default function Contract() {
   //---------------------------------Security---------------------------------
@@ -27,15 +28,6 @@ export default function Contract() {
   useEffect(() => {
     !account && router.push("/");
   }, [account]);
-  //---------------------------------Get contract address---------------------------------
-  const {
-    query: { contract },
-  } = router;
-
-  //---------------------------------Connect to contract---------------------------------
-  const blockHeader = useBlockHeader();
-
-  const _contract = useContract(contract, metadata, "rococo-contracts-testnet");
 
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<"loading" | "done" | "error">(
@@ -45,6 +37,16 @@ export default function Contract() {
   const [contractBalance, setContractBalance] = useState<null | string[]>(null);
   const [nextBlockPeriod, setNextBlockPeriod] = useState<null | number>(null);
   const [fundsNeeded, setFundsNeeded] = useState<null | string>(null);
+
+  //---------------------------------Get contract address---------------------------------
+  const {
+    query: { contract },
+  } = router;
+
+  //---------------------------------Connect to contract---------------------------------
+  const blockHeader = useBlockHeader();
+  const _contract = useContract(contract, metadata, "rococo-contracts-testnet");
+
   //---------------------------------Api---------------------------------
   const api = useApi("rococo-contracts-testnet");
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
@@ -91,6 +93,7 @@ export default function Contract() {
   const seeTotalDebts = async () =>
     setFundsNeeded(pickDecoded(await getTotalDebts.send()));
 
+  //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
       seeBeneficiaries();
@@ -117,7 +120,8 @@ export default function Contract() {
       console.log("API: ", api?.api.registry.getChainProperties().toHuman());
   }, [blockHeader?.blockNumber, api]);
 
-  // Show menu
+  // 🤟🤟🤟 Fix showMenu 🤟🤟🤟
+  //---------------------------------Show menu---------------------------------
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -137,6 +141,7 @@ export default function Contract() {
     const textToCopy = contract;
     textToCopy !== undefined && navigator.clipboard.writeText(textToCopy);
   };
+
   //---------------------------------Truncate numbers---------------------------------
   function trunc(x: number, p = 0) {
     var s = x.toString();
@@ -149,7 +154,8 @@ export default function Contract() {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <div className="w-10/12 md:w-8/12 mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[100px]">
+      <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px]">
+        <WalletManager />
         <div className="flex flex-col-reverse md:flex-row justify-between">
           <div className="flex flex-col">
             <Text type="h2" text="Contract name" />

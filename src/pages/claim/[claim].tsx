@@ -3,14 +3,16 @@ import Nav from "../../components/nav";
 import Text from "../../components/generals/text";
 import Button from "../../components/generals/button";
 import { Archivo, Podkova } from "next/font/google";
+import WalletManager from "@/components/walletManager";
 const archivo = Archivo({ subsets: ["latin"] });
 const podkova = Podkova({ subsets: ["latin"] });
 
 export default function Claim() {
   return (
-    <main className={`w-screen flex ${archivo.className}`}>
+    <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <div className="w-8/12 min-h-screen mx-auto flex flex-col gap-[40px] mt-[100px]">
+      <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px]">
+        <WalletManager />
         <Text type="h2" text="Claiming in My contract" />
         <div className="">
           <Text type="h4" text="Yeah! You have funds to claim here!" />

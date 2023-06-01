@@ -7,7 +7,7 @@ import Link from "next/link.js";
 import { useWallet, useAllWallets } from "useink";
 
 const index = () => {
-  const { account, connect, disconnect } = useWallet();
+  const { account, accounts, setAccount, connect, disconnect } = useWallet();
 
   const pathname = usePathname();
   const [showMenu, setshowMenu] = React.useState<boolean>(false);
@@ -55,14 +55,8 @@ const index = () => {
               )}
             </Link>
           </div>
-          <div className="hidden md:flex">
-            <Button
-              type="active"
-              text="disconnect"
-              icon=""
-              action={() => disconnect()}
-            />
-          </div>
+          <div></div>
+
           <div className="flex md:hidden">
             <Button type="active" text="" icon="menu" action={openCloseMenu} />
           </div>
@@ -86,16 +80,7 @@ const index = () => {
                 )}
               </Link>
             </div>
-            <div className="flex">
-              {account && (
-                <Button
-                  type="active"
-                  text="disconnect"
-                  icon=""
-                  action={() => disconnect()}
-                />
-              )}
-            </div>
+            <div></div>
           </div>
         )}
       </nav>

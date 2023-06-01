@@ -6,6 +6,7 @@ import { Archivo } from "next/font/google";
 import { useRouter } from "next/router";
 const archivo = Archivo({ subsets: ["latin"] });
 import { useWallet } from "useink";
+import WalletManager from "@/components/walletManager";
 
 export default function Claim() {
   const router = useRouter();
@@ -23,7 +24,8 @@ export default function Claim() {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <div className="w-8/12 min-h-screen mx-auto flex flex-col gap-[40px] mt-[100px]">
+      <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px]">
+        <WalletManager />
         <Text type="h2" text="Contracts you can claim" />
         <div className="max-w-[400px] flex flex-col gap-[10px]">
           <Text type="h4" text="Find new contract" />
