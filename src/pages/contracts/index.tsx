@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Link from "next/link.js";
 
 import Nav from "../../components/nav";
@@ -13,6 +13,8 @@ const archivo = Archivo({ subsets: ["latin"] });
 import { useWallet } from "useink";
 import { useRouter } from "next/router";
 
+import { DappContext } from "@/context";
+
 interface StorageContract {
   name: string;
   address: string;
@@ -26,13 +28,27 @@ export default function Contracts() {
     !account && router.push("/");
   }, [account]);
 
-  /* contracts Array */
+  const context = useContext(DappContext);
+
+  // Verifica si el contexto está definido antes de acceder a las propiedades
+  if (!context) {
+    return null; // O cualquier otro comportamiento en caso de que el contexto no esté definido
+  }
+
+  const { contracts } = context;
+
+  useEffect(() => {
+    console.log(contracts);
+  }, [contracts]);
+
+  /* contracts Array 
   const contracts: StorageContract[] = [
     {
       name: "My Contract",
       address: "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H",
     },
   ];
+  */
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>

@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { InkConfig } from "useink";
 import { RococoContractsTestnet } from "useink/chains";
 import { NotificationsProvider } from "useink/notifications";
+import { DappContextProvider } from "@/context";
 
 const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> =
   dynamic(() => import("useink").then(({ UseInkProvider }) => UseInkProvider), {
@@ -20,7 +21,9 @@ function App({ Component, pageProps }: AppProps) {
       }}
     >
       <NotificationsProvider>
-        <Component {...pageProps} />
+        <DappContextProvider>
+          <Component {...pageProps} />
+        </DappContextProvider>
       </NotificationsProvider>
     </UseInkProvider>
   );
