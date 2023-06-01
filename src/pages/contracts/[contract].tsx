@@ -18,13 +18,7 @@ import {
 import { pickDecoded } from "useink/utils";
 import metadata from "../../contract/open_payroll.json";
 import { useRouter } from "next/router";
-
-interface StorageContract {
-  name: string;
-  address: string;
-}
-
-//CREATE A CONTEXT THAT GET ALL THE CONTRACT IN STORAGE TO FIND A CONTRACT HERE AND IN THE CON
+import BeneficiarieRow from "@/components/contracts/beneficiarieRow";
 
 export default function Contract() {
   //---------------------------------Security---------------------------------
@@ -38,10 +32,6 @@ export default function Contract() {
     query: { contract },
   } = router;
 
-  useEffect(() => {
-    console.log("CONTRACT", contract);
-  }, [contract]);
-
   //---------------------------------Connect to contract---------------------------------
   const blockHeader = useBlockHeader();
 
@@ -51,9 +41,7 @@ export default function Contract() {
   const [loading, setLoading] = useState<"loading" | "done" | "error">(
     "loading"
   );
-  const [amountBeneficiaries, setAmountBeneficiaries] = useState<
-    null | string[]
-  >(null);
+  const [beneficiaries, setBeneficiaries] = useState<null | string[]>(null);
   const [contractBalance, setContractBalance] = useState<null | string[]>(null);
   const [nextBlockPeriod, setNextBlockPeriod] = useState<null | number>(null);
   const [fundsNeeded, setFundsNeeded] = useState<null | string>(null);
@@ -62,9 +50,9 @@ export default function Contract() {
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
   //api.rpc.system.chain
   //---------------------------------Get from contract---------------------------------
-  const getAmountBeneficiaries = useCall<any | undefined>(
+  const getBeneficiaries = useCall<any | undefined>(
     _contract?.contract,
-    "getAmountBeneficiaries"
+    "getListPayees"
   );
 
   const getNextBlockPeriod = useCall<any | undefined>(
@@ -84,7 +72,7 @@ export default function Contract() {
 
   //---------------------------------Set in states---------------------------------
   const seeBeneficiaries = async () =>
-    setAmountBeneficiaries(pickDecoded(await getAmountBeneficiaries.send()));
+    setBeneficiaries(pickDecoded(await getBeneficiaries.send()));
 
   const seeContractBalance = async () =>
     setContractBalance(pickDecoded(await getContractBalance.send()));
@@ -107,18 +95,23 @@ export default function Contract() {
       seeContractBalance();
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
       seeTotalDebts();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      console.log(_contract?.contract);
   }, [blockHeader?.blockNumber]);
 
-  //---------------------------------See in console---------------------------------
-  useEffect(() => {
-    api &&
-      console.log("API: ", api?.api.registry.getChainProperties().toHuman());
-  }, [api]);
+  //---------------------------------Loading---------------------------------
   useEffect(() => {
     _contract?.contract !== undefined && setLoading("done");
   }, [_contract]);
+
+  //---------------------------------See in console---------------------------------
+  useEffect(() => {
+    //contract
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
+      console.log(_contract?.contract);
+    //api
+    api &&
+      console.log("API: ", api?.api.registry.getChainProperties().toHuman());
+  }, [blockHeader?.blockNumber, api]);
+
   // Show menu
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -139,6 +132,14 @@ export default function Contract() {
     const textToCopy = contract;
     textToCopy !== undefined && navigator.clipboard.writeText(textToCopy);
   };
+
+  function trunc(x: number, p = 0) {
+    var s = x.toString();
+    var l = s.length;
+    var decimalLength = s.indexOf(".") + 1;
+    var numStr = s.substr(0, decimalLength + p);
+    return Number(numStr);
+  }
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -201,7 +202,7 @@ export default function Contract() {
             <Text type="overline" text="next pay in (days)" />
             {nextBlockPeriod !== null ? (
               <p className="text-ellipsis overflow-hidden">
-                {nextBlockPeriod / 7200}
+                {trunc(nextBlockPeriod / 7200)}
               </p>
             ) : (
               <div className="flex items-center w-full">
@@ -211,7 +212,7 @@ export default function Contract() {
           </div>
           <div className="capitalize">
             <Text type="overline" text="beneficiaries" />
-            <p>{amountBeneficiaries}</p>
+            <p>{beneficiaries?.length}</p>
           </div>
           <div className="capitalize">
             <Text type="overline" text="base payment" />
@@ -225,10 +226,13 @@ export default function Contract() {
             <Text type="overline" text="total funds needed" />
             {fundsNeeded !== null && chainInfo !== undefined ? (
               <p className="text-ellipsis overflow-hidden">
-                {Math.pow(
-                  parseInt(fundsNeeded) * 10,
-                  parseInt(chainInfo.tokenDecimals[0])
-                )}
+                {trunc(
+                  Math.pow(
+                    parseInt(fundsNeeded) * 10,
+                    parseInt(chainInfo.tokenDecimals[0])
+                  ),
+                  2
+                )}{" "}
                 {chainInfo?.tokenSymbol}
               </p>
             ) : (
@@ -265,52 +269,9 @@ export default function Contract() {
                 <Text type="overline" text="last claim" />
               </th>
             </tr>
-            <tr className="flex gap-[50px] items-center h-11 px-2">
-              <td className="w-[150px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[150px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-            </tr>
-            <tr className="flex gap-[50px] items-center h-11 px-2 bg-[#ECECEC]">
-              <td className="w-[150px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[150px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-              <td className="w-[100px]">
-                <Text type="" text="state" />
-              </td>
-            </tr>
+            {beneficiaries?.map((b, i) => (
+              <BeneficiarieRow i={i} />
+            ))}
           </table>
         </div>
       </div>

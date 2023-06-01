@@ -13,17 +13,18 @@ import { pickDecoded } from "useink/utils";
 import metadata from "../../contract/open_payroll.json";
 
 interface ContractRowProps {
-  c: {
+  contract: {
     name: string;
     address: string;
   };
+  i: number;
 }
 
-const ContractRow = ({ c }: ContractRowProps) => {
+const ContractRow = ({ contract, i }: ContractRowProps) => {
   //---------------------------------Connect to contract---------------------------------
   const blockHeader = useBlockHeader();
   const _contract = useContract(
-    c.address,
+    contract.address,
     metadata,
     "rococo-contracts-testnet"
   );
@@ -99,12 +100,17 @@ const ContractRow = ({ c }: ContractRowProps) => {
   useEffect(() => {
     _contract?.contract !== undefined && setLoading("done");
   }, [_contract]);
+
   return loading === "done" ? (
     <tr
-      className={`flex gap-[50px] items-center px-3 text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`}
+      className={
+        i % 2 === 0
+          ? `flex gap-[50px] items-center px-3 text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`
+          : `flex gap-[50px] items-center px-3 text-[14px] bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className}`
+      }
     >
       <td className="w-[150px]">
-        <p>{c.name}</p>
+        <p>{contract.name}</p>
       </td>
       <td className="w-[100px]">
         {amountBeneficiaries ? (
@@ -159,7 +165,7 @@ const ContractRow = ({ c }: ContractRowProps) => {
         <p>state</p>
       </td>
       <td className="w-[100px]">
-        <Link href={`/contracts/${c.address}`}>
+        <Link href={`/contracts/${contract.address}`}>
           <Button type="text" text="view" icon="" />
         </Link>
       </td>
