@@ -11,14 +11,19 @@ const WalletManager = () => {
     setAccount(account);
     setShow(!show);
   };
+
   return (
-    <div className="h-[50px] md:h-[100px] flex">
-      <div className="pl-4 pr-2 py-3 border-oppurple border-2 rounded-[5px] flex ml-auto mt-6 w-fit h-fit bg-[#FFFFFF] z-[100]">
+    <div className="flex absolute">
+      <div className="pl-4 pr-2 py-3 border-oppurple border-2 rounded-[5px] flex ml-auto mt-6 w-full md:w-fit h-fit bg-[#FFFFFF] justify-between md:justify-normal">
         <div className="flex flex-col">
           <p className={show ? "mb-[10px]" : ""}>
-            {account?.name} {account?.address}
+            {account?.name} ({account?.address.slice(0, 5)}...
+            {account?.address.slice(
+              account?.address.length - 5,
+              account?.address.length
+            )}
+            )
           </p>
-
           {show && (
             <div className="flex flex-col gap-[10px]">
               {accounts?.map((a) => (
@@ -26,7 +31,12 @@ const WalletManager = () => {
                   className="rounded hover:bg-opwhite p-1.5 text-left"
                   onClick={() => handleAccount(a)}
                 >
-                  {a?.name} {a?.address}
+                  {a?.name} ({account?.address.slice(0, 5)}...
+                  {account?.address.slice(
+                    account?.address.length - 5,
+                    account?.address.length
+                  )}
+                  )
                 </button>
               ))}
               <button
@@ -50,12 +60,3 @@ const WalletManager = () => {
 };
 
 export default WalletManager;
-/*
-{account &&
-  accounts !== undefined &&
-  accounts.map((a) => (
-    <button onClick={() => setAccount(a)} disabled={account === a}>
-      {a.name}
-    </button>
-  ))}
-  */

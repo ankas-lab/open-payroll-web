@@ -11,8 +11,10 @@ export default function Claim() {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px]">
-        <WalletManager />
+      <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+        <div className="hidden md:flex h-[100px] justify-end">
+          <WalletManager />
+        </div>
         <Text type="h2" text="Claiming in My contract" />
         <div className="">
           <Text type="h4" text="Yeah! You have funds to claim here!" />

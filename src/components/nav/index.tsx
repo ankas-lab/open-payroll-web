@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import Link from "next/link.js";
 import { useWallet, useAllWallets } from "useink";
+import WalletManager from "@/components/walletManager";
 
 const index = () => {
   const { account, accounts, setAccount, connect, disconnect } = useWallet();
@@ -62,8 +63,8 @@ const index = () => {
           </div>
         </div>
         {showMenu && (
-          <div className="w-full h-[91vh] flex flex-col justify-between">
-            <div></div>
+          <div className="w-full h-[91vh] flex flex-col justify-around">
+            <WalletManager />
             <div className="flex flex-col gap-[20px]">
               <Link href="/contracts" onClick={openCloseMenu}>
                 {pathname === "/contracts" ? (
@@ -80,7 +81,6 @@ const index = () => {
                 )}
               </Link>
             </div>
-            <div></div>
           </div>
         )}
       </nav>

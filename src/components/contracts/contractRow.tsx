@@ -75,7 +75,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
 
   const seeNextBlockPeriod = async () => {
     const nextPeriodString = pickDecoded(await getNextBlockPeriod.send());
-    nextPeriodString !== null &&
+    nextPeriodString !== undefined &&
       setNextBlockPeriod(parseInt(nextPeriodString.replace(/,/g, "")));
   };
 
