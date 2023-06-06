@@ -10,7 +10,8 @@ const archivo = Archivo({ subsets: ["latin"] });
 
 import { useContract, useCall, useBlockHeader, useApi } from "useink";
 import { pickDecoded } from "useink/utils";
-import metadata from "../../contract/open_payroll.json";
+
+import metadata from "@/contract/open_payroll.json";
 
 interface ContractRowProps {
   contract: {
@@ -35,9 +36,11 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   const [amountBeneficiaries, setAmountBeneficiaries] = useState<
     null | string[]
   >(null);
-  const [contractBalance, setContractBalance] = useState<null | string[]>(null);
+  const [contractBalance, setContractBalance] = useState<null | number>(null);
   const [nextBlockPeriod, setNextBlockPeriod] = useState<null | number>(null);
   const [fundsNeeded, setFundsNeeded] = useState<null | string>(null);
+  const [periodicity, setPeriodicity] = useState<any | null>(null);
+
   //---------------------------------Api---------------------------------
   const api = useApi("rococo-contracts-testnet");
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
@@ -45,7 +48,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   //---------------------------------Get from contract---------------------------------
   const getAmountBeneficiaries = useCall<any | undefined>(
     _contract?.contract,
-    "getAmountBeneficiaries"
+    "getListBeneficiaries"
   );
 
   const getNextBlockPeriod = useCall<any | undefined>(
@@ -62,19 +65,31 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
     _contract?.contract,
     "getTotalDebts"
   );
+
   // 🤟🤟🤟 Get periodicity from contract
+  const getPeriodicity = useCall<any | undefined>(
+    _contract?.contract,
+    "getPeriodicity"
+  );
   // 🤟🤟🤟 Get network from contract
   // 🤟🤟🤟 Get state from contract
 
   //---------------------------------Set in states---------------------------------
-  const seeBeneficiaries = async () =>
-    setAmountBeneficiaries(pickDecoded(await getAmountBeneficiaries.send()));
+  const seeBeneficiaries = async () => {
+    const b = pickDecoded(await getAmountBeneficiaries.send());
+    setAmountBeneficiaries(b);
+  };
 
-  const seeContractBalance = async () =>
-    setContractBalance(pickDecoded(await getContractBalance.send()));
+  const seeContractBalance = async () => {
+    const contractBalance = pickDecoded(await getContractBalance.send());
+    contractBalance !== undefined &&
+      setContractBalance(parseInt(contractBalance.replace(/,/g, "")));
+  };
 
   const seeNextBlockPeriod = async () => {
     const nextPeriodString = pickDecoded(await getNextBlockPeriod.send());
+    console.log(nextPeriodString);
+
     nextPeriodString !== undefined &&
       setNextBlockPeriod(parseInt(nextPeriodString.replace(/,/g, "")));
   };
@@ -82,6 +97,9 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   const seeTotalDebts = async () =>
     setFundsNeeded(pickDecoded(await getTotalDebts.send()));
 
+  const seePeriodicity = async () =>
+    setPeriodicity(pickDecoded(await getPeriodicity.send()));
+  //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
       seeBeneficiaries();
@@ -91,13 +109,15 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       seeContractBalance();
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
       seeTotalDebts();
-    //if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-    //console.log(_contract?.contract);
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
+      seePeriodicity();
   }, [blockHeader?.blockNumber]);
 
   //---------------------------------See in console---------------------------------
   useEffect(() => {
     _contract?.contract !== undefined && setLoading("done");
+    //_contract?.contract !== undefined &&
+    //console.log("TOM CONTRACT:", _contract?.contract);
   }, [_contract]);
 
   //---------------------------------Truncate numbers---------------------------------
@@ -122,7 +142,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       </td>
       <td className="w-[100px]">
         {amountBeneficiaries ? (
-          <p>{amountBeneficiaries}</p>
+          <p>{amountBeneficiaries.length}</p>
         ) : (
           <div className="flex items-center w-full">
             <AiOutlineLoading className="animate-spin" />
@@ -130,13 +150,25 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         )}
       </td>
       <td className="w-[80px]">
-        {/* 🤟🤟🤟 Add loader 🤟🤟🤟 */}
-        <p>{/* 🤟🤟🤟 Show periodicty 🤟🤟🤟 */}</p>
+        {periodicity ? (
+          <p>{periodicity}</p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
       </td>
       <td className="w-[80px]">
         {contractBalance !== null ? (
-          <p>
-            {contractBalance} {chainInfo?.tokenSymbol}
+          <p className="text-ellipsis overflow-hidden">
+            {trunc(
+              Math.pow(
+                contractBalance * 10,
+                parseInt(chainInfo.tokenDecimals[0])
+              ),
+              2
+            )}{" "}
+            {chainInfo?.tokenSymbol}
           </p>
         ) : (
           <div className="flex items-center w-full">
@@ -166,7 +198,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
         {nextBlockPeriod !== null ? (
           <p className="text-ellipsis overflow-hidden">
-            {trunc(nextBlockPeriod / 7200)}
+            {trunc(nextBlockPeriod / periodicity / 7200)}
           </p>
         ) : (
           <div className="flex items-center w-full">

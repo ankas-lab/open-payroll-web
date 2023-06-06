@@ -28,9 +28,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     StorageContractCanClaim[]
   >([]);
 
-  useEffect(() => {
-    getStoredContracts();
-  }, []);
+  // 👇 function that reads the contracts that I can claim, stored in localStorage
 
   function getStoredContracts() {
     const storedContracts = localStorage.getItem("contracts");
@@ -40,8 +38,8 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
       contracts = JSON.parse(storedContracts);
     } else {
       contracts.push({
-        name: "My Contract",
-        address: "5GNukKy7izXYCepwAH4JVRuU7RkiqNUNk3LRhAHJn7zjmu4H",
+        name: "My Contract by TOM",
+        address: "5EpiMHMyWByxRrnak8q5Dyy1qoPFfWgVTQhiS4rivhRe3PJX",
       });
       localStorage.setItem("contracts", JSON.stringify(contracts));
     }
@@ -49,7 +47,13 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     setContracts(contracts);
   }
 
-  // 👇 function that reads the contracts that I can claim, stored in localStorage
+  useEffect(() => {
+    getStoredContracts();
+  }, []);
+
+  useEffect(() => {
+    console.log(contracts);
+  }, [contracts]);
 
   const contextValue: DappContextData = {
     contracts,

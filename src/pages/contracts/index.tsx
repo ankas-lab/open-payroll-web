@@ -80,7 +80,8 @@ export default function Contracts() {
                 <Text type="overline" text="state" />
               </th>
             </tr>
-            {/* .map of contracts */}
+            {/* .map of contracts
+             */}
             {contracts.map((c, i) => (
               <ContractRow key={i} contract={c} i={i} />
             ))}

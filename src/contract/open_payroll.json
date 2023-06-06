@@ -1,11 +1,11 @@
 {
   "source": {
-    "hash": "0x732d90beba5dee53948907484b6c033b3d37bdff00ed50524098d6bc8e02835a",
+    "hash": "0xf2deced10c8ab2df321c8f236fd94ca749a0b15a075e2ed3ecc4c5489cb747fd",
     "language": "ink! 4.2.0",
     "compiler": "rustc 1.69.0",
     "build_info": {
       "build_mode": "Release",
-      "cargo_contract_version": "2.0.1",
+      "cargo_contract_version": "3.0.1",
       "rust_toolchain": "stable-aarch64-apple-darwin",
       "wasm_opt_settings": {
         "keep_debug_symbols": false,
@@ -62,7 +62,10 @@
           }
         ],
         "default": false,
-        "docs": [],
+        "docs": [
+          "Constructor that initializes the owner, the base payment, the periodicity, the initial block, the base multipliers,",
+          "and the initial beneficiaries"
+        ],
         "label": "new",
         "payable": true,
         "returnType": {
@@ -99,23 +102,338 @@
         "displayName": [
           "ChainExtension"
         ],
-        "type": 30
+        "type": 37
       },
       "hash": {
         "displayName": [
           "Hash"
         ],
-        "type": 28
+        "type": 35
       },
       "maxEventTopics": 4,
       "timestamp": {
         "displayName": [
           "Timestamp"
         ],
-        "type": 29
+        "type": 36
       }
     },
-    "events": [],
+    "events": [
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "account_id",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "amount",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "total_payment",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "claiming_period_block",
+            "type": {
+              "displayName": [
+                "BlockNumber"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when a beneficiary claims their payment"
+        ],
+        "label": "Claimed"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "multiplier_id",
+            "type": {
+              "displayName": [
+                "MultiplierId"
+              ],
+              "type": 4
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "valid_until_block",
+            "type": {
+              "displayName": [
+                "BlockNumber"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when a multiplier is deactivated"
+        ],
+        "label": "MultiplierDeactivated"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "multiplier_id",
+            "type": {
+              "displayName": [
+                "MultiplierId"
+              ],
+              "type": 4
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "valid_until_block",
+            "type": {
+              "displayName": [
+                "BlockNumber"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when a multiplier is deleted"
+        ],
+        "label": "MultiplierDeleted"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "current_owner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "proposed_owner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [
+          "Emiited when the ownership of the contract is transferred"
+        ],
+        "label": "OwnershipProposed"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "previous_owner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "new_owner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when the ownership of the contract is accepted"
+        ],
+        "label": "OwnershipAccepted"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "account_id",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "multipliers_vec",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 6
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when a beneficiary is added"
+        ],
+        "label": "BeneficiaryAdded"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "account_id",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "multipliers_vec",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 6
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when a beneficiary is updated"
+        ],
+        "label": "BeneficiaryUpdated"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "account_id",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when a beneficiary is removed"
+        ],
+        "label": "BeneficiaryRemoved"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "multiplier_id",
+            "type": {
+              "displayName": [
+                "MultiplierId"
+              ],
+              "type": 4
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "name",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 9
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when a multiplier is added"
+        ],
+        "label": "BaseMultiplierAdded"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "periodicity",
+            "type": {
+              "displayName": [
+                "u32"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "docs": [
+          "Emitted when the preiodicity is updated"
+        ],
+        "label": "PeriodicityUpdated"
+      },
+      {
+        "args": [],
+        "docs": [
+          "Emitted when the contract is paused"
+        ],
+        "label": "Paused"
+      },
+      {
+        "args": [],
+        "docs": [
+          "Emitted when the contract is resumed"
+        ],
+        "label": "Resumed"
+      }
+    ],
     "lang_error": {
       "displayName": [
         "ink",
@@ -147,8 +465,7 @@
         ],
         "default": false,
         "docs": [
-          " Claim payment for a single account id",
-          " TODO: Add comment explaining what happens when amount is 0"
+          " Claim payment for a single account id"
         ],
         "label": "claim_payment",
         "mutates": true,
@@ -175,7 +492,10 @@
           }
         ],
         "default": false,
-        "docs": [],
+        "docs": [
+          " Deactivate a multiplier",
+          " It can be deleted one period after deactivation if every beneficiary has claimed the payment"
+        ],
         "label": "deactivate_multiplier",
         "mutates": true,
         "payable": false,
@@ -201,7 +521,9 @@
           }
         ],
         "default": false,
-        "docs": [],
+        "docs": [
+          " Delete a multiplier when conditions are met"
+        ],
         "label": "delete_unused_multiplier",
         "mutates": true,
         "payable": false,
@@ -213,6 +535,73 @@
           "type": 14
         },
         "selector": "0xaafc7985"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Reads the paused state from the contract"
+        ],
+        "label": "is_paused",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0xfa7d505b"
+      },
+      {
+        "args": [
+          {
+            "label": "new_owner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Change ownership of the contract",
+          " This is proposing a new owner that has to accept the ownership"
+        ],
+        "label": "propose_transfer_ownership",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 14
+        },
+        "selector": "0x1fe6d1d3"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Accept ownership of the contract",
+          " Once the ownership is proposed by transfer_ownsership function it needs to be accepted",
+          " by the new owner. This prevents accidental ownership transfers."
+        ],
+        "label": "accept_ownership",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 14
+        },
+        "selector": "0xb55be9f0"
       },
       {
         "args": [
@@ -330,7 +719,8 @@
         ],
         "default": false,
         "docs": [
-          " Update the base_payment"
+          " Update the base_payment",
+          " It makes sense once all the beneficiaries have claimed their payments"
         ],
         "label": "update_base_payment",
         "mutates": true,
@@ -358,7 +748,8 @@
         ],
         "default": false,
         "docs": [
-          " Add a new base multiplier"
+          " Add a new base multiplier",
+          " It's not checking for duplicates because it's just a string"
         ],
         "label": "add_base_multiplier",
         "mutates": true,
@@ -386,7 +777,8 @@
         ],
         "default": false,
         "docs": [
-          " Update the periodicity"
+          " Update the periodicity of the payments",
+          " All payments must be claimed before updating the periodicity"
         ],
         "label": "update_periodicity",
         "mutates": true,
@@ -432,7 +824,8 @@
         ],
         "default": false,
         "docs": [
-          " Get amount in storage without transferring the funds"
+          " Get amount in storage without transferring the funds",
+          " Read Only function"
         ],
         "label": "get_amount_to_claim",
         "mutates": false,
@@ -442,7 +835,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 19
+          "type": 21
         },
         "selector": "0x1ebbad2a"
       },
@@ -450,25 +843,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " Calculate outstanding payments for the entire DAO -- this call can be expensive!!!"
-        ],
-        "label": "calculate_outstanding_payments",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 19
-        },
-        "selector": "0x1ccabe8d"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Pause the contract"
+          " Pause the contract",
+          " Pausing will only avoid to call the claim function"
         ],
         "label": "pause",
         "mutates": true,
@@ -486,7 +862,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " Resume the contract"
+          " Resume the contract",
+          " Resuming will allow to call the claim function"
         ],
         "label": "resume",
         "mutates": true,
@@ -515,7 +892,7 @@
         "default": false,
         "docs": [
           " Get beneficiary only read",
-          " read-only"
+          " Read Only function"
         ],
         "label": "get_beneficiary",
         "mutates": true,
@@ -525,7 +902,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 21
+          "type": 23
         },
         "selector": "0x9510a8c5"
       },
@@ -533,8 +910,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " get current block period",
-          " read-only"
+          " Get current block period",
+          " Read Only function"
         ],
         "label": "get_current_period_initial_block",
         "mutates": false,
@@ -544,7 +921,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 24
+          "type": 26
         },
         "selector": "0x55efdba9"
       },
@@ -552,7 +929,7 @@
         "args": [],
         "default": false,
         "docs": [
-          " get next block period"
+          " Get next block period"
         ],
         "label": "get_next_block_period",
         "mutates": false,
@@ -562,7 +939,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 24
+          "type": 26
         },
         "selector": "0x8d4bc80b"
       },
@@ -570,8 +947,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " get all the debts up-to-date",
-          " read-only"
+          " Get all the debts up-to-date",
+          " Read Only function"
         ],
         "label": "get_total_debts",
         "mutates": false,
@@ -581,7 +958,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 25
+          "type": 27
         },
         "selector": "0x9b16bc1f"
       },
@@ -589,8 +966,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " get all the debts up-to-date",
-          " read-only"
+          " Get all the debts for the next period",
+          " Read Only function"
         ],
         "label": "get_total_debt_for_next_period",
         "mutates": false,
@@ -600,7 +977,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 25
+          "type": 27
         },
         "selector": "0x73b8e09d"
       },
@@ -608,8 +985,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " get all the debts up-to-date",
-          " read-only"
+          " Get all the debts including unclaimed for the next period",
+          " Read Only function"
         ],
         "label": "get_total_debt_with_unclaimed_for_next_period",
         "mutates": false,
@@ -619,7 +996,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 25
+          "type": 27
         },
         "selector": "0xe39b3b27"
       },
@@ -627,9 +1004,10 @@
         "args": [],
         "default": false,
         "docs": [
-          " read-only"
+          " Get all the beneficiaries",
+          " Read Only function"
         ],
-        "label": "get_amount_beneficiaries",
+        "label": "get_list_beneficiaries",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -637,35 +1015,16 @@
             "ink",
             "MessageResult"
           ],
-          "type": 26
+          "type": 28
         },
-        "selector": "0x94c57f50"
+        "selector": "0x263b0523"
       },
       {
         "args": [],
         "default": false,
         "docs": [
-          " get list of payees",
-          " read-only"
-        ],
-        "label": "get_list_payees",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 27
-        },
-        "selector": "0x73fcd6e3"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " get contract balance",
-          " read-only"
+          " Get contract balance",
+          " Read Only function"
         ],
         "label": "get_contract_balance",
         "mutates": false,
@@ -675,7 +1034,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 25
+          "type": 27
         },
         "selector": "0xbe15a422"
       },
@@ -683,8 +1042,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " get total balance after paying debts",
-          " read-only"
+          " Get total balance after paying debts",
+          " Read Only function"
         ],
         "label": "get_balance_with_debts",
         "mutates": false,
@@ -694,7 +1053,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 25
+          "type": 27
         },
         "selector": "0x9306d52f"
       },
@@ -702,8 +1061,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " get list of unclaimed beneficiaries",
-          " read-only"
+          " Get list of unclaimed beneficiaries",
+          " Read Only function"
         ],
         "label": "get_unclaimed_beneficiaries",
         "mutates": false,
@@ -713,7 +1072,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 27
+          "type": 28
         },
         "selector": "0x355e9df0"
       },
@@ -721,8 +1080,8 @@
         "args": [],
         "default": false,
         "docs": [
-          " get count of unclaimed beneficiaries",
-          " read-only"
+          " Get count of unclaimed beneficiaries",
+          " Read Only function"
         ],
         "label": "get_count_of_unclaim_beneficiaries",
         "mutates": false,
@@ -732,9 +1091,109 @@
             "ink",
             "MessageResult"
           ],
-          "type": 26
+          "type": 29
         },
         "selector": "0x0022c1c7"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Get the base amount to claim for each beneficiary"
+        ],
+        "label": "get_base_payment",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 27
+        },
+        "selector": "0x2a07e2d7"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Get the periodicity of the payments"
+        ],
+        "label": "get_periodicity",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 26
+        },
+        "selector": "0x4f24dca2"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Get the initial block of the contract"
+        ],
+        "label": "get_initial_block",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 26
+        },
+        "selector": "0xa8783cff"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Get the base multiplier"
+        ],
+        "label": "get_multipliers_list",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 30
+        },
+        "selector": "0x3adddb72"
+      },
+      {
+        "args": [
+          {
+            "label": "multiplier_id",
+            "type": {
+              "displayName": [
+                "MultiplierId"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "default": false,
+        "docs": [
+          " Get a base multiplier based on its id"
+        ],
+        "label": "get_base_multiplier",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 31
+        },
+        "selector": "0xf7765f14"
       }
     ]
   },
@@ -743,6 +1202,35 @@
       "layout": {
         "struct": {
           "fields": [
+            {
+              "layout": {
+                "enum": {
+                  "dispatchKey": "0x00000000",
+                  "name": "Option",
+                  "variants": {
+                    "0": {
+                      "fields": [],
+                      "name": "None"
+                    },
+                    "1": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x00000000",
+                              "ty": 0
+                            }
+                          },
+                          "name": "0"
+                        }
+                      ],
+                      "name": "Some"
+                    }
+                  }
+                }
+              },
+              "name": "proposed_owner"
+            },
             {
               "layout": {
                 "leaf": {
@@ -1329,6 +1817,10 @@
               {
                 "index": 19,
                 "name": "AccountAlreadyExists"
+              },
+              {
+                "index": 20,
+                "name": "Overflow"
               }
             ]
           }
@@ -1405,42 +1897,8 @@
       "id": 20,
       "type": {
         "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 5
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 17
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 5
-          },
-          {
-            "name": "E",
-            "type": 17
-          }
-        ],
-        "path": [
-          "Result"
-        ]
+          "primitive": "bool"
+        }
       }
     },
     {
@@ -1494,7 +1952,7 @@
               {
                 "fields": [
                   {
-                    "type": 23
+                    "type": 5
                   }
                 ],
                 "index": 0,
@@ -1515,7 +1973,7 @@
         "params": [
           {
             "name": "T",
-            "type": 23
+            "type": 5
           },
           {
             "name": "E",
@@ -1529,6 +1987,90 @@
     },
     {
       "id": 23,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 24
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 24
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 25
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 17
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 25
+          },
+          {
+            "name": "E",
+            "type": 17
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 25,
       "type": {
         "def": {
           "composite": {
@@ -1564,7 +2106,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 26,
       "type": {
         "def": {
           "variant": {
@@ -1606,7 +2148,7 @@
       }
     },
     {
-      "id": 25,
+      "id": 27,
       "type": {
         "def": {
           "variant": {
@@ -1648,49 +2190,7 @@
       }
     },
     {
-      "id": 26,
-      "type": {
-        "def": {
-          "variant": {
-            "variants": [
-              {
-                "fields": [
-                  {
-                    "type": 2
-                  }
-                ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 18
-                  }
-                ],
-                "index": 1,
-                "name": "Err"
-              }
-            ]
-          }
-        },
-        "params": [
-          {
-            "name": "T",
-            "type": 2
-          },
-          {
-            "name": "E",
-            "type": 18
-          }
-        ],
-        "path": [
-          "Result"
-        ]
-      }
-    },
-    {
-      "id": 27,
+      "id": 28,
       "type": {
         "def": {
           "variant": {
@@ -1732,7 +2232,225 @@
       }
     },
     {
-      "id": 28,
+      "id": 29,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 2
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 2
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 30,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 10
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 10
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 31,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 32
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 32
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 33
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 33
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "name",
+                "type": 9,
+                "typeName": "String"
+              },
+              {
+                "name": "valid_until_block",
+                "type": 34,
+                "typeName": "Option<BlockNumber>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "open_payroll",
+          "open_payroll",
+          "BaseMultiplier"
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 4
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 4
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 35,
       "type": {
         "def": {
           "composite": {
@@ -1752,7 +2470,7 @@
       }
     },
     {
-      "id": 29,
+      "id": 36,
       "type": {
         "def": {
           "primitive": "u64"
@@ -1760,7 +2478,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 37,
       "type": {
         "def": {
           "variant": {}

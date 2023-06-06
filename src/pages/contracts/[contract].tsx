@@ -21,6 +21,10 @@ import { useRouter } from "next/router";
 import BeneficiarieRow from "@/components/contracts/beneficiarieRow";
 import WalletManager from "@/components/walletManager";
 
+// 🤟🤟🤟 Get periodicity from contract
+// 🤟🤟🤟 Get base payment from contract
+// 🤟🤟🤟 Get beneficiaries from contract
+// 🤟🤟🤟 Get multipliers from contract
 export default function Contract() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
@@ -29,19 +33,21 @@ export default function Contract() {
     !account && router.push("/");
   }, [account]);
 
+  //---------------------------------Get contract address---------------------------------
+  const {
+    query: { contract },
+  } = router;
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<"loading" | "done" | "error">(
     "loading"
   );
   const [beneficiaries, setBeneficiaries] = useState<null | string[]>(null);
-  const [contractBalance, setContractBalance] = useState<null | string[]>(null);
+  const [contractBalance, setContractBalance] = useState<null | number>(null);
   const [nextBlockPeriod, setNextBlockPeriod] = useState<null | number>(null);
   const [fundsNeeded, setFundsNeeded] = useState<null | string>(null);
-
-  //---------------------------------Get contract address---------------------------------
-  const {
-    query: { contract },
-  } = router;
+  const [periodicity, setPeriodicity] = useState<any | null>(null);
+  const [basePayment, setBasePayment] = useState<any | null>(null);
+  const [multipliers, setMultipliers] = useState<any | null>(null);
 
   //---------------------------------Connect to contract---------------------------------
   const blockHeader = useBlockHeader();
@@ -52,47 +58,79 @@ export default function Contract() {
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
   //api.rpc.system.chain
   //---------------------------------Get from contract---------------------------------
-  const getBeneficiaries = useCall<any | undefined>(
+  // 👥 Get beneficiaries from contract
+  const getAmountBeneficiaries = useCall<any | undefined>(
     _contract?.contract,
-    "getListPayees"
+    "getListBeneficiaries"
   );
 
+  // 📅 Get next block from contract
   const getNextBlockPeriod = useCall<any | undefined>(
     _contract?.contract,
     "getNextBlockPeriod"
   );
 
+  // ⚖ Get balance from contract
   const getContractBalance = useCall<any | undefined>(
     _contract?.contract,
     "getContractBalance"
   );
 
+  // ➖ Get debts from contract
   const getTotalDebts = useCall<any | undefined>(
     _contract?.contract,
     "getTotalDebts"
   );
 
-  // 🤟🤟🤟 Get periodicity from contract
-  // 🤟🤟🤟 Get base payment from contract
-  // 🤟🤟🤟 Get beneficiaries from contract
-  // 🤟🤟🤟 Get multipliers from contract
+  // ⌚ Get periodicity from contract
+  const getPeriodicity = useCall<any | undefined>(
+    _contract?.contract,
+    "getPeriodicity"
+  );
 
+  // 💰 Get base payment from contract
+  const getBasePayment = useCall<any | undefined>(
+    _contract?.contract,
+    "getBasePayment"
+  );
+
+  // ❎ Get multipliers from contratc
+  const getMultiplires = useCall<any | undefined>(
+    _contract?.contract,
+    "getMultipliersList"
+  );
   //---------------------------------Set in states---------------------------------
-  const seeBeneficiaries = async () =>
-    setBeneficiaries(pickDecoded(await getBeneficiaries.send()));
+  const seeBeneficiaries = async () => {
+    setBeneficiaries(pickDecoded(await getAmountBeneficiaries.send()));
+  };
 
-  const seeContractBalance = async () =>
-    setContractBalance(pickDecoded(await getContractBalance.send()));
+  const seeContractBalance = async () => {
+    const contractBalance = pickDecoded(await getContractBalance.send());
+    contractBalance !== undefined &&
+      setContractBalance(parseInt(contractBalance.replace(/,/g, "")));
+  };
 
   const seeNextBlockPeriod = async () => {
     const nextPeriodString = pickDecoded(await getNextBlockPeriod.send());
-    nextPeriodString !== null &&
+
+    nextPeriodString !== undefined &&
       setNextBlockPeriod(parseInt(nextPeriodString.replace(/,/g, "")));
   };
 
   const seeTotalDebts = async () =>
     setFundsNeeded(pickDecoded(await getTotalDebts.send()));
 
+  const seePeriodicity = async () =>
+    setPeriodicity(pickDecoded(await getPeriodicity.send()));
+
+  const seeBasePayment = async () => {
+    const basePayment = pickDecoded(await getBasePayment.send());
+    basePayment !== undefined &&
+      setBasePayment(parseInt(basePayment.replace(/,/g, "")));
+  };
+
+  const seeMultipliers = async () =>
+    setMultipliers(pickDecoded(await getMultiplires.send()));
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
@@ -103,6 +141,12 @@ export default function Contract() {
       seeContractBalance();
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
       seeTotalDebts();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
+      seePeriodicity();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
+      seeBasePayment();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
+      seeMultipliers();
   }, [blockHeader?.blockNumber]);
 
   //---------------------------------Loading---------------------------------
@@ -113,12 +157,22 @@ export default function Contract() {
   //---------------------------------See in console---------------------------------
   useEffect(() => {
     //contract
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      console.log(_contract?.contract);
+    //if (blockHeader?.blockNumber && _contract?.contract !== undefined)
+    //  console.log(_contract?.contract);
     //api
-    api &&
-      console.log("API: ", api?.api.registry.getChainProperties().toHuman());
+    //api &&
+    //  console.log("API: ", api?.api.registry.getChainProperties().toHuman());
   }, [blockHeader?.blockNumber, api]);
+
+  useEffect(() => {
+    console.log("Base Payment:", basePayment);
+    console.log("Contract Balance:", contractBalance);
+    console.log(
+      "MP:",
+      Math.pow(basePayment * 10, parseInt(chainInfo.tokenDecimals[0]))
+    );
+    console.log("multipliers: ", multipliers);
+  }, [basePayment, contractBalance, multipliers]);
 
   // 🤟🤟🤟 Fix showMenu 🤟🤟🤟
   //---------------------------------Show menu---------------------------------
@@ -151,7 +205,7 @@ export default function Contract() {
     return Number(numStr);
   }
 
-  return (
+  return loading === "done" ? (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
       <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
@@ -207,15 +261,20 @@ export default function Contract() {
         >
           <div className="capitalize">
             <Text type="overline" text="periodicity" />
-            {/* 🤟🤟🤟 Add loader 🤟🤟🤟 */}
-            <p>{/* 🤟🤟🤟 Show periodicty 🤟🤟🤟 */}</p>
+            {periodicity ? (
+              <p>{periodicity}</p>
+            ) : (
+              <div className="flex items-center w-full">
+                <AiOutlineLoading className="animate-spin" />
+              </div>
+            )}
           </div>
           <div className="capitalize">
             <Text type="overline" text="next pay in (days)" />
             {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
             {nextBlockPeriod !== null ? (
               <p className="text-ellipsis overflow-hidden">
-                {trunc(nextBlockPeriod / 7200)}
+                {trunc(nextBlockPeriod / periodicity / 7200)}
               </p>
             ) : (
               <div className="flex items-center w-full">
@@ -235,14 +294,34 @@ export default function Contract() {
           </div>
           <div className="capitalize">
             <Text type="overline" text="base payment" />
-            {/* 🤟🤟🤟 Add loader 🤟🤟🤟 */}
-            <p>{/* 🤟🤟🤟 Show base payment 🤟🤟🤟 */}</p>
+            {basePayment ? (
+              <p>
+                {trunc(
+                  Math.pow(
+                    basePayment * 10,
+                    parseInt(chainInfo.tokenDecimals[0])
+                  )
+                )}
+                {chainInfo?.tokenSymbol}
+              </p>
+            ) : (
+              <div className="flex items-center w-full">
+                <AiOutlineLoading className="animate-spin" />
+              </div>
+            )}
           </div>
           <div className="capitalize">
             <Text type="overline" text="funds in contract" />
             {contractBalance !== null ? (
-              <p>
-                {contractBalance} {chainInfo?.tokenSymbol}
+              <p className="text-ellipsis overflow-hidden">
+                {trunc(
+                  Math.pow(
+                    contractBalance * 10,
+                    parseInt(chainInfo.tokenDecimals[0])
+                  ),
+                  2
+                )}{" "}
+                {chainInfo?.tokenSymbol}
               </p>
             ) : (
               <div className="flex items-center w-full">
@@ -282,12 +361,12 @@ export default function Contract() {
               <th className="w-[150px]">
                 <Text type="overline" text="address" />
               </th>
-              <th className="w-[100px]">
-                <Text type="overline" text="multiplier 1" />
-              </th>
-              <th className="w-[100px]">
-                <Text type="overline" text="multiplier 2" />
-              </th>
+              {multipliers !== null &&
+                multipliers.map((mult: any) => {
+                  <th className="w-[100px]">
+                    <Text type="overline" text={`${mult}`} />
+                  </th>;
+                })}
               <th className="w-[100px]">
                 <Text type="overline" text="final pay" />
               </th>
@@ -299,11 +378,15 @@ export default function Contract() {
               </th>
             </tr>
             {beneficiaries?.map((b, i) => (
-              <BeneficiarieRow key={i} i={i} />
+              <BeneficiarieRow key={i} i={i} b={b} />
             ))}
           </table>
         </div>
       </div>
     </main>
+  ) : (
+    <div className="flex items-center w-full">
+      <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
+    </div>
   );
 }
