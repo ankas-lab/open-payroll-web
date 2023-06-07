@@ -20,6 +20,13 @@ import metadata from "../../contract/open_payroll.json";
 import { useRouter } from "next/router";
 import BeneficiarieRow from "@/components/contracts/beneficiarieRow";
 import WalletManager from "@/components/walletManager";
+import Link from "next/link";
+import { CiMenuKebab } from "react-icons/ci";
+
+interface BaseMultiplier {
+  name: string;
+  validUntilBlock: any;
+}
 
 // 🤟🤟🤟 Get periodicity from contract
 // 🤟🤟🤟 Get base payment from contract
@@ -47,7 +54,10 @@ export default function Contract() {
   const [fundsNeeded, setFundsNeeded] = useState<null | string>(null);
   const [periodicity, setPeriodicity] = useState<any | null>(null);
   const [basePayment, setBasePayment] = useState<any | null>(null);
-  const [multipliers, setMultipliers] = useState<any | null>(null);
+  const [multipliersList, setMultipliersList] = useState<any | null>(null);
+  const [baseMultipliers, setBaseMultipliers] = useState<
+    BaseMultiplier[] | null
+  >(null);
 
   //---------------------------------Connect to contract---------------------------------
   const blockHeader = useBlockHeader();
@@ -94,10 +104,15 @@ export default function Contract() {
     "getBasePayment"
   );
 
-  // ❎ Get multipliers from contratc
-  const getMultiplires = useCall<any | undefined>(
+  // ❎ Get multipliers list from contratc
+  const getMultipliersList = useCall<any | undefined>(
     _contract?.contract,
     "getMultipliersList"
+  );
+  // ❎ Get multipliers list from contratc
+  const getBaseMultiplier = useCall<any | undefined>(
+    _contract?.contract,
+    "getBaseMultiplier"
   );
   //---------------------------------Set in states---------------------------------
   const seeBeneficiaries = async () => {
@@ -129,8 +144,13 @@ export default function Contract() {
       setBasePayment(parseInt(basePayment.replace(/,/g, "")));
   };
 
-  const seeMultipliers = async () =>
-    setMultipliers(pickDecoded(await getMultiplires.send()));
+  const seeMultipliersList = async () =>
+    setMultipliersList(pickDecoded(await getMultipliersList.send()));
+
+  const seeBaseMultiplier = async () => {
+    const baseMultiplier = pickDecoded(await getBaseMultipliers.send([]));
+  };
+
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
@@ -146,7 +166,7 @@ export default function Contract() {
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
       seeBasePayment();
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeMultipliers();
+      seeMultipliersList();
   }, [blockHeader?.blockNumber]);
 
   //---------------------------------Loading---------------------------------
@@ -156,23 +176,11 @@ export default function Contract() {
 
   //---------------------------------See in console---------------------------------
   useEffect(() => {
-    //contract
-    //if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-    //  console.log(_contract?.contract);
-    //api
-    //api &&
-    //  console.log("API: ", api?.api.registry.getChainProperties().toHuman());
-  }, [blockHeader?.blockNumber, api]);
-
+    console.log(multipliersList);
+  }, [multipliersList]);
   useEffect(() => {
-    console.log("Base Payment:", basePayment);
-    console.log("Contract Balance:", contractBalance);
-    console.log(
-      "MP:",
-      Math.pow(basePayment * 10, parseInt(chainInfo.tokenDecimals[0]))
-    );
-    console.log("multipliers: ", multipliers);
-  }, [basePayment, contractBalance, multipliers]);
+    console.log(_contract?.contract);
+  }, [_contract]);
 
   // 🤟🤟🤟 Fix showMenu 🤟🤟🤟
   //---------------------------------Show menu---------------------------------
@@ -230,7 +238,7 @@ export default function Contract() {
             <div>
               <Button type="active" text="add funds" icon="" />
             </div>
-            {/*
+
             <div
               ref={menuRef}
               //onClick={() => setShowMenu(!showMenu)}
@@ -240,7 +248,7 @@ export default function Contract() {
                 <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] bg-opwhite border-2 border-oppurple rounded-[5px] flex flex-col gap-[16px] w-[300px]">
                   <Link
                     className={`hover:bg-oppurple hover:text-opwhite rounded-[3px] p-2 text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`}
-                    href="/edit"
+                    href={`/edit/${contract}`}
                   >
                     <Text text="Edit" type="" />
                   </Link>
@@ -252,12 +260,11 @@ export default function Contract() {
                 <CiMenuKebab />
               </div>
             </div>
-          */}
           </div>
         </div>
         {/* CONTRACT INFO */}
         <div
-          className={`mt-[30px] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 overflow-x-auto gap-[20px] text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`}
+          className={`mt-[30px] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-[20px] text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`}
         >
           <div className="capitalize">
             <Text type="overline" text="periodicity" />
@@ -361,12 +368,12 @@ export default function Contract() {
               <th className="w-[150px]">
                 <Text type="overline" text="address" />
               </th>
-              {multipliers !== null &&
+              {/*multipliers !== null &&
                 multipliers.map((mult: any) => {
                   <th className="w-[100px]">
                     <Text type="overline" text={`${mult}`} />
                   </th>;
-                })}
+                })*/}
               <th className="w-[100px]">
                 <Text type="overline" text="final pay" />
               </th>
