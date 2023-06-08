@@ -15,19 +15,16 @@ import { pickDecoded } from "useink/utils";
 
 interface BeneficiarieRowProps {
   i: number;
-  b: string;
+  _beneficiary: string;
+  contract: any | undefined;
 }
 
-const BeneficiarieRow = ({ i, b }: BeneficiarieRowProps) => {
-  //---------------------------------Get contract address---------------------------------
-  const router = useRouter();
-  const {
-    query: { contract },
-  } = router;
-
-  //---------------------------------Connect to contract---------------------------------
+const BeneficiaryRow = ({
+  i,
+  _beneficiary,
+  contract,
+}: BeneficiarieRowProps) => {
   const blockHeader = useBlockHeader();
-  const _contract = useContract(contract, metadata, "rococo-contracts-testnet");
   //---------------------------------Api---------------------------------
   const api = useApi("rococo-contracts-testnet");
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
@@ -40,19 +37,13 @@ const BeneficiarieRow = ({ i, b }: BeneficiarieRowProps) => {
   const [sumMultipiers, setSumMultipliers] = useState<any | null>(null);
 
   //---------------------------------Get from contract---------------------------------
-  const getBeneficiary = useCall<any | undefined>(
-    _contract?.contract,
-    "getBeneficiary"
-  );
+  const getBeneficiary = useCall<any | undefined>(contract, "getBeneficiary");
 
   // 💰 Get base payment from contract
-  const getBasePayment = useCall<any | undefined>(
-    _contract?.contract,
-    "getBasePayment"
-  );
+  const getBasePayment = useCall<any | undefined>(contract, "getBasePayment");
 
   const seeBeneficiary = async () =>
-    setBeneficiary(pickDecoded(await getBeneficiary.send([b])));
+    setBeneficiary(pickDecoded(await getBeneficiary.send([_beneficiary])));
 
   const seeBasePayment = async () => {
     const basePayment = pickDecoded(await getBasePayment.send());
@@ -84,10 +75,8 @@ const BeneficiarieRow = ({ i, b }: BeneficiarieRowProps) => {
   //---------------------------------Initialize functions---------------------------------
 
   useEffect(() => {
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeBeneficiary();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeBasePayment();
+    if (blockHeader?.blockNumber && contract !== undefined) seeBeneficiary();
+    if (blockHeader?.blockNumber && contract !== undefined) seeBasePayment();
   }, [blockHeader?.blockNumber]);
 
   return loading === "done" ? (
@@ -103,8 +92,8 @@ const BeneficiarieRow = ({ i, b }: BeneficiarieRowProps) => {
       </td>
       <td className="w-[150px]">
         <p>
-          {b.slice(0, 5)}...
-          {b.slice(b.length - 5, b.length)}
+          {_beneficiary.slice(0, 5)}...
+          {_beneficiary.slice(_beneficiary.length - 5, _beneficiary.length)}
         </p>
       </td>
       {/* MULTIPLIERS.MAP */}
@@ -134,4 +123,4 @@ const BeneficiarieRow = ({ i, b }: BeneficiarieRowProps) => {
   );
 };
 
-export default BeneficiarieRow;
+export default BeneficiaryRow;

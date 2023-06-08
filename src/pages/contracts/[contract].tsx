@@ -18,7 +18,7 @@ import {
 import { pickDecoded } from "useink/utils";
 import metadata from "../../contract/open_payroll.json";
 import { useRouter } from "next/router";
-import BeneficiarieRow from "@/components/contracts/beneficiarieRow";
+import BeneficiaryRow from "@/components/contracts/beneficiaryRow";
 import WalletManager from "@/components/walletManager";
 import Link from "next/link";
 import { CiMenuKebab } from "react-icons/ci";
@@ -28,10 +28,6 @@ interface BaseMultiplier {
   validUntilBlock: any;
 }
 
-// 🤟🤟🤟 Get periodicity from contract
-// 🤟🤟🤟 Get base payment from contract
-// 🤟🤟🤟 Get beneficiaries from contract
-// 🤟🤟🤟 Get multipliers from contract
 export default function Contract() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
@@ -352,6 +348,7 @@ export default function Contract() {
               {multipliersList !== null &&
                 multipliersList.map((m: string) => (
                   <MultiplierHeaderCell
+                    key={m}
                     contract={_contract?.contract}
                     mult={m}
                   />
@@ -366,8 +363,13 @@ export default function Contract() {
                 <Text type="overline" text="last claim" />
               </th>
             </tr>
-            {beneficiaries?.map((b, i) => (
-              <BeneficiarieRow key={i} i={i} b={b} />
+            {beneficiaries?.map((beneficiary, i) => (
+              <BeneficiaryRow
+                key={i}
+                i={i}
+                _beneficiary={beneficiary}
+                contract={_contract?.contract}
+              />
             ))}
           </table>
         </div>
