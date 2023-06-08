@@ -34,7 +34,6 @@ const BeneficiaryRow = ({
   const [loading, setLoading] = useState<"loading" | "done" | "error">("done");
   const [basePayment, setBasePayment] = useState<any | null>(null);
   const [beneficiary, setBeneficiary] = useState<any | null>(null);
-  const [sumMultipiers, setSumMultipliers] = useState<any | null>(null);
   const [multipliersList, setMultipliersList] = useState<any | null>(null);
 
   //---------------------------------Get from contract---------------------------------
@@ -71,6 +70,20 @@ const BeneficiaryRow = ({
     return Number(numStr);
   }
 
+  const calculateTotalMultipliers = () => {
+    const multipliers = Object.values(beneficiary?.Ok.multipliers);
+    let multipliersSum;
+    multipliers.length === 0
+      ? (multipliersSum = 1)
+      : (multipliersSum = multipliers.reduce(
+          (acumulator: number, value: any) => {
+            return acumulator + parseInt(value);
+          },
+          0
+        ));
+    return multipliersSum;
+  };
+
   //---------------------------------Initialize functions---------------------------------
 
   useEffect(() => {
@@ -79,6 +92,14 @@ const BeneficiaryRow = ({
     if (blockHeader?.blockNumber && contract !== undefined)
       seeMultipliersList();
   }, [blockHeader?.blockNumber]);
+
+  useEffect(() => {
+    beneficiary !== null && console.log(calculateTotalMultipliers());
+  }, [beneficiary]);
+
+  useEffect(() => {
+    console.log("base", basePayment);
+  }, [basePayment]);
 
   return loading === "done" ? (
     <tr
@@ -109,7 +130,14 @@ const BeneficiaryRow = ({
       {/* MULTIPLIERS.MAP */}
       <td className="w-[100px]">
         <p>
-          {trunc(sumMultipiers * basePayment, 2)} {chainInfo?.tokenSymbol}
+          {beneficiary !== null &&
+            basePayment !== null &&
+            trunc(
+              Math.pow(basePayment * 10, parseInt(chainInfo.tokenDecimals[0])) *
+                calculateTotalMultipliers(),
+              2
+            )}{" "}
+          {chainInfo?.tokenSymbol}
         </p>
       </td>
       <td className="w-[100px]">

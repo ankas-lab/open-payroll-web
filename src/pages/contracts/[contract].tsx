@@ -286,7 +286,7 @@ export default function Contract() {
                     basePayment * 10,
                     parseInt(chainInfo.tokenDecimals[0])
                   )
-                )}
+                )}{" "}
                 {chainInfo?.tokenSymbol}
               </p>
             ) : (
