@@ -35,13 +35,21 @@ const BeneficiaryRow = ({
   const [basePayment, setBasePayment] = useState<any | null>(null);
   const [beneficiary, setBeneficiary] = useState<any | null>(null);
   const [sumMultipiers, setSumMultipliers] = useState<any | null>(null);
+  const [multipliersList, setMultipliersList] = useState<any | null>(null);
 
   //---------------------------------Get from contract---------------------------------
+  // 👥 Get beneficiary from contract
   const getBeneficiary = useCall<any | undefined>(contract, "getBeneficiary");
 
   // 💰 Get base payment from contract
   const getBasePayment = useCall<any | undefined>(contract, "getBasePayment");
 
+  // ❎ Get multipliers list from contratc
+  const getMultipliersList = useCall<any | undefined>(
+    contract,
+    "getMultipliersList"
+  );
+  //---------------------------------Set in states---------------------------------
   const seeBeneficiary = async () =>
     setBeneficiary(pickDecoded(await getBeneficiary.send([_beneficiary])));
 
@@ -51,18 +59,9 @@ const BeneficiaryRow = ({
       setBasePayment(parseInt(basePayment.replace(/,/g, "")));
   };
 
-  //---------------------------------Calculate total multipliers---------------------------------
-  const getTotalMultipliers = (mult: number[]) => {
-    if (mult.length === 0) {
-      setSumMultipliers(1);
-    } else {
-      const totalMult = mult.reduce(
-        (accumulator, currentMultiplier) => accumulator + currentMultiplier,
-        0
-      );
-      setSumMultipliers(totalMult);
-    }
-  };
+  const seeMultipliersList = async () =>
+    setMultipliersList(pickDecoded(await getMultipliersList.send()));
+
   //---------------------------------Truncate numbers---------------------------------
   function trunc(x: number, p = 0) {
     var s = x.toString();
@@ -77,6 +76,8 @@ const BeneficiaryRow = ({
   useEffect(() => {
     if (blockHeader?.blockNumber && contract !== undefined) seeBeneficiary();
     if (blockHeader?.blockNumber && contract !== undefined) seeBasePayment();
+    if (blockHeader?.blockNumber && contract !== undefined)
+      seeMultipliersList();
   }, [blockHeader?.blockNumber]);
 
   return loading === "done" ? (
@@ -97,6 +98,14 @@ const BeneficiaryRow = ({
         </p>
       </td>
       {/* MULTIPLIERS.MAP */}
+
+      {beneficiary !== null &&
+        Object.values(beneficiary?.Ok.multipliers).map((m: any) => (
+          <td className="w-[100px]">
+            <p>{m}</p>
+          </td>
+        ))}
+
       {/* MULTIPLIERS.MAP */}
       <td className="w-[100px]">
         <p>

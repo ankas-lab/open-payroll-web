@@ -44,7 +44,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   //---------------------------------Api---------------------------------
   const api = useApi("rococo-contracts-testnet");
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
-  //api.rpc.system.chain
+
   //---------------------------------Get from contract---------------------------------
   const getAmountBeneficiaries = useCall<any | undefined>(
     _contract?.contract,
@@ -71,6 +71,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
     _contract?.contract,
     "getPeriodicity"
   );
+
   // 🤟🤟🤟 Get network from contract
   // 🤟🤟🤟 Get state from contract
 
@@ -88,7 +89,6 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
 
   const seeNextBlockPeriod = async () => {
     const nextPeriodString = pickDecoded(await getNextBlockPeriod.send());
-    console.log(nextPeriodString);
 
     nextPeriodString !== undefined &&
       setNextBlockPeriod(parseInt(nextPeriodString.replace(/,/g, "")));

@@ -53,7 +53,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   }, []);
 
   useEffect(() => {
-    console.log(contracts);
+    //console.log(contracts);
   }, [contracts]);
 
   const contextValue: DappContextData = {
