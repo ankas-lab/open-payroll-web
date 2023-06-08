@@ -28,13 +28,12 @@ const BeneficiaryRow = ({
   //---------------------------------Api---------------------------------
   const api = useApi("rococo-contracts-testnet");
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
-  //api.rpc.system.chain
 
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<"loading" | "done" | "error">("done");
   const [basePayment, setBasePayment] = useState<any | null>(null);
   const [beneficiary, setBeneficiary] = useState<any | null>(null);
-  const [multipliersList, setMultipliersList] = useState<any | null>(null);
+  const [amountToClaim, setAmountToClaim] = useState<any | null>(null);
 
   //---------------------------------Get from contract---------------------------------
   // 👥 Get beneficiary from contract
@@ -48,6 +47,12 @@ const BeneficiaryRow = ({
     contract,
     "getMultipliersList"
   );
+
+  // 💸 Get amount to claim from contratc
+  const getAmountToClaim = useCall<any | undefined>(
+    contract,
+    "getAmountToClaim"
+  );
   //---------------------------------Set in states---------------------------------
   const seeBeneficiary = async () =>
     setBeneficiary(pickDecoded(await getBeneficiary.send([_beneficiary])));
@@ -58,9 +63,12 @@ const BeneficiaryRow = ({
       setBasePayment(parseInt(basePayment.replace(/,/g, "")));
   };
 
-  const seeMultipliersList = async () =>
-    setMultipliersList(pickDecoded(await getMultipliersList.send()));
-
+  const seeAmountToClaim = async () => {
+    const amountToClaim = pickDecoded(
+      await getAmountToClaim.send([_beneficiary])
+    ).Ok;
+    setAmountToClaim(parseInt(amountToClaim.replace(/,/g, "")));
+  };
   //---------------------------------Truncate numbers---------------------------------
   function trunc(x: number, p = 0) {
     var s = x.toString();
@@ -89,8 +97,7 @@ const BeneficiaryRow = ({
   useEffect(() => {
     if (blockHeader?.blockNumber && contract !== undefined) seeBeneficiary();
     if (blockHeader?.blockNumber && contract !== undefined) seeBasePayment();
-    if (blockHeader?.blockNumber && contract !== undefined)
-      seeMultipliersList();
+    if (blockHeader?.blockNumber && contract !== undefined) seeAmountToClaim();
   }, [blockHeader?.blockNumber]);
 
   useEffect(() => {
@@ -98,8 +105,8 @@ const BeneficiaryRow = ({
   }, [beneficiary]);
 
   useEffect(() => {
-    console.log("base", basePayment);
-  }, [basePayment]);
+    console.log("amountToClaim", amountToClaim);
+  }, [amountToClaim]);
 
   return loading === "done" ? (
     <tr
@@ -109,17 +116,18 @@ const BeneficiaryRow = ({
           : `flex gap-[50px] text-[14px] items-center h-11 px-2 bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className}`
       }
     >
+      {/* Beneficiary name */}
       <td className="w-[150px]">
         <p>Name</p>
       </td>
+      {/* Beneficiary address */}
       <td className="w-[150px]">
         <p>
           {_beneficiary.slice(0, 5)}...
           {_beneficiary.slice(_beneficiary.length - 5, _beneficiary.length)}
         </p>
       </td>
-      {/* MULTIPLIERS.MAP */}
-
+      {/* Multipliers */}
       {beneficiary !== null &&
         Object.values(beneficiary?.Ok.multipliers).map((m: any) => (
           <td className="w-[100px]">
@@ -127,7 +135,7 @@ const BeneficiaryRow = ({
           </td>
         ))}
 
-      {/* MULTIPLIERS.MAP */}
+      {/* Final pay */}
       <td className="w-[100px]">
         <p>
           {beneficiary !== null &&
@@ -140,8 +148,19 @@ const BeneficiaryRow = ({
           {chainInfo?.tokenSymbol}
         </p>
       </td>
+      {/* Total to claim */}
       <td className="w-[100px]">
-        <Text type="" text="state" />
+        <p>
+          {amountToClaim !== null &&
+            trunc(
+              Math.pow(
+                amountToClaim * 10,
+                parseInt(chainInfo.tokenDecimals[0])
+              ),
+              2
+            )}{" "}
+          {chainInfo?.tokenSymbol}
+        </p>
       </td>
       <td className="w-[100px]">
         <Text type="" text="state" />
