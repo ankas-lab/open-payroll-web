@@ -59,8 +59,8 @@ const BeneficiarieRow = ({ i, b }: BeneficiarieRowProps) => {
     basePayment !== undefined &&
       setBasePayment(parseInt(basePayment.replace(/,/g, "")));
   };
-  //---------------------------------Calculate total multipliers---------------------------------
 
+  //---------------------------------Calculate total multipliers---------------------------------
   const getTotalMultipliers = (mult: number[]) => {
     if (mult.length === 0) {
       setSumMultipliers(1);
@@ -89,13 +89,6 @@ const BeneficiarieRow = ({ i, b }: BeneficiarieRowProps) => {
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
       seeBasePayment();
   }, [blockHeader?.blockNumber]);
-
-  useEffect(() => {
-    console.log("Beneficiary:", b);
-    beneficiary !== null &&
-      getTotalMultipliers(Object.values(beneficiary.Ok.multipliers));
-    beneficiary !== null && console.log("Beneficiary BC:", beneficiary.Ok);
-  }, [b, beneficiary]);
 
   return loading === "done" ? (
     <tr

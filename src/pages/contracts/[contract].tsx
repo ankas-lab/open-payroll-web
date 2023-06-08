@@ -22,7 +22,7 @@ import BeneficiarieRow from "@/components/contracts/beneficiarieRow";
 import WalletManager from "@/components/walletManager";
 import Link from "next/link";
 import { CiMenuKebab } from "react-icons/ci";
-
+import MultiplierHeaderCell from "@/components/contracts/multiplierHeaderCell";
 interface BaseMultiplier {
   name: string;
   validUntilBlock: any;
@@ -55,9 +55,6 @@ export default function Contract() {
   const [periodicity, setPeriodicity] = useState<any | null>(null);
   const [basePayment, setBasePayment] = useState<any | null>(null);
   const [multipliersList, setMultipliersList] = useState<any | null>(null);
-  const [baseMultipliers, setBaseMultipliers] = useState<
-    BaseMultiplier[] | null
-  >(null);
 
   //---------------------------------Connect to contract---------------------------------
   const blockHeader = useBlockHeader();
@@ -109,11 +106,7 @@ export default function Contract() {
     _contract?.contract,
     "getMultipliersList"
   );
-  // ❎ Get multipliers list from contratc
-  const getBaseMultiplier = useCall<any | undefined>(
-    _contract?.contract,
-    "getBaseMultiplier"
-  );
+
   //---------------------------------Set in states---------------------------------
   const seeBeneficiaries = async () => {
     setBeneficiaries(pickDecoded(await getAmountBeneficiaries.send()));
@@ -147,10 +140,6 @@ export default function Contract() {
   const seeMultipliersList = async () =>
     setMultipliersList(pickDecoded(await getMultipliersList.send()));
 
-  const seeBaseMultiplier = async () => {
-    const baseMultiplier = pickDecoded(await getBaseMultipliers.send([]));
-  };
-
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
     if (blockHeader?.blockNumber && _contract?.contract !== undefined)
@@ -174,18 +163,11 @@ export default function Contract() {
     _contract?.contract !== undefined && setLoading("done");
   }, [_contract]);
 
-  //---------------------------------See in console---------------------------------
-  useEffect(() => {
-    console.log(multipliersList);
-  }, [multipliersList]);
-  useEffect(() => {
-    console.log(_contract?.contract);
-  }, [_contract]);
-
   // 🤟🤟🤟 Fix showMenu 🤟🤟🤟
   //---------------------------------Show menu---------------------------------
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -360,7 +342,6 @@ export default function Contract() {
         <div className="overflow-x-auto">
           <Text type="h4" text="Beneficiaries" />
           <table className="mt-[30px]">
-            {/* 🤟🤟🤟 Add loader 🤟🤟🤟 */}
             <tr className="flex gap-[50px] text-left px-2">
               <th className="w-[150px]">
                 <Text type="overline" text="name" />
@@ -368,12 +349,13 @@ export default function Contract() {
               <th className="w-[150px]">
                 <Text type="overline" text="address" />
               </th>
-              {/*multipliers !== null &&
-                multipliers.map((mult: any) => {
-                  <th className="w-[100px]">
-                    <Text type="overline" text={`${mult}`} />
-                  </th>;
-                })*/}
+              {multipliersList !== null &&
+                multipliersList.map((m: string) => (
+                  <MultiplierHeaderCell
+                    contract={_contract?.contract}
+                    mult={m}
+                  />
+                ))}
               <th className="w-[100px]">
                 <Text type="overline" text="final pay" />
               </th>
