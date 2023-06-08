@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 
 import Text from "../generals/text";
 
@@ -8,9 +7,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { Archivo } from "next/font/google";
 const archivo = Archivo({ subsets: ["latin"] });
 
-import { useApi, useBlockHeader, useCall, useContract } from "useink";
-
-import metadata from "@/contract/open_payroll.json";
+import { useApi, useBlockHeader, useCall } from "useink";
 import { pickDecoded } from "useink/utils";
 
 interface BeneficiarieRowProps {
@@ -30,7 +27,9 @@ const BeneficiaryRow = ({
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
 
   //---------------------------------UseStates---------------------------------
-  const [loading, setLoading] = useState<"loading" | "done" | "error">("done");
+  const [loading, setLoading] = useState<"loading" | "done" | "error">(
+    "loading"
+  );
   const [basePayment, setBasePayment] = useState<any | null>(null);
   const [beneficiary, setBeneficiary] = useState<any | null>(null);
   const [amountToClaim, setAmountToClaim] = useState<any | null>(null);
@@ -41,12 +40,6 @@ const BeneficiaryRow = ({
 
   // 💰 Get base payment from contract
   const getBasePayment = useCall<any | undefined>(contract, "getBasePayment");
-
-  // ❎ Get multipliers list from contratc
-  const getMultipliersList = useCall<any | undefined>(
-    contract,
-    "getMultipliersList"
-  );
 
   // 💸 Get amount to claim from contratc
   const getAmountToClaim = useCall<any | undefined>(
@@ -101,12 +94,9 @@ const BeneficiaryRow = ({
   }, [blockHeader?.blockNumber]);
 
   useEffect(() => {
-    beneficiary !== null && console.log(calculateTotalMultipliers());
+    beneficiary !== null;
+    setLoading("done");
   }, [beneficiary]);
-
-  useEffect(() => {
-    console.log("amountToClaim", amountToClaim);
-  }, [amountToClaim]);
 
   return loading === "done" ? (
     <tr
@@ -131,7 +121,7 @@ const BeneficiaryRow = ({
       {beneficiary !== null &&
         Object.values(beneficiary?.Ok.multipliers).map((m: any) => (
           <td className="w-[100px]">
-            <p>{m}</p>
+            <p>{m === "0" ? "1" : m}</p>
           </td>
         ))}
 
@@ -162,12 +152,7 @@ const BeneficiaryRow = ({
           {chainInfo?.tokenSymbol}
         </p>
       </td>
-      <td className="w-[100px]">
-        <Text type="" text="state" />
-      </td>
-      <td className="w-[100px]">
-        <Text type="" text="state" />
-      </td>
+      {/* Last claim */}
       <td className="w-[100px]">
         <Text type="" text="state" />
       </td>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 
 import Nav from "../../components/nav";
 import Text from "../../components/generals/text";
@@ -21,8 +21,10 @@ import { useRouter } from "next/router";
 import BeneficiaryRow from "@/components/contracts/beneficiaryRow";
 import WalletManager from "@/components/walletManager";
 import Link from "next/link";
-import { CiMenuKebab } from "react-icons/ci";
+import { GoKebabHorizontal } from "react-icons/go";
 import MultiplierHeaderCell from "@/components/contracts/multiplierHeaderCell";
+import { DappContext } from "@/context";
+import { IoIosCopy } from "react-icons/io";
 interface BaseMultiplier {
   name: string;
   validUntilBlock: any;
@@ -40,6 +42,15 @@ export default function Contract() {
   const {
     query: { contract },
   } = router;
+
+  //---------------------------------Get any from context---------------------------------
+  const context = useContext(DappContext);
+
+  if (!context) {
+    return null;
+  }
+
+  const { findContractInLocalStorage } = context;
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<"loading" | "done" | "error">(
     "loading"
@@ -159,6 +170,10 @@ export default function Contract() {
     _contract?.contract !== undefined && setLoading("done");
   }, [_contract]);
 
+  useEffect(() => {
+    //contract!==null&&findContractInLocalStorage(contract)
+  }, [contract]);
+
   // 🤟🤟🤟 Fix showMenu 🤟🤟🤟
   //---------------------------------Show menu---------------------------------
   const [showMenu, setShowMenu] = useState<boolean>(false);
@@ -167,7 +182,7 @@ export default function Contract() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowMenu(!showMenu);
+        setShowMenu(false);
       }
     };
     document.addEventListener("click", handleClickOutside);
@@ -200,15 +215,15 @@ export default function Contract() {
         </div>
         <div className="flex flex-col-reverse md:flex-row justify-between">
           <div className="flex flex-col">
-            <Text type="h2" text="Contract name" />
-            <div className="flex items-center">
+            <Text
+              type="h2"
+              text={`${findContractInLocalStorage(contract).name}`}
+            />
+            <div className="flex items-center -mt-1">
               <Text type="overline" text={`${contract}`} />
-
-              <Button
-                type="text"
-                text=""
-                icon="copy"
-                action={copyToClipboard}
+              <IoIosCopy
+                className="text-oppurple mx-2"
+                onClick={() => copyToClipboard()}
               />
             </div>
           </div>
@@ -217,26 +232,24 @@ export default function Contract() {
               <Button type="active" text="add funds" icon="" />
             </div>
 
-            <div
-              ref={menuRef}
-              //onClick={() => setShowMenu(!showMenu)}
-              className="cursor-pointer"
-            >
-              {showMenu && (
-                <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] bg-opwhite border-2 border-oppurple rounded-[5px] flex flex-col gap-[16px] w-[300px]">
+            <div ref={menuRef} className="cursor-pointer w-12">
+              {showMenu ? (
+                <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] border-2 border-oppurple rounded-[5px] bg-[#FFFFFF] flex flex-col gap-[16px] w-[300px] z-[100]">
                   <Link
-                    className={`hover:bg-oppurple hover:text-opwhite rounded-[3px] p-2 text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`}
+                    className="rounded hover:bg-opwhite p-1.5 cursor-pointer"
                     href={`/edit/${contract}`}
                   >
                     <Text text="Edit" type="" />
                   </Link>
                 </div>
+              ) : (
+                <div
+                  onClick={() => setShowMenu(true)}
+                  className="text-center border-oppurple border-2 flex gap-[10px] rounded-[5px] py-[13px] px-[13px] bg-opwhite text-[14px] uppercase w-full justify-center hover:bg-opwhite transition duration-100"
+                >
+                  <GoKebabHorizontal className="leading-none p-0 m-0 text-base rotate-90" />
+                </div>
               )}
-              <div
-                className={`text-center border-oppurple border-2 flex gap-[10px] rounded-[5px] py-[14px] px-[13px] bg-opwhite text-[14px] uppercase w-full justify-center `}
-              >
-                <CiMenuKebab />
-              </div>
             </div>
           </div>
         </div>

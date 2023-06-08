@@ -16,6 +16,7 @@ interface StorageContractCanClaim {
 interface DappContextData {
   getStoredContracts: () => void;
   contracts: StorageContract[];
+  findContractInLocalStorage: any;
 }
 
 export const DappContext = createContext<DappContextData | null>(null);
@@ -40,13 +41,17 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
       contracts.push({
         name: "My Contract by My",
         address: "5EpK8bC2J4vUzgYG6rJG8xVmJKKnrGZGENgGHg9aXcbdNGra",
-        //address: "5EpiMHMyWByxRrnak8q5Dyy1qoPFfWgVTQhiS4rivhRe3PJX",
       });
       localStorage.setItem("contracts", JSON.stringify(contracts));
     }
 
     setContracts(contracts);
   }
+
+  const findContractInLocalStorage = (contractAddress: string) => {
+    const findedContract = contracts.find((c) => c.address === contractAddress);
+    return findedContract;
+  };
 
   useEffect(() => {
     getStoredContracts();
@@ -59,6 +64,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const contextValue: DappContextData = {
     contracts,
     getStoredContracts,
+    findContractInLocalStorage,
   };
 
   return (
