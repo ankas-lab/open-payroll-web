@@ -52,17 +52,17 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   );
 
   const getNextBlockPeriod = useCall<any | undefined>(
-    _contract,
+    _contract?.contract,
     "getNextBlockPeriod"
   );
 
   const getContractBalance = useCall<any | undefined>(
-    _contract,
+    _contract?.contract,
     "getContractBalance"
   );
 
   const getTotalDebts = useCall<any | undefined>(
-    _contract,
+    _contract?.contract,
     "getTotalDebts"
   );
 
