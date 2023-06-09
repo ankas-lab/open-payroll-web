@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import BN from "bn.js";
 
 import { Archivo } from "next/font/google";
 const archivo = Archivo({ subsets: ["latin"] });
+import { WeightV2 } from "useink/types/core/mod";
 
 import Nav from "../../components/nav";
 import Button from "../../components/generals/button";
@@ -13,6 +15,7 @@ import StepThree from "./steps/stepThree";
 import StepFour from "./steps/stepFour";
 import StepFive from "./steps/stepFive";
 import Result from "./results";
+import { ShibuyaTestnet } from "useink/chains";
 
 import { useWallet } from "useink";
 import WalletManager from "@/components/walletManager";

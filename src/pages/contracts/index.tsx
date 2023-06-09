@@ -54,40 +54,41 @@ export default function Contracts() {
         </div>
         {contracts.length > 0 ? (
           <table className="mt-[30px] md:mt-[50px] overflow-x-auto">
-            <tr className="flex gap-[50px] text-left">
-              <th className="w-[150px]">
-                <Text type="overline" text="contract name" />
-              </th>
-              <th className="w-[100px]">
-                <Text type="overline" text="beneficiaries" />
-              </th>
-              <th className="w-[80px]">
-                <Text type="overline" text="periodicity" />
-              </th>
-              <th className="w-[80px]">
-                <Text type="overline" text="funds in contract" />
-              </th>
-              <th className="w-[80px]">
-                <Text type="overline" text="funds needed" />
-              </th>
-              <th className="w-[80px]">
-                <Text type="overline" text="next pay in (day)" />
-              </th>
-              <th className="w-[80px]">
-                <Text type="overline" text="network" />
-              </th>
-              <th className="w-[80px]">
-                <Text type="overline" text="state" />
-              </th>
-            </tr>
-            {/* .map of contracts
-             */}
-            {contracts.map((c, i) => (
-              <ContractRow key={i} contract={c} i={i} />
-            ))}
+            <tbody>
+              <tr className="flex gap-[50px] text-left">
+                <th className="w-[150px]">
+                  <Text type="overline" text="contract name" />
+                </th>
+                <th className="w-[100px]">
+                  <Text type="overline" text="beneficiaries" />
+                </th>
+                <th className="w-[80px]">
+                  <Text type="overline" text="periodicity" />
+                </th>
+                <th className="w-[80px]">
+                  <Text type="overline" text="funds in contract" />
+                </th>
+                <th className="w-[80px]">
+                  <Text type="overline" text="funds needed" />
+                </th>
+                <th className="w-[80px]">
+                  <Text type="overline" text="next pay in (day)" />
+                </th>
+                <th className="w-[80px]">
+                  <Text type="overline" text="network" />
+                </th>
+                <th className="w-[80px]">
+                  <Text type="overline" text="state" />
+                </th>
+              </tr>
+              {/* .map of contracts */}
+              {contracts.map((c, i) => (
+                <ContractRow key={i} contract={c} i={i} />
+              ))}
+            </tbody>
           </table>
         ) : (
-          <p> It seems like there are no contracts here.</p>
+          <p>It seems like there are no contracts here.</p>
         )}
       </div>
     </main>

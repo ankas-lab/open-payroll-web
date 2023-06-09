@@ -109,7 +109,7 @@ export default function Edit() {
             )}
           </div>
         </div>
-        {tab === "contract" && <Contract address={edit} />}
+        {tab === "contract" && <Contract address={edit!.toString()} />}
         {tab === "multipliers" && <Multipliers />}
         {tab === "beneficiaries" && <Beneficiaries />}
       </div>
