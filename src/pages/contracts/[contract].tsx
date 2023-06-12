@@ -279,32 +279,34 @@ export default function Contract() {
         {/* BENEFICIARIES TABLE */}
         <div className=" ">
           <Text type="h4" text="Beneficiaries" />
-          <table className="mt-[30px]">
-            <tr className="flex gap-[50px] text-left px-2">
-              <th className="w-[150px]">
-                <Text type="overline" text="name" />
-              </th>
-              <th className="w-[150px]">
-                <Text type="overline" text="address" />
-              </th>
-              {multipliersList !== null &&
-                multipliersList.map((m: string) => (
-                  <MultiplierHeaderCell key={m} contract={_contract?.contract} mult={m} />
-                ))}
-              <th className="w-[100px]">
-                <Text type="overline" text="final pay" />
-              </th>
-              <th className="w-[100px]">
-                <Text type="overline" text="total to claim" />
-              </th>
-              <th className="w-[100px]">
-                <Text type="overline" text="last claim" />
-              </th>
-            </tr>
-            {beneficiaries?.map((beneficiary, i) => (
-              <BeneficiaryRow key={i} i={i} _beneficiary={beneficiary} contract={_contract?.contract} />
-            ))}
-          </table>
+          <div className="overflow-x-auto">
+            <table className="mt-[30px]">
+              <tr className="flex gap-[50px] text-left px-2">
+                <th className="w-[150px]">
+                  <Text type="overline" text="name" />
+                </th>
+                <th className="w-[150px]">
+                  <Text type="overline" text="address" />
+                </th>
+                {multipliersList !== null &&
+                  multipliersList.map((m: string) => (
+                    <MultiplierHeaderCell key={m} contract={_contract?.contract} mult={m} />
+                  ))}
+                <th className="w-[100px]">
+                  <Text type="overline" text="final pay" />
+                </th>
+                <th className="w-[100px]">
+                  <Text type="overline" text="total to claim" />
+                </th>
+                <th className="w-[100px]">
+                  <Text type="overline" text="last claim" />
+                </th>
+              </tr>
+              {beneficiaries?.map((beneficiary, i) => (
+                <BeneficiaryRow key={i} i={i} _beneficiary={beneficiary} contract={_contract?.contract} />
+              ))}
+            </table>
+          </div>
         </div>
       </div>
     </main>

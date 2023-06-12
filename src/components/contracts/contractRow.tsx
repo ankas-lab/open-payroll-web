@@ -126,7 +126,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       </td>
       <td className="w-[80px]">
         {contractBalance !== null ? (
-          <p className="text-ellipsis overflow-hidden">
+          <p className="text-ellipsis">
             {trunc(Math.pow(contractBalance * 10, parseInt(chainInfo.tokenDecimals[0])), 2)} {chainInfo?.tokenSymbol}
           </p>
         ) : (
@@ -137,7 +137,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       </td>
       <td className="w-[80px]">
         {fundsNeeded !== null && chainInfo !== undefined ? (
-          <p className="text-ellipsis overflow-hidden">
+          <p className="text-ellipsis">
             {trunc(Math.pow(parseInt(fundsNeeded) * 10, parseInt(chainInfo.tokenDecimals[0])), 2)}{' '}
             {chainInfo?.tokenSymbol}
           </p>
@@ -150,7 +150,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       <td className="w-[80px]">
         {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
         {nextBlockPeriod !== null ? (
-          <p className="text-ellipsis overflow-hidden">{trunc(nextBlockPeriod / periodicity / 7200)}</p>
+          <p className="text-ellipsis">{trunc(nextBlockPeriod / periodicity / 7200)}</p>
         ) : (
           <div className="flex items-center w-full">
             <AiOutlineLoading className="animate-spin" />
