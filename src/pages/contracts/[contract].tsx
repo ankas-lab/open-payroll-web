@@ -19,18 +19,16 @@ import { GoKebabHorizontal } from 'react-icons/go';
 import MultiplierHeaderCell from '@/components/contracts/multiplierHeaderCell';
 import { DappContext } from '@/context';
 import { IoIosCopy } from 'react-icons/io';
-interface BaseMultiplier {
-  name: string;
-  validUntilBlock: any;
-}
 
 export default function Contract() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
-  const { account } = useWallet();
+  {
+    /*  const { account } = useWallet();
   useEffect(() => {
     !account && router.push('/');
-  }, [account]);
+  }, [account]);*/
+  }
 
   //---------------------------------Get contract address---------------------------------
   const {
@@ -114,25 +112,22 @@ export default function Contract() {
 
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeBeneficiaries();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeNextBlockPeriod();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeContractBalance();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeTotalDebts();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seePeriodicity();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeBasePayment();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeMultipliersList();
-  }, [blockHeader?.blockNumber]);
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined) {
+      seeBeneficiaries();
+      seeNextBlockPeriod();
+      seeContractBalance();
+      seeTotalDebts();
+      seePeriodicity();
+      seeBasePayment();
+      seeMultipliersList();
+    }
+  }, [blockHeader?.blockNumber, _contract]);
 
   //---------------------------------Loading---------------------------------
   useEffect(() => {
     _contract?.contract !== undefined && setLoading('done');
   }, [_contract]);
 
-  useEffect(() => {
-    //contract!==null&&findContractInLocalStorage(contract)
-  }, [contract]);
-
-  // 🤟🤟🤟 Fix showMenu 🤟🤟🤟
   //---------------------------------Show menu---------------------------------
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -216,17 +211,29 @@ export default function Contract() {
               </div>
             )}
           </div>
+
           <div className="capitalize">
-            <Text type="overline" text="next pay in (days)" />
-            {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
-            {nextBlockPeriod !== null ? (
-              <p className="text-ellipsis">{trunc(nextBlockPeriod / periodicity / 7200)}</p>
+            {blockHeader?.blockNumber !== undefined &&
+            nextBlockPeriod !== null &&
+            nextBlockPeriod - blockHeader?.blockNumber > 7200 ? (
+              <Text type="overline" text="next pay in (days)" />
             ) : (
+              <Text type="overline" text="next pay in (blocks)" />
+            )}
+            {blockHeader?.blockNumber !== undefined &&
+            nextBlockPeriod !== null &&
+            nextBlockPeriod - blockHeader?.blockNumber > 7200 ? (
+              <p>{(nextBlockPeriod - blockHeader?.blockNumber) / 7200}</p>
+            ) : (
+              <p>{nextBlockPeriod - blockHeader?.blockNumber}</p>
+            )}
+            {nextBlockPeriod === null && (
               <div className="flex items-center w-full">
                 <AiOutlineLoading className="animate-spin" />
               </div>
             )}
           </div>
+
           <div className="capitalize">
             <Text type="overline" text="beneficiaries" />
             {beneficiaries !== null ? (
@@ -281,7 +288,7 @@ export default function Contract() {
           <Text type="h4" text="Beneficiaries" />
           <div className="overflow-x-auto">
             <table className="mt-[30px]">
-              <tr className="flex gap-[50px] text-left px-2">
+              <tr className="flex gap-[50px] text-left px-1">
                 <th className="w-[150px]">
                   <Text type="overline" text="name" />
                 </th>

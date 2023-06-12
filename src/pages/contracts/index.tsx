@@ -19,10 +19,12 @@ import WalletManager from '@/components/walletManager';
 export default function Contracts() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
-  const { account } = useWallet();
+  {
+    /*  const { account } = useWallet();
   useEffect(() => {
     !account && router.push('/');
-  }, [account]);
+  }, [account]);*/
+  }
 
   //---------------------------------Get contracts from context---------------------------------
   const context = useContext(DappContext);
@@ -55,7 +57,7 @@ export default function Contracts() {
         <div className="overflow-x-auto">
           {contracts.length > 0 ? (
             <table className="mt-[30px] md:mt-[50px]">
-              <tr className="flex gap-[50px] text-left">
+              <tr className="flex gap-[50px] text-left px-1">
                 <th className="w-[150px]">
                   <Text type="overline" text="contract name" />
                 </th>
@@ -95,4 +97,3 @@ export default function Contracts() {
     </main>
   );
 }
-//bg-[#ECECEC]

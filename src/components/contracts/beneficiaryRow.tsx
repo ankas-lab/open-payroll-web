@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Text from "../generals/text";
+import Text from '../generals/text';
 
-import { AiOutlineLoading } from "react-icons/ai";
+import { AiOutlineLoading } from 'react-icons/ai';
 
-import { Archivo } from "next/font/google";
-const archivo = Archivo({ subsets: ["latin"] });
+import { Archivo } from 'next/font/google';
+const archivo = Archivo({ subsets: ['latin'] });
 
-import { useApi, useBlockHeader, useCall } from "useink";
-import { pickDecoded } from "useink/utils";
+import { useApi, useBlockHeader, useCall } from 'useink';
+import { pickDecoded } from 'useink/utils';
 
 interface BeneficiarieRowProps {
   i: number;
@@ -16,20 +16,14 @@ interface BeneficiarieRowProps {
   contract: any | undefined;
 }
 
-const BeneficiaryRow = ({
-  i,
-  _beneficiary,
-  contract,
-}: BeneficiarieRowProps) => {
+const BeneficiaryRow = ({ i, _beneficiary, contract }: BeneficiarieRowProps) => {
   const blockHeader = useBlockHeader();
   //---------------------------------Api---------------------------------
-  const api = useApi("rococo-contracts-testnet");
+  const api = useApi('rococo-contracts-testnet');
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
 
   //---------------------------------UseStates---------------------------------
-  const [loading, setLoading] = useState<"loading" | "done" | "error">(
-    "loading"
-  );
+  const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
   const [basePayment, setBasePayment] = useState<any | null>(null);
   const [beneficiary, setBeneficiary] = useState<any | null>(null);
   const [amountToClaim, setAmountToClaim] = useState<any | null>(null);
@@ -37,44 +31,37 @@ const BeneficiaryRow = ({
 
   //---------------------------------Get from contract---------------------------------
   // 👥 Get beneficiary from contract
-  const getBeneficiary = useCall<any | undefined>(contract, "getBeneficiary");
+  const getBeneficiary = useCall<any | undefined>(contract, 'getBeneficiary');
 
   // 💰 Get base payment from contract
-  const getBasePayment = useCall<any | undefined>(contract, "getBasePayment");
+  const getBasePayment = useCall<any | undefined>(contract, 'getBasePayment');
 
   // 💸 Get amount to claim from contratc
-  const getAmountToClaim = useCall<any | undefined>(
-    contract,
-    "getAmountToClaim"
-  );
+  const getAmountToClaim = useCall<any | undefined>(contract, 'getAmountToClaim');
 
   // 📅 Get periodicity from contratc
-  const getPeriodicity = useCall<any | undefined>(contract, "getPeriodicity");
+  const getPeriodicity = useCall<any | undefined>(contract, 'getPeriodicity');
   //---------------------------------Set in states---------------------------------
-  const seeBeneficiary = async () =>
-    setBeneficiary(pickDecoded(await getBeneficiary.send([_beneficiary])));
+  const seeBeneficiary = async () => setBeneficiary(pickDecoded(await getBeneficiary.send([_beneficiary])));
 
   const seeBasePayment = async () => {
     const basePayment = pickDecoded(await getBasePayment.send());
-    basePayment !== undefined &&
-      setBasePayment(parseInt(basePayment.replace(/,/g, "")));
+    basePayment !== undefined && setBasePayment(parseInt(basePayment.replace(/,/g, '')));
   };
 
   const seeAmountToClaim = async () => {
-    const amountToClaim = pickDecoded(
-      await getAmountToClaim.send([_beneficiary])
-    );
-    setAmountToClaim(parseInt(amountToClaim?.Ok.replace(/,/g, "")));
+    const amountToClaim = pickDecoded(await getAmountToClaim.send([_beneficiary]));
+    setAmountToClaim(parseInt(amountToClaim?.Ok.replace(/,/g, '')));
   };
   const seePeriodicity = async () => {
     const periciodicty = pickDecoded(await getPeriodicity.send());
-    setPeriodicity(parseInt(periciodicty.replace(/,/g, "")));
+    setPeriodicity(parseInt(periciodicty.replace(/,/g, '')));
   };
   //---------------------------------Truncate numbers---------------------------------
   function trunc(x: number, p = 0) {
     var s = x.toString();
     var l = s.length;
-    var decimalLength = s.indexOf(".") + 1;
+    var decimalLength = s.indexOf('.') + 1;
     var numStr = s.substr(0, decimalLength + p);
     return Number(numStr);
   }
@@ -84,12 +71,9 @@ const BeneficiaryRow = ({
     let multipliersSum;
     multipliers.length === 0
       ? (multipliersSum = 1)
-      : (multipliersSum = multipliers.reduce(
-          (acumulator: number, value: any) => {
-            return acumulator + parseInt(value);
-          },
-          0
-        ));
+      : (multipliersSum = multipliers.reduce((acumulator: number, value: any) => {
+          return acumulator + parseInt(value);
+        }, 0));
     return multipliersSum;
   };
 
@@ -104,15 +88,15 @@ const BeneficiaryRow = ({
 
   useEffect(() => {
     beneficiary !== null;
-    setLoading("done");
+    setLoading('done');
   }, [beneficiary]);
 
-  return loading === "done" ? (
+  return loading === 'done' ? (
     <tr
       className={
         i % 2 === 0
-          ? `flex gap-[50px] text-[14px] items-center h-11 px-2 font-normal text-black tracking-[0.25px] ${archivo.className}`
-          : `flex gap-[50px] text-[14px] items-center h-11 px-2 bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className}`
+          ? `flex gap-[50px] text-[14px] items-center h-11 px-1 font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
+          : `flex gap-[50px] text-[14px] items-center h-11 px-1 bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
       }
     >
       {/* Beneficiary name */}
@@ -130,7 +114,7 @@ const BeneficiaryRow = ({
       {beneficiary !== null &&
         Object.values(beneficiary?.Ok.multipliers).map((m: any) => (
           <td className="w-[100px]">
-            <p>{m === "0" ? "1" : m}</p>
+            <p>{m === '0' ? '1' : m}</p>
           </td>
         ))}
 
@@ -140,24 +124,16 @@ const BeneficiaryRow = ({
           {beneficiary !== null &&
             basePayment !== null &&
             trunc(
-              Math.pow(basePayment * 10, parseInt(chainInfo.tokenDecimals[0])) *
-                calculateTotalMultipliers(),
-              2
-            )}{" "}
+              Math.pow(basePayment * 10, parseInt(chainInfo.tokenDecimals[0])) * calculateTotalMultipliers(),
+              2,
+            )}{' '}
           {chainInfo?.tokenSymbol}
         </p>
       </td>
       {/* Total to claim */}
       <td className="w-[100px]">
         <p>
-          {amountToClaim !== null &&
-            trunc(
-              Math.pow(
-                amountToClaim * 10,
-                parseInt(chainInfo.tokenDecimals[0])
-              ),
-              2
-            )}{" "}
+          {amountToClaim !== null && trunc(Math.pow(amountToClaim * 10, parseInt(chainInfo.tokenDecimals[0])), 2)}{' '}
           {chainInfo?.tokenSymbol}
         </p>
       </td>
@@ -165,13 +141,7 @@ const BeneficiaryRow = ({
       <td className="w-[100px]">
         <p>
           {beneficiary !== null &&
-            trunc(
-              parseInt(
-                beneficiary?.Ok.lastUpdatedPeriodBlock.replace(/,/g, "")
-              ) /
-                periodicity /
-                7200
-            )}
+            trunc(parseInt(beneficiary?.Ok.lastUpdatedPeriodBlock.replace(/,/g, '')) / periodicity / 7200)}
         </p>
       </td>
     </tr>
