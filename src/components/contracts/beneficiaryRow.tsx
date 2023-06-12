@@ -33,6 +33,7 @@ const BeneficiaryRow = ({
   const [basePayment, setBasePayment] = useState<any | null>(null);
   const [beneficiary, setBeneficiary] = useState<any | null>(null);
   const [amountToClaim, setAmountToClaim] = useState<any | null>(null);
+  const [periodicity, setPeriodicity] = useState<any | null>(null);
 
   //---------------------------------Get from contract---------------------------------
   // 👥 Get beneficiary from contract
@@ -46,6 +47,9 @@ const BeneficiaryRow = ({
     contract,
     "getAmountToClaim"
   );
+
+  // 📅 Get periodicity from contratc
+  const getPeriodicity = useCall<any | undefined>(contract, "getPeriodicity");
   //---------------------------------Set in states---------------------------------
   const seeBeneficiary = async () =>
     setBeneficiary(pickDecoded(await getBeneficiary.send([_beneficiary])));
@@ -59,8 +63,12 @@ const BeneficiaryRow = ({
   const seeAmountToClaim = async () => {
     const amountToClaim = pickDecoded(
       await getAmountToClaim.send([_beneficiary])
-    ).Ok;
-    setAmountToClaim(parseInt(amountToClaim.replace(/,/g, "")));
+    );
+    setAmountToClaim(parseInt(amountToClaim?.Ok.replace(/,/g, "")));
+  };
+  const seePeriodicity = async () => {
+    const periciodicty = pickDecoded(await getPeriodicity.send());
+    setPeriodicity(parseInt(periciodicty.replace(/,/g, "")));
   };
   //---------------------------------Truncate numbers---------------------------------
   function trunc(x: number, p = 0) {
@@ -91,6 +99,7 @@ const BeneficiaryRow = ({
     if (blockHeader?.blockNumber && contract !== undefined) seeBeneficiary();
     if (blockHeader?.blockNumber && contract !== undefined) seeBasePayment();
     if (blockHeader?.blockNumber && contract !== undefined) seeAmountToClaim();
+    if (blockHeader?.blockNumber && contract !== undefined) seePeriodicity();
   }, [blockHeader?.blockNumber]);
 
   useEffect(() => {
@@ -154,7 +163,16 @@ const BeneficiaryRow = ({
       </td>
       {/* Last claim */}
       <td className="w-[100px]">
-        <Text type="" text="state" />
+        <p>
+          {beneficiary !== null &&
+            trunc(
+              parseInt(
+                beneficiary?.Ok.lastUpdatedPeriodBlock.replace(/,/g, "")
+              ) /
+                periodicity /
+                7200
+            )}
+        </p>
       </td>
     </tr>
   ) : (

@@ -1,30 +1,24 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext } from 'react';
 
-import Nav from "../../components/nav";
-import Text from "../../components/generals/text";
-import Button from "../../components/generals/button";
+import Nav from '../../components/nav';
+import Text from '../../components/generals/text';
+import Button from '../../components/generals/button';
 
-import { AiOutlineLoading } from "react-icons/ai";
-import { Archivo } from "next/font/google";
-const archivo = Archivo({ subsets: ["latin"] });
+import { AiOutlineLoading } from 'react-icons/ai';
+import { Archivo } from 'next/font/google';
+const archivo = Archivo({ subsets: ['latin'] });
 
-import {
-  useContract,
-  useCall,
-  useBlockHeader,
-  useApi,
-  useWallet,
-} from "useink";
-import { pickDecoded } from "useink/utils";
-import metadata from "../../contract/open_payroll.json";
-import { useRouter } from "next/router";
-import BeneficiaryRow from "@/components/contracts/beneficiaryRow";
-import WalletManager from "@/components/walletManager";
-import Link from "next/link";
-import { GoKebabHorizontal } from "react-icons/go";
-import MultiplierHeaderCell from "@/components/contracts/multiplierHeaderCell";
-import { DappContext } from "@/context";
-import { IoIosCopy } from "react-icons/io";
+import { useContract, useCall, useBlockHeader, useApi, useWallet } from 'useink';
+import { pickDecoded } from 'useink/utils';
+import metadata from '../../contract/open_payroll.json';
+import { useRouter } from 'next/router';
+import BeneficiaryRow from '@/components/contracts/beneficiaryRow';
+import WalletManager from '@/components/walletManager';
+import Link from 'next/link';
+import { GoKebabHorizontal } from 'react-icons/go';
+import MultiplierHeaderCell from '@/components/contracts/multiplierHeaderCell';
+import { DappContext } from '@/context';
+import { IoIosCopy } from 'react-icons/io';
 interface BaseMultiplier {
   name: string;
   validUntilBlock: any;
@@ -35,7 +29,7 @@ export default function Contract() {
   const router = useRouter();
   const { account } = useWallet();
   useEffect(() => {
-    !account && router.push("/");
+    !account && router.push('/');
   }, [account]);
 
   //---------------------------------Get contract address---------------------------------
@@ -52,9 +46,7 @@ export default function Contract() {
 
   const { findContractInLocalStorage } = context;
   //---------------------------------UseStates---------------------------------
-  const [loading, setLoading] = useState<"loading" | "done" | "error">(
-    "loading"
-  );
+  const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
   const [beneficiaries, setBeneficiaries] = useState<null | string[]>(null);
   const [contractBalance, setContractBalance] = useState<null | number>(null);
   const [nextBlockPeriod, setNextBlockPeriod] = useState<null | number>(null);
@@ -65,54 +57,33 @@ export default function Contract() {
 
   //---------------------------------Connect to contract---------------------------------
   const blockHeader = useBlockHeader();
-  const _contract = useContract(contract, metadata, "rococo-contracts-testnet");
+  const _contract = useContract(contract, metadata, 'rococo-contracts-testnet');
 
   //---------------------------------Api---------------------------------
-  const api = useApi("rococo-contracts-testnet");
+  const api = useApi('rococo-contracts-testnet');
   const chainInfo = api?.api.registry.getChainProperties().toHuman();
   //api.rpc.system.chain
   //---------------------------------Get from contract---------------------------------
   // 👥 Get beneficiaries from contract
-  const getAmountBeneficiaries = useCall<any | undefined>(
-    _contract?.contract,
-    "getListBeneficiaries"
-  );
+  const getAmountBeneficiaries = useCall<any | undefined>(_contract?.contract, 'getListBeneficiaries');
 
   // 📅 Get next block from contract
-  const getNextBlockPeriod = useCall<any | undefined>(
-    _contract?.contract,
-    "getNextBlockPeriod"
-  );
+  const getNextBlockPeriod = useCall<any | undefined>(_contract?.contract, 'getNextBlockPeriod');
 
   // ⚖ Get balance from contract
-  const getContractBalance = useCall<any | undefined>(
-    _contract?.contract,
-    "getContractBalance"
-  );
+  const getContractBalance = useCall<any | undefined>(_contract?.contract, 'getContractBalance');
 
   // ➖ Get debts from contract
-  const getTotalDebts = useCall<any | undefined>(
-    _contract?.contract,
-    "getTotalDebts"
-  );
+  const getTotalDebts = useCall<any | undefined>(_contract?.contract, 'getTotalDebts');
 
   // ⌚ Get periodicity from contract
-  const getPeriodicity = useCall<any | undefined>(
-    _contract?.contract,
-    "getPeriodicity"
-  );
+  const getPeriodicity = useCall<any | undefined>(_contract?.contract, 'getPeriodicity');
 
   // 💰 Get base payment from contract
-  const getBasePayment = useCall<any | undefined>(
-    _contract?.contract,
-    "getBasePayment"
-  );
+  const getBasePayment = useCall<any | undefined>(_contract?.contract, 'getBasePayment');
 
   // ❎ Get multipliers list from contratc
-  const getMultipliersList = useCall<any | undefined>(
-    _contract?.contract,
-    "getMultipliersList"
-  );
+  const getMultipliersList = useCall<any | undefined>(_contract?.contract, 'getMultipliersList');
 
   //---------------------------------Set in states---------------------------------
   const seeBeneficiaries = async () => {
@@ -121,53 +92,40 @@ export default function Contract() {
 
   const seeContractBalance = async () => {
     const contractBalance = pickDecoded(await getContractBalance.send());
-    contractBalance !== undefined &&
-      setContractBalance(parseInt(contractBalance.replace(/,/g, "")));
+    contractBalance !== undefined && setContractBalance(parseInt(contractBalance.replace(/,/g, '')));
   };
 
   const seeNextBlockPeriod = async () => {
     const nextPeriodString = pickDecoded(await getNextBlockPeriod.send());
 
-    nextPeriodString !== undefined &&
-      setNextBlockPeriod(parseInt(nextPeriodString.replace(/,/g, "")));
+    nextPeriodString !== undefined && setNextBlockPeriod(parseInt(nextPeriodString.replace(/,/g, '')));
   };
 
-  const seeTotalDebts = async () =>
-    setFundsNeeded(pickDecoded(await getTotalDebts.send()));
+  const seeTotalDebts = async () => setFundsNeeded(pickDecoded(await getTotalDebts.send()));
 
-  const seePeriodicity = async () =>
-    setPeriodicity(pickDecoded(await getPeriodicity.send()));
+  const seePeriodicity = async () => setPeriodicity(pickDecoded(await getPeriodicity.send()));
 
   const seeBasePayment = async () => {
     const basePayment = pickDecoded(await getBasePayment.send());
-    basePayment !== undefined &&
-      setBasePayment(parseInt(basePayment.replace(/,/g, "")));
+    basePayment !== undefined && setBasePayment(parseInt(basePayment.replace(/,/g, '')));
   };
 
-  const seeMultipliersList = async () =>
-    setMultipliersList(pickDecoded(await getMultipliersList.send()));
+  const seeMultipliersList = async () => setMultipliersList(pickDecoded(await getMultipliersList.send()));
 
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeBeneficiaries();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeNextBlockPeriod();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeContractBalance();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeTotalDebts();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seePeriodicity();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeBasePayment();
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined)
-      seeMultipliersList();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeBeneficiaries();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeNextBlockPeriod();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeContractBalance();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeTotalDebts();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seePeriodicity();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeBasePayment();
+    if (blockHeader?.blockNumber && _contract?.contract !== undefined) seeMultipliersList();
   }, [blockHeader?.blockNumber]);
 
   //---------------------------------Loading---------------------------------
   useEffect(() => {
-    _contract?.contract !== undefined && setLoading("done");
+    _contract?.contract !== undefined && setLoading('done');
   }, [_contract]);
 
   useEffect(() => {
@@ -185,9 +143,9 @@ export default function Contract() {
         setShowMenu(false);
       }
     };
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, []);
 
@@ -201,30 +159,24 @@ export default function Contract() {
   function trunc(x: number, p = 0) {
     var s = x.toString();
     var l = s.length;
-    var decimalLength = s.indexOf(".") + 1;
+    var decimalLength = s.indexOf('.') + 1;
     var numStr = s.substr(0, decimalLength + p);
     return Number(numStr);
   }
 
-  return loading === "done" ? (
+  return loading === 'done' ? (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+      <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
         <div className="flex flex-col-reverse md:flex-row justify-between">
           <div className="flex flex-col">
-            <Text
-              type="h2"
-              text={`${findContractInLocalStorage(contract).name}`}
-            />
+            <Text type="h2" text={`${findContractInLocalStorage(contract).name}`} />
             <div className="flex items-center -mt-1">
               <Text type="overline" text={`${contract}`} />
-              <IoIosCopy
-                className="text-oppurple mx-2"
-                onClick={() => copyToClipboard()}
-              />
+              <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
             </div>
           </div>
           <div className="flex gap-2 ml-auto mt-0 md:mt-4 relative">
@@ -235,10 +187,7 @@ export default function Contract() {
             <div ref={menuRef} className="cursor-pointer w-12">
               {showMenu ? (
                 <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] border-2 border-oppurple rounded-[5px] bg-[#FFFFFF] flex flex-col gap-[16px] w-[300px] z-[100]">
-                  <Link
-                    className="rounded hover:bg-opwhite p-1.5 cursor-pointer"
-                    href={`/edit/${contract}`}
-                  >
+                  <Link className="rounded hover:bg-opwhite p-1.5 cursor-pointer" href={`/edit/${contract}`}>
                     <Text text="Edit" type="" />
                   </Link>
                 </div>
@@ -271,9 +220,7 @@ export default function Contract() {
             <Text type="overline" text="next pay in (days)" />
             {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
             {nextBlockPeriod !== null ? (
-              <p className="text-ellipsis overflow-hidden">
-                {trunc(nextBlockPeriod / periodicity / 7200)}
-              </p>
+              <p className="text-ellipsis">{trunc(nextBlockPeriod / periodicity / 7200)}</p>
             ) : (
               <div className="flex items-center w-full">
                 <AiOutlineLoading className="animate-spin" />
@@ -294,13 +241,7 @@ export default function Contract() {
             <Text type="overline" text="base payment" />
             {basePayment ? (
               <p>
-                {trunc(
-                  Math.pow(
-                    basePayment * 10,
-                    parseInt(chainInfo.tokenDecimals[0])
-                  )
-                )}{" "}
-                {chainInfo?.tokenSymbol}
+                {trunc(Math.pow(basePayment * 10, parseInt(chainInfo.tokenDecimals[0])))} {chainInfo?.tokenSymbol}
               </p>
             ) : (
               <div className="flex items-center w-full">
@@ -311,14 +252,8 @@ export default function Contract() {
           <div className="capitalize">
             <Text type="overline" text="funds in contract" />
             {contractBalance !== null ? (
-              <p className="text-ellipsis overflow-hidden">
-                {trunc(
-                  Math.pow(
-                    contractBalance * 10,
-                    parseInt(chainInfo.tokenDecimals[0])
-                  ),
-                  2
-                )}{" "}
+              <p className="text-ellipsis">
+                {trunc(Math.pow(contractBalance * 10, parseInt(chainInfo.tokenDecimals[0])), 2)}{' '}
                 {chainInfo?.tokenSymbol}
               </p>
             ) : (
@@ -330,14 +265,8 @@ export default function Contract() {
           <div className="capitalize">
             <Text type="overline" text="total funds needed" />
             {fundsNeeded !== null && chainInfo !== undefined ? (
-              <p className="text-ellipsis overflow-hidden">
-                {trunc(
-                  Math.pow(
-                    parseInt(fundsNeeded) * 10,
-                    parseInt(chainInfo.tokenDecimals[0])
-                  ),
-                  2
-                )}{" "}
+              <p className="text-ellipsis">
+                {trunc(Math.pow(parseInt(fundsNeeded) * 10, parseInt(chainInfo.tokenDecimals[0])), 2)}{' '}
                 {chainInfo?.tokenSymbol}
               </p>
             ) : (
@@ -348,7 +277,7 @@ export default function Contract() {
           </div>
         </div>
         {/* BENEFICIARIES TABLE */}
-        <div className="overflow-x-auto">
+        <div className=" ">
           <Text type="h4" text="Beneficiaries" />
           <table className="mt-[30px]">
             <tr className="flex gap-[50px] text-left px-2">
@@ -360,11 +289,7 @@ export default function Contract() {
               </th>
               {multipliersList !== null &&
                 multipliersList.map((m: string) => (
-                  <MultiplierHeaderCell
-                    key={m}
-                    contract={_contract?.contract}
-                    mult={m}
-                  />
+                  <MultiplierHeaderCell key={m} contract={_contract?.contract} mult={m} />
                 ))}
               <th className="w-[100px]">
                 <Text type="overline" text="final pay" />
@@ -377,12 +302,7 @@ export default function Contract() {
               </th>
             </tr>
             {beneficiaries?.map((beneficiary, i) => (
-              <BeneficiaryRow
-                key={i}
-                i={i}
-                _beneficiary={beneficiary}
-                contract={_contract?.contract}
-              />
+              <BeneficiaryRow key={i} i={i} _beneficiary={beneficiary} contract={_contract?.contract} />
             ))}
           </table>
         </div>

@@ -25,7 +25,7 @@ const WalletManager = () => {
             )
           </p>
           {show && (
-            <div className="flex flex-col gap-[10px]">
+            <div className="flex flex-col gap-[10px] border-t-2 border-t-oppurple">
               {accounts?.map((a) => (
                 <button
                   className="rounded hover:bg-opwhite p-1.5 text-left"
