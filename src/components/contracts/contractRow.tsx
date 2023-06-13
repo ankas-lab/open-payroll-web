@@ -34,9 +34,11 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   const [nextBlockPeriod, setNextBlockPeriod] = useState<null | number>(null);
   const [fundsNeeded, setFundsNeeded] = useState<null | string>(null);
   const [periodicity, setPeriodicity] = useState<any | null>(null);
+  const [state, setState] = useState<boolean | undefined>(undefined);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
+
   const chainInfo = api?.api.registry.getChainProperties()!.toHuman();
 
   //---------------------------------Get from contract---------------------------------
@@ -51,8 +53,6 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   // 🤟🤟🤟 Get periodicity from contract
   const getPeriodicity = useCall(_contract, 'getPeriodicity');
 
-  // 🤟🤟🤟 Get network from contract
-  // 🤟🤟🤟 Get state from contract
 
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
@@ -76,6 +76,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   }
 
   return loading === 'done' ? (
+
     <tr
       className={
         i % 2 === 0
@@ -163,6 +164,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         <IoIosAlert className="w-5 h-5 text-opdanger" />
       </td>
     </tr>
+
   ) : (
     <div className="flex items-center w-full">
       <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />

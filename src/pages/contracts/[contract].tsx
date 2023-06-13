@@ -19,18 +19,18 @@ import { GoKebabHorizontal } from 'react-icons/go';
 import MultiplierHeaderCell from '@/components/contracts/multiplierHeaderCell';
 import { DappContext } from '@/context';
 import { IoIosCopy } from 'react-icons/io';
+
 interface BaseMultiplier {
   name: string;
   validUntilBlock: any;
 }
 
+
 export default function Contract() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
+
   const { account } = useWallet();
-  // useEffect(() => {
-  //   !account && router.push('/');
-  // }, [account]);//TODO If account is not owner of contract, redirect to home
 
   //---------------------------------Get contract address---------------------------------
   const {
@@ -59,26 +59,26 @@ export default function Contract() {
   //api.rpc.system.chain
   //---------------------------------Get from contract---------------------------------
   // 👥 Get beneficiaries from contract
-  const getAmountBeneficiaries = useCall<any | undefined>(_contract?.contract, 'getListBeneficiaries');
+  const getAmountBeneficiaries = useCall<any | undefined>(_contract, 'getListBeneficiaries');
 
   // 📅 Get next block from contract
-  const getNextBlockPeriod = useCall<any | undefined>(_contract?.contract, 'getNextBlockPeriod');
+  const getNextBlockPeriod = useCall<any | undefined>(_contract, 'getNextBlockPeriod');
 
   // ⚖ Get balance from contract
-  const getContractBalance = useCall<any | undefined>(_contract?.contract, 'getContractBalance');
+  const getContractBalance = useCall<any | undefined>(_contract, 'getContractBalance');
 
   // ➖ Get debts from contract
-  const getTotalDebts = useCall<any | undefined>(_contract?.contract, 'getTotalDebts');
+  const getTotalDebts = useCall<any | undefined>(_contract, 'getTotalDebts');
 
   // ⌚ Get periodicity from contract
-  const getPeriodicity = useCall<any | undefined>(_contract?.contract, 'getPeriodicity');
+  const getPeriodicity = useCall<any | undefined>(_contract, 'getPeriodicity');
 
   // 💰 Get base payment from contract
-  const getBasePayment = useCall<any | undefined>(_contract?.contract, 'getBasePayment');
+  const getBasePayment = useCall<any | undefined>(_contract, 'getBasePayment');
 
   // ❎ Get multipliers list from contratc
-  const getMultipliersList = useCall<any | undefined>(_contract?.contract, 'getMultipliersList');
-  
+  const getMultipliersList = useCall<any | undefined>(_contract, 'getMultipliersList');
+
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
     getAmountBeneficiaries.send();
@@ -101,6 +101,7 @@ export default function Contract() {
   // }, [contract]);
 
   // 🤟🤟🤟 Fix showMenu 🤟🤟🤟
+
   //---------------------------------Show menu---------------------------------
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -135,14 +136,13 @@ export default function Contract() {
   return loading === 'done' ? (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+      <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
         <div className="flex flex-col-reverse md:flex-row justify-between">
           <div className="flex flex-col">
             {contractAddress && ( <Text type="h2" text={`${findContractInLocalStorage(contractAddress).name}`} />)}
-           
             <div className="flex items-center -mt-1">
               <Text type="overline" text={`${contractAddress}`} />
               <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
@@ -152,7 +152,6 @@ export default function Contract() {
             <div>
               <Button type="active" text="add funds" icon="" />
             </div>
-
             <div ref={menuRef} className="cursor-pointer w-12">
               {showMenu ? (
                 <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] border-2 border-oppurple rounded-[5px] bg-[#FFFFFF] flex flex-col gap-[16px] w-[300px] z-[100]">
@@ -185,17 +184,22 @@ export default function Contract() {
               </div>
             )}
           </div>
+
           <div className="capitalize">
             <Text type="overline" text="next pay in (days)" />
             {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
             {getNextBlockPeriod !== null ? (
               <p className="text-ellipsis overflow-hidden">{trunc(pickDecoded(getNextBlockPeriod.result!) / pickDecoded(getPeriodicity.result!) / 7200)}</p>
             ) : (
+              <p>{nextBlockPeriod - blockHeader?.blockNumber}</p>
+            )}
+            {nextBlockPeriod === null && (
               <div className="flex items-center w-full">
                 <AiOutlineLoading className="animate-spin" />
               </div>
             )}
           </div>
+
           <div className="capitalize">
             <Text type="overline" text="beneficiaries" />
             {getAmountBeneficiaries !== null ? (
@@ -220,6 +224,7 @@ export default function Contract() {
           </div>
           <div className="capitalize">
             <Text type="overline" text="funds in contract" />
+
             {getContractBalance && chainInfo ? (
               <p className="text-ellipsis overflow-hidden">
                 {trunc(Math.pow(pickDecoded(getContractBalance.result!) * 10, parseInt(chainInfo.tokenDecimals[0])), 2)}{' '}
@@ -246,7 +251,7 @@ export default function Contract() {
           </div>
         </div>
         {/* BENEFICIARIES TABLE */}
-        <div className="overflow-x-auto">
+        <div className=" ">
           <Text type="h4" text="Beneficiaries" />
           <table className="mt-[30px]">
             <tbody>

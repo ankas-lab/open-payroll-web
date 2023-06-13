@@ -1,28 +1,30 @@
-import React, { useContext, useEffect } from "react";
-import Link from "next/link.js";
+import React, { useContext, useEffect } from 'react';
+import Link from 'next/link.js';
 
-import Nav from "../../components/nav";
-import Text from "../../components/generals/text";
-import Button from "../../components/generals/button";
+import Nav from '../../components/nav';
+import Text from '../../components/generals/text';
+import Button from '../../components/generals/button';
 
-import ContractRow from "../../components/contracts/contractRow";
+import ContractRow from '../../components/contracts/contractRow';
 
-import { Archivo } from "next/font/google";
-const archivo = Archivo({ subsets: ["latin"] });
+import { Archivo } from 'next/font/google';
+const archivo = Archivo({ subsets: ['latin'] });
 
-import { useWallet } from "useink";
-import { useRouter } from "next/router";
+import { useWallet } from 'useink';
+import { useRouter } from 'next/router';
 
-import { DappContext } from "@/context";
-import WalletManager from "@/components/walletManager";
+import { DappContext } from '@/context';
+import WalletManager from '@/components/walletManager';
 
 export default function Contracts() {
   //---------------------------------Security---------------------------------
   const router = useRouter();
-  const { account } = useWallet();
+  {
+    /*  const { account } = useWallet();
   useEffect(() => {
-    !account && router.push("/");
-  }, [account]);
+    !account && router.push('/');
+  }, [account]);*/
+  }
 
   //---------------------------------Get contracts from context---------------------------------
   const context = useContext(DappContext);
@@ -36,7 +38,7 @@ export default function Contracts() {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+      <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
@@ -94,4 +96,3 @@ export default function Contracts() {
     </main>
   );
 }
-//bg-[#ECECEC]
