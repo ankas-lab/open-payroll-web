@@ -15,7 +15,10 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "useink/chains": ["./node_modules/useink/types/chains/mod.d.ts"],
+      "useink/notifications": ["./node_modules/useink/types/notifications/mod.d.ts"],
+      "useink/utils": ["./node_modules/useink/types/utils/mod.d.ts"],
     }
   },
   "include": [
@@ -24,5 +27,5 @@
     "**/*.tsx",
     "src/pages/create/index.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

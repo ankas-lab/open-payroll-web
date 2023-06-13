@@ -7,7 +7,7 @@ import Link from "next/link.js";
 import { useWallet, useAllWallets } from "useink";
 import WalletManager from "@/components/walletManager";
 
-const index = () => {
+const Index = () => {
   const { account, accounts, setAccount, connect, disconnect } = useWallet();
 
   const pathname = usePathname();
@@ -96,4 +96,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

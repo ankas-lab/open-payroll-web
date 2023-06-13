@@ -24,7 +24,9 @@ interface ContractRowProps {
 const ContractRow = ({ contract, i }: ContractRowProps) => {
   //---------------------------------Connect to contract---------------------------------
   const blockHeader = useBlockHeader();
-  const _contract = useContract(contract.address, metadata, 'rococo-contracts-testnet');
+
+  const _contract = useContract(contract.address, metadata);
+
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
   const [amountBeneficiaries, setAmountBeneficiaries] = useState<null | string[]>(null);
@@ -36,60 +38,35 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
-  const chainInfo = api?.api.registry.getChainProperties().toHuman();
+
+  const chainInfo = api?.api.registry.getChainProperties()!.toHuman();
 
   //---------------------------------Get from contract---------------------------------
-  const getAmountBeneficiaries = useCall<any | undefined>(_contract?.contract, 'getListBeneficiaries');
+  const getAmountBeneficiaries = useCall<string[]>(_contract, 'getListBeneficiaries');
 
-  const getNextBlockPeriod = useCall<any | undefined>(_contract?.contract, 'getNextBlockPeriod');
+  const getNextBlockPeriod = useCall(_contract, 'getNextBlockPeriod');
 
-  const getContractBalance = useCall<any | undefined>(_contract?.contract, 'getContractBalance');
+  const getContractBalance = useCall(_contract, 'getContractBalance');
 
-  const getTotalDebts = useCall<any | undefined>(_contract?.contract, 'getTotalDebts');
+  const getTotalDebts = useCall(_contract, 'getTotalDebts');
 
-  const getPeriodicity = useCall<any | undefined>(_contract?.contract, 'getPeriodicity');
+  // 🤟🤟🤟 Get periodicity from contract
+  const getPeriodicity = useCall(_contract, 'getPeriodicity');
 
-  const getState = useCall<boolean | undefined>(_contract?.contract, 'isPaused');
-
-  //---------------------------------Set in states---------------------------------
-  const seeBeneficiaries = async () => {
-    const b = pickDecoded(await getAmountBeneficiaries.send());
-    setAmountBeneficiaries(b);
-  };
-
-  const seeContractBalance = async () => {
-    const contractBalance = pickDecoded(await getContractBalance.send());
-    contractBalance !== undefined && setContractBalance(parseInt(contractBalance.replace(/,/g, '')));
-  };
-
-  const seeNextBlockPeriod = async () => {
-    const nextPeriodString = pickDecoded(await getNextBlockPeriod.send());
-    nextPeriodString !== undefined && setNextBlockPeriod(parseInt(await nextPeriodString.replace(/,/g, '')));
-  };
-
-  const seeTotalDebts = async () => setFundsNeeded(pickDecoded(await getTotalDebts.send()));
-
-  const seePeriodicity = async () => setPeriodicity(pickDecoded(await getPeriodicity.send()));
-
-  const seeState = async () => setState(pickDecoded(await getState.send()));
 
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
-    if (blockHeader?.blockNumber && _contract?.contract !== undefined) {
-      seeBeneficiaries();
-      seeNextBlockPeriod();
-      seeContractBalance();
-      seeTotalDebts();
-      seePeriodicity();
-      seeState();
+    if (_contract) {
+      getAmountBeneficiaries.send();
+      getContractBalance.send();
+      getNextBlockPeriod.send();
+      getTotalDebts.send();
+      getPeriodicity.send();
       setLoading('done');
     }
-  }, [blockHeader?.blockNumber, _contract]);
+  }, [_contract]);
 
-  //---------------------------------See in console---------------------------------
-  useEffect(() => {}, []);
-
-  //---------------------------------Truncate numbers---------------------------------
+  //---------------------------------Truncate numbers-------------------------------------
   function trunc(x: number, p = 0) {
     var s = x.toString();
     var l = s.length;
@@ -99,83 +76,95 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   }
 
   return loading === 'done' ? (
-    <Link href={`/contracts/${contract.address}`}>
-      <tr
-        className={
-          i % 2 === 0
-            ? `flex gap-[50px] items-center text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150 px-1`
-            : `flex gap-[50px] items-center text-[14px] bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150 px-1`
-        }
-      >
-        <td className="w-[150px]">
-          <p>{contract.name}</p>
-        </td>
-        <td className="w-[100px]">
-          {amountBeneficiaries ? (
-            <p>{amountBeneficiaries.length}</p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
-        </td>
-        <td className="w-[80px]">
-          {periodicity ? (
-            <p>{periodicity}</p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
-        </td>
-        <td className="w-[80px]">
-          {contractBalance !== null ? (
-            <p className="text-ellipsis">
-              {trunc(Math.pow(contractBalance * 10, parseInt(chainInfo.tokenDecimals[0])), 2)} {chainInfo?.tokenSymbol}
-            </p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
-        </td>
-        <td className="w-[80px]">
-          {fundsNeeded !== null && chainInfo !== undefined ? (
-            <p className="text-ellipsis">
-              {trunc(Math.pow(parseInt(fundsNeeded) * 10, parseInt(chainInfo.tokenDecimals[0])), 2)}{' '}
-              {chainInfo?.tokenSymbol}
-            </p>
-          ) : (
-            <div className="flex items-center w-full h-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
-        </td>
-        <td className="w-[80px]">
-          {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
-          {nextBlockPeriod !== null ? (
-            <p className="text-ellipsis">{trunc(nextBlockPeriod / periodicity / 7200)}</p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
-        </td>
-        <td className="w-[80px]">
-          {/* 🤟🤟🤟 Show network 🤟🤟🤟 */}
-          <p>network</p>
-        </td>
-        <td className="w-[80px]">{state !== undefined && state ? <p>paused</p> : <p>running</p>}</td>
-        <td className="w-[100px]">
-          <Link href={`/contracts/${contract.address}`}>
-            <Button type="text" text="view" icon="" />
-          </Link>
-        </td>
-        <td className="w-[100px]">
-          <IoIosAlert className="w-5 h-5 text-opdanger" />
-        </td>
-      </tr>
-    </Link>
+
+    <tr
+      className={
+        i % 2 === 0
+          ? `flex gap-[50px] items-center px-3 text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`
+          : `flex gap-[50px] items-center px-3 text-[14px] bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className}`
+      }
+    >
+      <td className="w-[150px]">
+        <p>{contract.name}</p>
+      </td>
+      <td className="w-[100px]">
+        {getAmountBeneficiaries ? (
+          <p>{pickDecoded(getAmountBeneficiaries.result!)?.length}</p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
+      </td>
+      <td className="w-[80px]">
+        {periodicity ? (
+          <p>{getPeriodicity.result?.ok}</p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
+      </td>
+      <td className="w-[80px]">
+        {contractBalance !== null ? (
+          <p className="text-ellipsis overflow-hidden">
+            {trunc(
+              Math.pow(
+                contractBalance * 10,
+                // parseInt(chainInfo?.tokenDecimals[0])
+                2, //TODO remove this
+              ),
+              2,
+            )}{' '}
+            {chainInfo?.tokenSymbol?.toString()}
+          </p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
+      </td>
+      <td className="w-[80px]">
+        {fundsNeeded !== null && chainInfo !== undefined ? (
+          <p className="text-ellipsis overflow-hidden">
+            {trunc(Math.pow(parseInt(fundsNeeded) * 10, parseInt(chainInfo.tokenDecimals[0])), 2)}{' '}
+            {chainInfo?.tokenSymbol?.toString()}
+          </p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
+      </td>
+      <td className="w-[80px]">
+        {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
+        {nextBlockPeriod !== null ? (
+          <p className="text-ellipsis overflow-hidden">{trunc(nextBlockPeriod / periodicity / 7200)}</p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
+      </td>
+      <td className="w-[80px]">
+        {/* 🤟🤟🤟 Show network 🤟🤟🤟 */}
+        <p>network</p>
+      </td>
+      <td className="w-[80px]">
+        {/* 🤟🤟🤟 Show state 🤟🤟🤟 */}
+
+        <p>state</p>
+      </td>
+      <td className="w-[100px]">
+        <Link href={`/contracts/${contract.address}`}>
+          <Button type="text" text="view" icon="" />
+        </Link>
+      </td>
+      <td className="w-[100px]">
+        <IoIosAlert className="w-5 h-5 text-opdanger" />
+      </td>
+    </tr>
+
   ) : (
     <div className="flex items-center w-full">
       <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />

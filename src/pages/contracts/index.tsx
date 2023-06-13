@@ -54,10 +54,10 @@ export default function Contracts() {
             text="These are your contracts, you can select one to inspect what's inside, edit them or add funds to them. If you don't have any contract, create one!"
           />
         </div>
-        <div className="overflow-x-auto">
-          {contracts.length > 0 ? (
-            <table className="mt-[30px] md:mt-[50px]">
-              <tr className="flex gap-[50px] text-left px-1">
+        {contracts.length > 0 ? (
+          <table className="mt-[30px] md:mt-[50px] overflow-x-auto">
+            <tbody>
+              <tr className="flex gap-[50px] text-left">
                 <th className="w-[150px]">
                   <Text type="overline" text="contract name" />
                 </th>
@@ -83,16 +83,15 @@ export default function Contracts() {
                   <Text type="overline" text="state" />
                 </th>
               </tr>
-              {/* .map of contracts
-               */}
+              {/* .map of contracts */}
               {contracts.map((c, i) => (
                 <ContractRow key={i} contract={c} i={i} />
               ))}
-            </table>
-          ) : (
-            <p> It seems like there are no contracts here.</p>
-          )}
-        </div>
+            </tbody>
+          </table>
+        ) : (
+          <p>It seems like there are no contracts here.</p>
+        )}
       </div>
     </main>
   );

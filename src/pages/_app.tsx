@@ -18,6 +18,9 @@ function App({ Component, pageProps }: AppProps) {
       config={{
         dappName: "OpenPayroll",
         chains: [RococoContractsTestnet],
+        caller: {
+          default: '5Dsykc2KUHcziwcTgZkHxyDDTotBJbGNh3BakfZ5PdDGMzfm'
+        }
       }}
     >
       <NotificationsProvider>
