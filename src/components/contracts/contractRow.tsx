@@ -8,11 +8,10 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useContract, useCall, useBlockHeader, useApi, useChainDecimals, useTokenSymbol, IApiProvider } from 'useink';
-import { pickDecoded, planckToDecimalFormatted, planckToDecimal } from 'useink/utils';
+import { useContract, useCall, useBlockHeader, useApi, useChainDecimals, useTokenSymbol } from 'useink';
+import { pickDecoded, planckToDecimalFormatted } from 'useink/utils';
 
 import metadata from '@/contract/open_payroll.json';
-import { parse } from 'path';
 import { BN } from 'bn.js';
 
 interface ContractRowProps {
