@@ -93,6 +93,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   useEffect(() => {
     if (getTotalDebts.result && api?.api) {
       let data = formatStringNumberToPlainNumber(pickDecoded(getTotalDebts.result!));
+      // TODO: format millions
       setTotalDebts(planckToDecimalFormatted(data, api.api));
     }
   }, [getTotalDebts.result, api?.api]);
@@ -104,7 +105,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         let getNextBlockPeriodValuePlainBN = new BN(formatStringNumberToPlainNumber(getNextBlockPeriodValueString));
         let totalBlocks = getNextBlockPeriodValuePlainBN.div(new BN(periodicity));
         let totalBlocksInDays = totalBlocks.div(new BN(7200));
-
+        // TODO: less than a day if days < 0
         setNextBlockPeriodInDays(totalBlocksInDays.toNumber());
       }
     }
@@ -175,8 +176,13 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         )}
       </td>
       <td className="w-[80px]">
-        {/* 🤟🤟🤟 Show network 🤟🤟🤟 */}
-        <p>network</p>
+        {_contract ? (
+          <p>{_contract?.chainId}</p>
+        ) : (
+          <div className="flex items-center w-full">
+            <AiOutlineLoading className="animate-spin" />
+          </div>
+        )}
       </td>
       <td className="w-[80px]">{contractState ? <p>ON</p> : <p>OFF</p>}</td>
       <td className="w-[100px]">
