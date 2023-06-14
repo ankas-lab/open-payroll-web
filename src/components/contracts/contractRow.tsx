@@ -8,11 +8,12 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useContract, useCall, useBlockHeader, useApi } from 'useink';
-import { BN, pickDecoded } from 'useink/utils';
+import { useContract, useCall, useBlockHeader, useApi, useChainDecimals, useTokenSymbol, IApiProvider } from 'useink';
+import { pickDecoded, planckToDecimalFormatted, planckToDecimal } from 'useink/utils';
 
 import metadata from '@/contract/open_payroll.json';
 import { parse } from 'path';
+import { BN } from 'bn.js';
 
 interface ContractRowProps {
   contract: {
@@ -27,14 +28,16 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   const blockHeader = useBlockHeader();
 
   const _contract = useContract(contract.address, metadata);
+  const _chainDecimals = useChainDecimals(_contract?.chainId);
+  const _tokenSymbol = useTokenSymbol(_contract?.chainId);
 
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
-  const [amountBeneficiaries, setAmountBeneficiaries] = useState<null | string[]>(null);
-  const [contractBalance, setContractBalance] = useState<null | number>(null);
-  const [nextBlockPeriod, setNextBlockPeriod] = useState<null | number>(null);
-  const [fundsNeeded, setFundsNeeded] = useState<null | string>(null);
-  const [state, setState] = useState<boolean | undefined>(undefined);
+
+  const [contractBalance, setContractBalance] = useState<undefined | string>(undefined);
+  const [periodicity, setPeriodicity] = useState<undefined | number>(undefined);
+  const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
+  const [nextBlockPeriodInDays, setNextBlockPeriodInDays] = useState<undefined | number>(undefined);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
@@ -43,14 +46,9 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
 
   //---------------------------------Get from contract---------------------------------
   const getAmountBeneficiaries = useCall<string[]>(_contract, 'getListBeneficiaries');
-
-  const getNextBlockPeriod = useCall(_contract, 'getNextBlockPeriod');
-
-  const getContractBalance = useCall<string>(_contract, 'getContractBalance');
-
-  const getTotalDebts = useCall(_contract, 'getTotalDebts');
-
-  // 🤟🤟🤟 Get periodicity from contract
+  const getNextBlockPeriod = useCall<any>(_contract, 'getNextBlockPeriod');
+  const getContractBalance = useCall<any>(_contract, 'getContractBalance');
+  const getTotalDebts = useCall<any>(_contract, 'getTotalDebts');
   const getPeriodicity = useCall<number>(_contract, 'getPeriodicity');
 
   //---------------------------------Initialize functions---------------------------------
@@ -65,42 +63,49 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
     }
   }, [_contract]);
 
+  //---------------------------------Functions to Format-------------------------------------
+  function formatStringNumberToPlainNumber(num: any): any {
+    let num_string = num
+      .toString()
+      .replace(/,/g, '')
+      .replace(/[^0-9.]/g, '');
+    return new BN(num_string);
+  }
+
+  //---------------------------------Format incoming data-------------------------------------
+
   useEffect(() => {
-    if (_contract) {
-      console.log(getContractBalance);
+    if (getContractBalance.result) {
+      let data = formatStringNumberToPlainNumber(pickDecoded(getContractBalance.result!));
+      setContractBalance(planckToDecimalFormatted(data, api?.api));
     }
-  }, [getContractBalance.result?.ok]);
+  }, [getContractBalance.result]);
 
-  //---------------------------------Truncate numbers-------------------------------------
-  function trunc(x: number, p = 0) {
-    var s = x.toString();
-    var l = s.length;
-    var decimalLength = s.indexOf('.') + 1;
-    var numStr = s.substr(0, decimalLength + p);
-    return Number(numStr);
-  }
+  useEffect(() => {
+    if (getPeriodicity.result) {
+      setPeriodicity(Number(pickDecoded(getPeriodicity.result!)));
+    }
+  }, [getPeriodicity.result]);
 
-  function formatBalance(balance: string | undefined): number | undefined {
-    // return undefined if balance is undefined so can continue with the spinner waiting
-    if (balance === undefined) return undefined;
+  useEffect(() => {
+    if (getTotalDebts.result && api?.api) {
+      let data = formatStringNumberToPlainNumber(pickDecoded(getTotalDebts.result!));
+      setTotalDebts(planckToDecimalFormatted(data, api.api));
+    }
+  }, [getTotalDebts.result, api?.api]);
 
-    let num_string = balance.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-    let num = parseInt(num_string);
+  useEffect(() => {
+    if (getNextBlockPeriod.result && periodicity) {
+      let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result!)?.toString();
+      if (getNextBlockPeriodValueString) {
+        let getNextBlockPeriodValuePlainBN = new BN(formatStringNumberToPlainNumber(getNextBlockPeriodValueString));
+        let totalBlocks = getNextBlockPeriodValuePlainBN.div(new BN(periodicity));
+        let totalBlocksInDays = totalBlocks.div(new BN(7200));
 
-    return trunc(Math.pow(num * 10, 2), 2);
-  }
-
-  function formatBalanceWithSymbol(balance: number | undefined): string | undefined {
-    if (balance === undefined) return undefined;
-
-    let tokenSymbol = chainInfo?.tokenSymbol?.toString() || '';
-    return `${balance} ${tokenSymbol}`;
-  }
-
-  let contractBalanceFormat = formatBalanceWithSymbol(
-    formatBalance(pickDecoded(getContractBalance.result!)?.toString()),
-  );
-  let periodicityValue = pickDecoded(getPeriodicity.result!)?.toString();
+        setNextBlockPeriodInDays(totalBlocksInDays.toNumber());
+      }
+    }
+  }, [getNextBlockPeriod.result]);
 
   return loading === 'done' ? (
     <tr
@@ -123,8 +128,8 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         )}
       </td>
       <td className="w-[80px]">
-        {periodicityValue ? (
-          <p>{periodicityValue}</p>
+        {periodicity ? (
+          <p>{periodicity}</p>
         ) : (
           <div className="flex items-center w-full">
             <AiOutlineLoading className="animate-spin" />
@@ -132,8 +137,8 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         )}
       </td>
       <td className="w-[80px]">
-        {contractBalanceFormat !== null ? (
-          <p className="text-ellipsis overflow-hidden">{contractBalanceFormat}</p>
+        {contractBalance !== undefined ? (
+          <p className="text-ellipsis overflow-hidden">{contractBalance}</p>
         ) : (
           <div className="flex items-center w-full">
             <AiOutlineLoading className="animate-spin" />
@@ -141,11 +146,8 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         )}
       </td>
       <td className="w-[80px]">
-        {fundsNeeded !== null && chainInfo !== undefined ? (
-          <p className="text-ellipsis overflow-hidden">
-            {trunc(Math.pow(parseInt(fundsNeeded) * 10, parseInt(chainInfo.tokenDecimals[0])), 2)}{' '}
-            {chainInfo?.tokenSymbol?.toString()}
-          </p>
+        {totalDebts !== null ? (
+          <p className="text-ellipsis overflow-hidden">{totalDebts}</p>
         ) : (
           <div className="flex items-center w-full">
             <AiOutlineLoading className="animate-spin" />
@@ -154,8 +156,8 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       </td>
       <td className="w-[80px]">
         {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
-        {nextBlockPeriod !== null ? (
-          <p className="text-ellipsis overflow-hidden">{trunc(nextBlockPeriod / periodicity / 7200)}</p>
+        {nextBlockPeriodInDays !== null ? (
+          <p className="text-ellipsis overflow-hidden">{nextBlockPeriodInDays}</p>
         ) : (
           <div className="flex items-center w-full">
             <AiOutlineLoading className="animate-spin" />
