@@ -37,6 +37,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   const [periodicity, setPeriodicity] = useState<undefined | number>(undefined);
   const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
   const [nextBlockPeriodInDays, setNextBlockPeriodInDays] = useState<undefined | number>(undefined);
+  const [contractState, SetContractState] = useState<undefined | boolean>(undefined);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
@@ -49,6 +50,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   const getContractBalance = useCall<any>(_contract, 'getContractBalance');
   const getTotalDebts = useCall<any>(_contract, 'getTotalDebts');
   const getPeriodicity = useCall<number>(_contract, 'getPeriodicity');
+  const isPaused = useCall<boolean>(_contract, 'isPaused');
 
   //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
@@ -58,11 +60,13 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       getNextBlockPeriod.send();
       getTotalDebts.send();
       getPeriodicity.send();
+      isPaused.send();
       setLoading('done');
     }
   }, [_contract]);
 
   //---------------------------------Functions to Format-------------------------------------
+  // return a BN!
   function formatStringNumberToPlainNumber(num: any): any {
     let num_string = num
       .toString()
@@ -105,6 +109,13 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       }
     }
   }, [getNextBlockPeriod.result]);
+
+  useEffect(() => {
+    if (isPaused.result) {
+      let data = Boolean(pickDecoded(getTotalDebts.result!)).valueOf();
+      SetContractState(data);
+    }
+  }, [isPaused.result]);
 
   return loading === 'done' ? (
     <tr
@@ -167,11 +178,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         {/* 🤟🤟🤟 Show network 🤟🤟🤟 */}
         <p>network</p>
       </td>
-      <td className="w-[80px]">
-        {/* 🤟🤟🤟 Show state 🤟🤟🤟 */}
-
-        <p>state</p>
-      </td>
+      <td className="w-[80px]">{contractState ? <p>ON</p> : <p>OFF</p>}</td>
       <td className="w-[100px]">
         <Link href={`/contracts/${contract.address}`}>
           <Button type="text" text="view" icon="" />
