@@ -40,7 +40,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     } else {
       contracts.push({
         name: "My Contract by My",
-        address: "5EpK8bC2J4vUzgYG6rJG8xVmJKKnrGZGENgGHg9aXcbdNGra",
+        address: "5DNj7Z75xZtNUzjZ8fVdK95hRjd7hEKbsLgTvYdDZ22MCaCK",
       });
       localStorage.setItem("contracts", JSON.stringify(contracts));
     }

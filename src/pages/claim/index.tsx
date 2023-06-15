@@ -9,7 +9,7 @@ import { useWallet, useApi } from 'useink';
 import WalletManager from '@/components/walletManager';
 
 export default function Claim() {
-  const codeHash = "0x9e248273f592c02032d8d7509cd70fe9aeba42f3d3cdbe54c0bae0f8a37b72f7";
+  const codeHash = "0x4a8a55c4a112cb4d754d89966ee3b3f788b96c3f87f73493a33cf7c1ea3261f5";
   const router = useRouter();
   const { account } = useWallet();
   const api = useApi('rococo-contracts-testnet');
