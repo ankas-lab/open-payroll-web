@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from 'react';
+import { BN } from 'bn.js';
 
 //My contracts
 interface StorageContract {
@@ -17,22 +18,19 @@ interface DappContextData {
   getStoredContracts: () => void;
   contracts: StorageContract[];
   findContractInLocalStorage: any;
+  addressToShort: (address: string) => string;
 }
 
 export const DappContext = createContext<DappContextData | null>(null);
 
-export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
-  children,
-}) => {
+export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const [contracts, setContracts] = useState<StorageContract[]>([]);
-  const [contractsCanClaim, setContractsCanClaim] = useState<
-    StorageContractCanClaim[]
-  >([]);
+  const [contractsCanClaim, setContractsCanClaim] = useState<StorageContractCanClaim[]>([]);
 
   // 👇 function that reads the contracts that I can claim, stored in localStorage
 
   function getStoredContracts() {
-    const storedContracts = localStorage.getItem("contracts");
+    const storedContracts = localStorage.getItem('contracts');
     let contracts: StorageContract[] = [];
 
     if (storedContracts) {
@@ -42,7 +40,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
         name: "My Contract by My",
         address: "5DNj7Z75xZtNUzjZ8fVdK95hRjd7hEKbsLgTvYdDZ22MCaCK",
       });
-      localStorage.setItem("contracts", JSON.stringify(contracts));
+      localStorage.setItem('contracts', JSON.stringify(contracts));
     }
 
     setContracts(contracts);
@@ -51,6 +49,10 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const findContractInLocalStorage = (contractAddress: string) => {
     const findedContract = contracts.find((c) => c.address === contractAddress);
     return findedContract;
+  };
+
+  const addressToShort = (address: string): any => {
+    return address.slice(0, 5) + '...' + address.slice(-5);
   };
 
   useEffect(() => {
@@ -65,9 +67,8 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
     contracts,
     getStoredContracts,
     findContractInLocalStorage,
+    addressToShort,
   };
 
-  return (
-    <DappContext.Provider value={contextValue}>{children}</DappContext.Provider>
-  );
+  return <DappContext.Provider value={contextValue}>{children}</DappContext.Provider>;
 };

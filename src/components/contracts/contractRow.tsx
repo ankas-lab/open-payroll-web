@@ -8,9 +8,8 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useContract, useCall, useBlockHeader, useApi, useChainDecimals, useTokenSymbol } from 'useink';
-import { pickDecoded, planckToDecimalFormatted } from 'useink/utils';
-
+import { useContract } from 'useink';
+import { usePayrollContract } from '@/hooks';
 import metadata from '@/contract/open_payroll.json';
 import { BN } from 'bn.js';
 
@@ -22,101 +21,21 @@ interface ContractRowProps {
   i: number;
 }
 
+//---------------------------------Get contracts from context---------------------------------
+
 const ContractRow = ({ contract, i }: ContractRowProps) => {
   //---------------------------------Connect to contract---------------------------------
-  const blockHeader = useBlockHeader();
-
   const _contract = useContract(contract.address, metadata);
-  const _chainDecimals = useChainDecimals(_contract?.chainId);
-  const _tokenSymbol = useTokenSymbol(_contract?.chainId);
+  const { contractState, contractBalance, periodicity, totalDebts, nextBlockPeriodInDays, amountBeneficiaries } =
+    usePayrollContract(_contract);
 
-  //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
 
-  const [contractBalance, setContractBalance] = useState<undefined | string>(undefined);
-  const [periodicity, setPeriodicity] = useState<undefined | number>(undefined);
-  const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
-  const [nextBlockPeriodInDays, setNextBlockPeriodInDays] = useState<undefined | number>(undefined);
-  const [contractState, SetContractState] = useState<undefined | boolean>(undefined);
-
-  //---------------------------------Api---------------------------------
-  const api = useApi('rococo-contracts-testnet');
-
-  const chainInfo = api?.api.registry.getChainProperties()!.toHuman();
-
-  //---------------------------------Get from contract---------------------------------
-  const getAmountBeneficiaries = useCall<string[]>(_contract, 'getListBeneficiaries');
-  const getNextBlockPeriod = useCall<any>(_contract, 'getNextBlockPeriod');
-  const getContractBalance = useCall<any>(_contract, 'getContractBalance');
-  const getTotalDebts = useCall<any>(_contract, 'getTotalDebts');
-  const getPeriodicity = useCall<number>(_contract, 'getPeriodicity');
-  const isPaused = useCall<boolean>(_contract, 'isPaused');
-
-  //---------------------------------Initialize functions---------------------------------
   useEffect(() => {
     if (_contract) {
-      getAmountBeneficiaries.send();
-      getContractBalance.send();
-      getNextBlockPeriod.send();
-      getTotalDebts.send();
-      getPeriodicity.send();
-      isPaused.send();
       setLoading('done');
     }
   }, [_contract]);
-
-  //---------------------------------Functions to Format-------------------------------------
-  // return a BN!
-  function formatStringNumberToPlainNumber(num: any): any {
-    let num_string = num
-      .toString()
-      .replace(/,/g, '')
-      .replace(/[^0-9.]/g, '');
-    return new BN(num_string);
-  }
-
-  //---------------------------------Format incoming data-------------------------------------
-
-  useEffect(() => {
-    if (getContractBalance.result) {
-      let data = formatStringNumberToPlainNumber(pickDecoded(getContractBalance.result!));
-      setContractBalance(planckToDecimalFormatted(data, api?.api));
-    }
-  }, [getContractBalance.result]);
-
-  useEffect(() => {
-    if (getPeriodicity.result) {
-      setPeriodicity(Number(pickDecoded(getPeriodicity.result!)));
-    }
-  }, [getPeriodicity.result]);
-
-  useEffect(() => {
-    if (getTotalDebts.result && api?.api) {
-      let data = formatStringNumberToPlainNumber(pickDecoded(getTotalDebts.result!));
-      // TODO: format millions
-      setTotalDebts(planckToDecimalFormatted(data, api.api));
-    }
-  }, [getTotalDebts.result, api?.api]);
-
-  useEffect(() => {
-    if (getNextBlockPeriod.result && periodicity) {
-      let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result!)?.toString();
-      if (getNextBlockPeriodValueString) {
-        let getNextBlockPeriodValuePlainBN = new BN(formatStringNumberToPlainNumber(getNextBlockPeriodValueString));
-        let totalBlocks = getNextBlockPeriodValuePlainBN.div(new BN(periodicity));
-        let totalBlocksInDays = totalBlocks.div(new BN(7200));
-        // TODO: less than a day if days < 0
-        setNextBlockPeriodInDays(totalBlocksInDays.toNumber());
-      }
-    }
-  }, [getNextBlockPeriod.result]);
-
-  useEffect(() => {
-    if (isPaused.result) {
-      let data = Boolean(pickDecoded(getTotalDebts.result!)).valueOf();
-      SetContractState(data);
-    }
-  }, [isPaused.result]);
 
   return loading === 'done' ? (
     <tr
@@ -130,8 +49,8 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         <p>{contract.name}</p>
       </td>
       <td className="w-[100px]">
-        {getAmountBeneficiaries ? (
-          <p>{pickDecoded(getAmountBeneficiaries.result!)?.length}</p>
+        {amountBeneficiaries ? (
+          <p>{amountBeneficiaries}</p>
         ) : (
           <div className="flex items-center w-full">
             <AiOutlineLoading className="animate-spin" />
