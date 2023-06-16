@@ -5,7 +5,7 @@ import { DappContext } from '@/context';
 
 import { BN } from 'bn.js';
 
-export function usePayrollContract(contract: ChainContract<any>) {
+export function usePayrollContract(contract: ChainContract<any> | undefined) {
   // TODO: ChainContract<ContractPromise> | undefined
 
   const [contractBalance, setContractBalance] = useState<undefined | string>(undefined);
