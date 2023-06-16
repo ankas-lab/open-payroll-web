@@ -9,8 +9,7 @@ import ContractRow from '../../components/contracts/contractRow';
 
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
-
-import { useWallet } from 'useink';
+import { usePayrollContract } from '@/hooks';
 import { useRouter } from 'next/router';
 
 import { DappContext } from '@/context';
