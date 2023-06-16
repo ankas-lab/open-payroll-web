@@ -235,7 +235,7 @@ export default function Contract() {
                     key={index}
                     indexBeneficiary={index}
                     beneficiaryAddress={address}
-                    contract={_contract?.contract}
+                    contract={_contract}
                   />
                 ))}
             </tbody>

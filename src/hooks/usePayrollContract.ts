@@ -1,15 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
-import { useCall, useApi } from 'useink';
-import { pickDecoded, planckToDecimalFormatted } from 'useink/utils';
+import { useCall, useApi, ChainContract } from 'useink';
+import { pickDecoded, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
 import { DappContext } from '@/context';
 
 import { BN } from 'bn.js';
 
-export function usePayrollContract(contract: any) {
+export function usePayrollContract(contract: ChainContract<any>) {
   // TODO: ChainContract<ContractPromise> | undefined
-  const context = useContext(DappContext);
-
-  const { formatNumberWithCommasToPlainNumber } = context!;
 
   const [contractBalance, setContractBalance] = useState<undefined | string>(undefined);
   const [periodicity, setPeriodicity] = useState<undefined | number>(undefined);
@@ -46,7 +43,7 @@ export function usePayrollContract(contract: any) {
 
   useEffect(() => {
     if (getContractBalance.result) {
-      let data = formatNumberWithCommasToPlainNumber(pickDecoded(getContractBalance.result!));
+      let data = stringNumberToBN(pickDecoded(getContractBalance.result!));
       setContractBalance(planckToDecimalFormatted(data, api?.api));
     }
   }, [getContractBalance.result]);
@@ -67,7 +64,7 @@ export function usePayrollContract(contract: any) {
 
   useEffect(() => {
     if (getTotalDebts.result && api?.api) {
-      let data = formatNumberWithCommasToPlainNumber(pickDecoded(getTotalDebts.result!));
+      let data = stringNumberToBN(pickDecoded(getTotalDebts.result!));
       // TODO: format millions
       setTotalDebts(planckToDecimalFormatted(data, api.api));
     }
@@ -75,7 +72,7 @@ export function usePayrollContract(contract: any) {
 
   useEffect(() => {
     if (getBasePayment.result && api?.api) {
-      let data = formatNumberWithCommasToPlainNumber(pickDecoded(getBasePayment.result!));
+      let data = stringNumberToBN(pickDecoded(getBasePayment.result!));
       // TODO: format millions
       setBasePayment(planckToDecimalFormatted(data, api.api));
     }
@@ -85,7 +82,7 @@ export function usePayrollContract(contract: any) {
     if (getNextBlockPeriod.result && periodicity) {
       let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result!)?.toString();
       if (getNextBlockPeriodValueString) {
-        let getNextBlockPeriodValuePlainBN = new BN(formatNumberWithCommasToPlainNumber(getNextBlockPeriodValueString));
+        let getNextBlockPeriodValuePlainBN = stringNumberToBN(getNextBlockPeriodValueString);
         let totalBlocks = getNextBlockPeriodValuePlainBN.div(new BN(periodicity));
         let totalBlocksInDays = totalBlocks.div(new BN(7200));
         // TODO: less than a day if days < 0

@@ -18,7 +18,6 @@ interface DappContextData {
   getStoredContracts: () => void;
   contracts: StorageContract[];
   findContractInLocalStorage: any;
-  formatNumberWithCommasToPlainNumber: any;
   addressToShort: (address: string) => string;
 }
 
@@ -52,15 +51,6 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
     return findedContract;
   };
 
-  // return a BN!
-  const formatNumberWithCommasToPlainNumber = (num: any): any => {
-    let num_string = num
-      .toString()
-      .replace(/,/g, '')
-      .replace(/[^0-9.]/g, '');
-    return new BN(num_string);
-  };
-
   const addressToShort = (address: string): any => {
     return address.slice(0, 5) + '...' + address.slice(-5);
   };
@@ -77,7 +67,6 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
     contracts,
     getStoredContracts,
     findContractInLocalStorage,
-    formatNumberWithCommasToPlainNumber,
     addressToShort,
   };
 
