@@ -1,25 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useCall, useApi, useWallet, ChainContract } from 'useink';
+import { useCall, useApi, ChainContract } from 'useink';
 
 import { pickDecoded, pickResultOk, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
-
-//import { Abi, ContractOptions, ContractPromise } from '../../../core/index';
-//import { ContractPromise } from '@polkadot/api-contract';
 
 import { BN } from 'bn.js';
 
 export function useBeneficiary(address: string, contract: ChainContract<any> | undefined) {
-  // TODO: ChainContract<ContractPromise> | undefined
   const [amountToClaim, SetAmountToClaim] = useState<undefined | any>(undefined);
+  const [lastClaim, setLastClaim] = useState<undefined | any>(1111);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
   const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
-  const { account, accounts, setAccount } = useWallet();
-
-  // TODO: Last claim
 
   useEffect(() => {
     getAmountToClaim.send([address], { defaultCaller: true });
@@ -34,5 +28,5 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     }
   }, [getAmountToClaim.result]);
 
-  return { amountToClaim };
+  return { amountToClaim, lastClaim };
 }
