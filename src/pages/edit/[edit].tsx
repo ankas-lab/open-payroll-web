@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Nav from '../../components/nav';
 import Text from '../../components/generals/text';
 import Button from '../../components/generals/button';
-import { Archivo, Podkova } from 'next/font/google';
+import { Archivo } from 'next/font/google';
 import { useRouter } from 'next/router';
-import { useApi, useBlockHeader, useCall, useContract, useWallet } from 'useink';
+import { useContract } from 'useink';
 import WalletManager from '@/components/walletManager';
-import { pickDecoded } from 'useink/utils';
-const podkova = Podkova({ subsets: ['latin'] });
 const archivo = Archivo({ subsets: ['latin'] });
 import metadata from '../../contract/open_payroll.json';
 
@@ -15,6 +13,7 @@ import Contract from '@/components/edit/baseContract';
 import Multipliers from '@/components/edit/multipliers';
 import Beneficiaries from '@/components/edit/beneficiaries';
 import { AiOutlineLoading } from 'react-icons/ai';
+import { ToastContainer } from 'react-toastify';
 
 export default function Edit() {
   //---------------------------------Get contract address---------------------------------
@@ -47,6 +46,7 @@ export default function Edit() {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
+      <ToastContainer />
       {loading === 'loading' ? (
         <div className="flex w-full min-h-screen">
           <AiOutlineLoading className="animate-spin m-auto" />
@@ -76,9 +76,9 @@ export default function Edit() {
               )}
             </div>
           </div>
-          {tab === 'contract' && <Contract _contract={_contract} />}
-          {tab === 'multipliers' && <Multipliers />}
-          {tab === 'beneficiaries' && <Beneficiaries />}
+          {tab === 'contract' && <Contract _contractAddress={contractAddress} _contract={_contract} />}
+          {tab === 'multipliers' && <Multipliers _contract={_contract} />}
+          {tab === 'beneficiaries' && <Beneficiaries _contractAddress={contractAddress} _contract={_contract} />}
         </div>
       )}
     </main>

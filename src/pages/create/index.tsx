@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import BN from "bn.js";
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-import { Archivo } from "next/font/google";
-const archivo = Archivo({ subsets: ["latin"] });
-import { WeightV2 } from "useink/types/core/mod";
+import { Archivo } from 'next/font/google';
+const archivo = Archivo({ subsets: ['latin'] });
 
-import Nav from "../../components/nav";
-import Button from "../../components/generals/button";
-import StepOne from "./steps/stepOne";
-import StepTwo from "./steps/stepTwo";
-import StepThree from "./steps/stepThree";
-import StepFour from "./steps/stepFour";
-import StepFive from "./steps/stepFive";
-import Result from "./results";
-import { ShibuyaTestnet } from "useink/chains";
+import Nav from '../../components/nav';
+import Button from '../../components/generals/button';
+import StepOne from './steps/stepOne';
+import StepTwo from './steps/stepTwo';
+import StepThree from './steps/stepThree';
+import StepFour from './steps/stepFour';
+import StepFive from './steps/stepFive';
+import Result from './results';
 
-import { useWallet } from "useink";
-import WalletManager from "@/components/walletManager";
+import { useWallet } from 'useink';
+import WalletManager from '@/components/walletManager';
 
 //---------------------------------Interfaces---------------------------------
 //Multipliers
@@ -65,16 +62,16 @@ export default function Create() {
   const router = useRouter();
   const { account } = useWallet();
   useEffect(() => {
-    !account && router.push("/");
+    !account && router.push('/');
   }, [account]);
 
   //---------------------------------Steps
   // steps to advance in the creation of the contract
   const [steps, setSteps] = useState(0);
   const step = (step: string) => {
-    if (step === "next") {
+    if (step === 'next') {
       steps < 4 && setSteps(steps + 1);
-    } else if (step === "back") {
+    } else if (step === 'back') {
       steps > 0 && setSteps(steps - 1);
     }
   };
@@ -82,27 +79,25 @@ export default function Create() {
   //---------------------------------Contract base---------------------------------
   // the base of the contract
   const [contractBase, setContractBase] = useState({
-    contractName: "",
+    contractName: '',
     basePayment: 0,
     periodicity: 0,
-    ownerEmail: "",
+    ownerEmail: '',
   });
 
-  const [periodicityType, setPeriodicityType] = useState<string>("fixed");
+  const [periodicityType, setPeriodicityType] = useState<string>('fixed');
 
-  const handleContractBaseChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleContractBaseChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
 
     let updatedValue: any;
 
-    if (name === "basePayment") {
+    if (name === 'basePayment') {
       updatedValue = parseFloat(value);
     } else {
       updatedValue = value;
     }
-    if (name === "periodicity") {
+    if (name === 'periodicity') {
       updatedValue = parseFloat(value);
     } else {
       updatedValue = value;
@@ -116,7 +111,7 @@ export default function Create() {
 
   //See changes in console
   useEffect(() => {
-    console.log("From pather", contractBase);
+    console.log('From pather', contractBase);
   }, [contractBase]);
 
   //---------------------------------Multipliers---------------------------------
@@ -124,15 +119,13 @@ export default function Create() {
   const [multipliers, setMultipliers] = useState<Multiplier[]>([]);
 
   const handleMultipliersChange = (multipliers: Multiplier[]) => {
-    const hasName = multipliers.some(
-      (multiplier) => multiplier.name.trim() !== ""
-    );
+    const hasName = multipliers.some((multiplier) => multiplier.name.trim() !== '');
     setMultipliers(multipliers);
   };
 
   //See changes in console
   useEffect(() => {
-    console.log("From pather", multipliers);
+    console.log('From pather', multipliers);
   }, [multipliers]);
 
   //---------------------------------Beneficiaeries---------------------------------
@@ -144,7 +137,7 @@ export default function Create() {
   };
   //See changes in console
   useEffect(() => {
-    console.log("From pather", beneficiaries);
+    console.log('From pather', beneficiaries);
   }, [beneficiaries]);
 
   //---------------------------------Can continue---------------------------------
@@ -165,8 +158,7 @@ export default function Create() {
   };
 
   //---------------------------------infoForBlockchain---------------------------------
-  const [infoForBlockchain, setInfoForBlockchain] =
-    useState<InfoForBlockchain | null>(null);
+  const [infoForBlockchain, setInfoForBlockchain] = useState<InfoForBlockchain | null>(null);
 
   const handleCreateAllInfoBC = () => {
     const contract: ContractBC = {
@@ -175,15 +167,13 @@ export default function Create() {
       totalPayment: totalToPay,
     };
 
-    const beneficiariesBC: BeneficiaryBC[] = beneficiaries.map(
-      (beneficiary) => ({
-        address: beneficiary.address,
-        multipliers: beneficiary.multipliers,
-        totalMultipliers: beneficiary.totalMultipliers,
-        basePayment: beneficiary.basePayment,
-        finalPayment: beneficiary.finalPayment,
-      })
-    );
+    const beneficiariesBC: BeneficiaryBC[] = beneficiaries.map((beneficiary) => ({
+      address: beneficiary.address,
+      multipliers: beneficiary.multipliers,
+      totalMultipliers: beneficiary.totalMultipliers,
+      basePayment: beneficiary.basePayment,
+      finalPayment: beneficiary.finalPayment,
+    }));
 
     const infoBC: InfoForBlockchain = {
       multipliers,
@@ -193,10 +183,10 @@ export default function Create() {
 
     setInfoForBlockchain(infoBC);
     setTimeout(() => {
-      setResult("loading");
+      setResult('loading');
     }, 1000);
     setTimeout(() => {
-      setResult("done");
+      setResult('done');
     }, 7000);
   };
 
@@ -205,17 +195,15 @@ export default function Create() {
   }, [infoForBlockchain]);
 
   //---------------------------------Results---------------------------------
-  const [result, setResult] = useState<
-    "creating" | "loading" | "done" | "error"
-  >("creating");
+  const [result, setResult] = useState<'creating' | 'loading' | 'done' | 'error'>('creating');
 
   const handleEmptyAll = () => {
     setSteps(0);
     setContractBase({
-      contractName: "",
+      contractName: '',
       basePayment: 0,
       periodicity: 0,
-      ownerEmail: "",
+      ownerEmail: '',
     });
     setMultipliers([]);
     setBeneficiaries([]);
@@ -228,7 +216,7 @@ export default function Create() {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      {result === "creating" && (
+      {result === 'creating' && (
         <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
           <div className="hidden md:flex h-[100px] justify-end">
             <WalletManager />
@@ -278,43 +266,23 @@ export default function Create() {
           )}
           <div className="flex w-6/12 md:w-2/12 gap-5">
             {steps === 0 ? (
-              <Link href={"/"}>
+              <Link href={'/'}>
                 <Button type="outlined" text="cancel" />
               </Link>
             ) : (
               <div>
-                <Button
-                  type="outlined"
-                  text="back"
-                  action={() => step("back")}
-                />
+                <Button type="outlined" text="back" action={() => step('back')} />
               </div>
             )}
             <div>
-              {canContinue && steps !== 4 && (
-                <Button type="active" text="next" action={() => step("next")} />
-              )}
-              {!canContinue && steps !== 4 && (
-                <Button
-                  type="disabled"
-                  text="next"
-                  action={() => step("next")}
-                />
-              )}
-              {steps === 4 && (
-                <Button
-                  type="active"
-                  text="done"
-                  action={handleCreateAllInfoBC}
-                />
-              )}
+              {canContinue && steps !== 4 && <Button type="active" text="next" action={() => step('next')} />}
+              {!canContinue && steps !== 4 && <Button type="disabled" text="next" action={() => step('next')} />}
+              {steps === 4 && <Button type="active" text="done" action={handleCreateAllInfoBC} />}
             </div>
           </div>
         </div>
       )}
-      {result !== "creating" && (
-        <Result result={result} handleEmptyAll={handleEmptyAll} />
-      )}
+      {result !== 'creating' && <Result result={result} handleEmptyAll={handleEmptyAll} />}
     </main>
   );
 }

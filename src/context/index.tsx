@@ -5,6 +5,7 @@ import { BN } from 'bn.js';
 interface StorageContract {
   name: string;
   address: string;
+  email: string;
 }
 
 //Contracts I can claim
@@ -39,6 +40,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
       contracts.push({
         name: 'My Contract by My',
         address: '5EpK8bC2J4vUzgYG6rJG8xVmJKKnrGZGENgGHg9aXcbdNGra',
+        email: '',
       });
       localStorage.setItem('contracts', JSON.stringify(contracts));
     }

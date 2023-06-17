@@ -1,8 +1,18 @@
-import React from "react";
-import Text from "@/components/generals/text";
-import Button from "@/components/generals/button";
+import React from 'react';
+import Text from '@/components/generals/text';
+import Button from '@/components/generals/button';
+import { useBeneficiaries } from '@/hooks/useBeneficiaries';
 
-const index = () => {
+import BeneficiayRow from '@/components/edit/beneficiaries/beneficiaryRow';
+
+interface ContractProps {
+  _contract: any | undefined;
+  _contractAddress: string | undefined;
+}
+
+const index = ({ _contract, _contractAddress }: ContractProps) => {
+  const { beneficiaries } = useBeneficiaries(_contract);
+
   return (
     <div className="w-10/12 flex flex-col gap-[20px]">
       <div className="">
@@ -37,43 +47,10 @@ const index = () => {
         <form className="flex flex-col gap-[5px]">
           {/* Beneficiarie row */}
           {/* 👇 .map of active multipliers 👇 */}
-          {/*initialBeneficiaries.map((b) => (
-          <div className="flex gap-[20px] text-left w-12/12 items-center">
-            <div className="w-2/12">
-              <input
-                value="name a"
-                name="beneficiarieName"
-                className="capitalize w-full bg-opwhite border-2 rounded-[5px] p-1"
-              />
-            </div>
-            <div className="w-2/12">
-              <input
-                value={b.address}
-                name="beneficiarieAddress"
-                className="w-full bg-opwhite border-2 rounded-[5px] p-1"
-              />
-            </div>
-            <div className="w-2/12">
-              <input
-                name="beneficiarieMultiplier1"
-                className="w-full bg-opwhite border-2 rounded-[5px] p-1"
-              />
-            </div>
-            <div className="w-2/12">
-              <input
-                name="beneficiarieMultiplier2"
-                className="w-full bg-opwhite border-2 rounded-[5px] p-1"
-              />
-            </div>
-            <div className="w-2/12">
-              <Text type="" text="000 DOT" />
-            </div>
-            <div className="w-2/12">
-              <Button type="text" text="" icon="delete" />
-            </div>
-          </div>
-        ))/*}
-        {/* 👆 .map of active multipliers 👆 */}
+          {beneficiaries?.map((b) => (
+            <BeneficiayRow _contract={_contract} _beneficiaryAddress={b} />
+          ))}
+          {/* 👆 .map of active multipliers 👆 */}
         </form>
         <hr className="border-2 rounded my-[10px] w-10/12 "></hr>
         <div className="flex w-9/12 justify-between px-1">
