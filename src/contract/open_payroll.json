@@ -1,7 +1,7 @@
 {
   "source": {
-    "hash": "0xf2deced10c8ab2df321c8f236fd94ca749a0b15a075e2ed3ecc4c5489cb747fd",
-    "language": "ink! 4.2.0",
+    "hash": "0x4a8a55c4a112cb4d754d89966ee3b3f788b96c3f87f73493a33cf7c1ea3261f5",
+    "language": "ink! 4.2.1",
     "compiler": "rustc 1.69.0",
     "build_info": {
       "build_mode": "Release",
@@ -102,20 +102,20 @@
         "displayName": [
           "ChainExtension"
         ],
-        "type": 37
+        "type": 38
       },
       "hash": {
         "displayName": [
           "Hash"
         ],
-        "type": 35
+        "type": 36
       },
       "maxEventTopics": 4,
       "timestamp": {
         "displayName": [
           "Timestamp"
         ],
-        "type": 36
+        "type": 37
       }
     },
     "events": [
@@ -796,7 +796,9 @@
         "args": [],
         "default": false,
         "docs": [
-          " Check if all payments up to date or storage unclaiumed_payments is up-to-date"
+          " Check if all payments up to date or storage unclaiumed_payments is up-to-date",
+          " TODO: this function should be renamed and separated in two different functions",
+          " The view function should just return a bool, and the ensure function should return an error"
         ],
         "label": "ensure_all_payments_uptodate",
         "mutates": false,
@@ -1194,6 +1196,24 @@
           "type": 31
         },
         "selector": "0xf7765f14"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Get the owner of the contract"
+        ],
+        "label": "get_owner",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 35
+        },
+        "selector": "0x07fcd0b1"
       }
     ]
   },
@@ -1827,7 +1847,7 @@
         },
         "path": [
           "open_payroll",
-          "errors",
+          "open_payroll",
           "Error"
         ]
       }
@@ -2453,6 +2473,48 @@
       "id": 35,
       "type": {
         "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 0
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 0
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "type": {
+        "def": {
           "composite": {
             "fields": [
               {
@@ -2470,7 +2532,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 37,
       "type": {
         "def": {
           "primitive": "u64"
@@ -2478,7 +2540,7 @@
       }
     },
     {
-      "id": 37,
+      "id": 38,
       "type": {
         "def": {
           "variant": {}

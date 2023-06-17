@@ -12,9 +12,11 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const [periodicity, setPeriodicity] = useState<undefined | number>(undefined);
   const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
   const [nextBlockPeriodInDays, setNextBlockPeriodInDays] = useState<undefined | number>(undefined);
-  const [contractState, SetContractState] = useState<undefined | boolean>(undefined);
+  const [contractState, setContractState] = useState<undefined | boolean>(undefined);
   const [amountBeneficiaries, setAmountBeneficiaries] = useState<undefined | number>(undefined);
   const [listBeneficiaries, setListBeneficiaries] = useState<undefined | string[]>(undefined);
+  const [multipliersIdList, setMultipliersIdList] = useState<undefined | any>(undefined);
+  const [baseMultipliers, setBaseMultipliers] = useState<undefined | any>(undefined);
 
   const [basePayment, setBasePayment] = useState<undefined | any>(undefined);
 
@@ -29,6 +31,8 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const getPeriodicity = useCall<number>(contract, 'getPeriodicity');
   const getBasePayment = useCall<any>(contract, 'getBasePayment');
   const isPaused = useCall<boolean>(contract, 'isPaused');
+  const getMultipliersList = useCall<any>(contract, 'getMultipliersList');
+  const getBaseMultiplier = useCall<any>(contract, 'getBaseMultiplier');
 
   useEffect(() => {
     getListBeneficiaries.send();
@@ -37,9 +41,10 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     getTotalDebts.send();
     getPeriodicity.send();
     getBasePayment.send();
+    getMultipliersList.send();
     isPaused.send();
     return () => {};
-  }, [contract]);
+  }, [contract?.contract]);
 
   useEffect(() => {
     if (getContractBalance.result) {
@@ -79,6 +84,29 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   }, [getBasePayment.result, api?.api]);
 
   useEffect(() => {
+    const searchBaseMultipliers = async (multipliers:any) => {
+      let localBaseMultipliers = [];
+      let a_async = await getBaseMultiplier.send(multipliers[0])
+      let a = pickDecoded(a_async)
+      localBaseMultipliers.push(a);
+      setBaseMultipliers(localBaseMultipliers);
+      console.log("Awaiteeeeeed")
+      console.log(a)
+    };
+      
+    if (getMultipliersList.result) {
+      let data = pickDecoded(getMultipliersList.result!);
+      setMultipliersIdList(data);
+      searchBaseMultipliers(data);
+    }
+  }, [getMultipliersList.result]);
+
+  useEffect(() => {
+    console.log("AAAAAbaseMultipliersAAAA")
+    console.log(baseMultipliers)
+  }, [baseMultipliers]);
+
+  useEffect(() => {
     if (getNextBlockPeriod.result && periodicity) {
       let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result!)?.toString();
       if (getNextBlockPeriodValueString) {
@@ -94,7 +122,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (isPaused.result) {
       let data = Boolean(pickDecoded(getTotalDebts.result!)).valueOf();
-      SetContractState(data);
+      setContractState(data);
     }
   }, [isPaused.result]);
 
@@ -107,5 +135,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     amountBeneficiaries,
     listBeneficiaries,
     basePayment,
+    multipliersIdList,
+    baseMultipliers,
   };
 }
