@@ -21,8 +21,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   useEffect(() => {
     getAmountToClaim.send([address], { defaultCaller: true });
     getBeneficiary.send([address], { defaultCaller: true });
-    return () => {};
-  }, [contract?.contract]);
+  }, [contract?.contract, address]);
 
   useEffect(() => {
     if (getAmountToClaim.result) {
@@ -34,8 +33,10 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
   useEffect(() => {
     if (getBeneficiary.result) {
-      let data = pickDecoded(getBeneficiary.result!)!;
-      setLastClaim(data.last_claim);
+      let data = pickResultOk(getBeneficiary.result!)!;
+      console.log('data');
+      console.log(data);
+      setLastClaim(data.last_claim);//TODO Eslint throws error but it works
       setBeneficiaryMultipliers(data.multipliers);
       setBeneficiaryUnclaimedPayments(data.unclaimed_payments);
     }

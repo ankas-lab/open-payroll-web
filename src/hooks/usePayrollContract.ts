@@ -44,7 +44,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     getMultipliersList.send();
     isPaused.send();
     return () => {};
-  }, [contract]);
+  }, [contract?.contract]);
 
   useEffect(() => {
     if (getContractBalance.result) {
@@ -84,36 +84,27 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   }, [getBasePayment.result, api?.api]);
 
   useEffect(() => {
-    const searchBaseMultiplier = async (multiplierId:any) => {
-      return await getBaseMultiplier.send([multiplierId])
+    const searchBaseMultipliers = async (multipliers:any) => {
+      let localBaseMultipliers = [];
+      let a_async = await getBaseMultiplier.send(multipliers[0])
+      let a = pickDecoded(a_async)
+      localBaseMultipliers.push(a);
+      setBaseMultipliers(localBaseMultipliers);
+      console.log("Awaiteeeeeed")
+      console.log(a)
     };
-  
+      
     if (getMultipliersList.result) {
       let data = pickDecoded(getMultipliersList.result!);
       setMultipliersIdList(data);
-      let localBaseMultipliers = [];
-      for (let i = 0; i < data.length; i++) {
-        localBaseMultipliers.push(searchBaseMultiplier(data[i]));
-      }
-  
-      Promise.all(localBaseMultipliers)
-        .then((resolvedMultipliers) => {
-          let resolverMultipliersDecoded = resolvedMultipliers.map((multiplier) => {
-            return pickDecoded(multiplier);
-          });
-          console.log("resolvedMultipliers")
-          console.log(resolvedMultipliers);
-          console.log("resolverMultipliersDecoded")
-          console.log(resolverMultipliersDecoded);
-          setBaseMultipliers(resolverMultipliersDecoded);
-          console.log("baseMultipliers")
-        })
-        .catch((error) => {
-          // Handle error if any of the async calls fail
-          console.error(error);
-        });
+      searchBaseMultipliers(data);
     }
   }, [getMultipliersList.result]);
+
+  useEffect(() => {
+    console.log("AAAAAbaseMultipliersAAAA")
+    console.log(baseMultipliers)
+  }, [baseMultipliers]);
 
   useEffect(() => {
     if (getNextBlockPeriod.result && periodicity) {

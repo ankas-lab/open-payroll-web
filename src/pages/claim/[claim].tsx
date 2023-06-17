@@ -28,16 +28,19 @@ export default function Claim() {
   const _contract = useContract(contractAddress!, metadata);
   const { amountToClaim, lastClaim, beneficiaryMultipliers, beneficiaryUnclaimedPayments } = useBeneficiary(
     account?.address,
-    _contract?.contract,
+    _contract,
   );
-  const { basePayment, baseMultipliers } = usePayrollContract(_contract?.contract);
+  const { basePayment, baseMultipliers } = usePayrollContract(_contract);
 
   const getListBeneficiaries = useCall<string[]>(_contract, 'getListBeneficiaries');
   const getBeneficiary = useCall<any>(_contract, 'getBeneficiary');
 
   useEffect(() => {
    console.log('baseMultipliers', baseMultipliers)
-  }, [baseMultipliers]);
+   if(baseMultipliers && basePayment && beneficiaryMultipliers) {
+     setLoading('done')
+   }
+  }, [baseMultipliers, basePayment,beneficiaryMultipliers]);
 
   useEffect(() => {
     if (_contract?.contract) {
@@ -48,7 +51,6 @@ export default function Claim() {
   useEffect(() => {
     if (getListBeneficiaries?.result) {
       let beneficiaries = pickDecoded(getListBeneficiaries.result!);
-
       setBeneficiaryList(beneficiaries!);
     }
   }, [getListBeneficiaries?.result]);
@@ -56,12 +58,16 @@ export default function Claim() {
   useEffect(() => {
     if (beneficiaryList?.includes(account.address)) {
       setIsBeneficiary(true);
-      setLoading('done')
+      // setLoading('done')
     } else {
       setIsBeneficiary(false);
-      setLoading('done')
+      // setLoading('done')
     }
   }, [account, beneficiaryList]);
+
+  useEffect(() => {
+    console.log('beneficiaryMultipliers', beneficiaryMultipliers);
+  }, [beneficiaryMultipliers]);
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
