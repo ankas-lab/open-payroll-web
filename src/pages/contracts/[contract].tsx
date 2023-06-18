@@ -60,6 +60,7 @@ export default function Contract() {
     amountBeneficiaries,
     basePayment,
     listBeneficiaries,
+    multipliersList,
   } = usePayrollContract(_contract);
 
   //---------------------------------UseStates---------------------------------
@@ -95,7 +96,7 @@ export default function Contract() {
   };
 
   //---------------------------------Functions to Format-------------------------------------
-
+  //TODO If the beneficiary doesn't have a multiplier, show something that indicates an unassigned multiplier.
   return loading === 'done' ? (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
@@ -213,10 +214,8 @@ export default function Contract() {
                 <th className="w-[150px]">
                   <Text type="overline" text="address" />
                 </th>
-                {/*getMultipliersList.result &&
-                  pickDecoded(getMultipliersList.result!).map((m: string) => (
-                    <MultiplierHeaderCell key={m} contract={_contract?.contract} mult={m} />
-                  ))*/}
+                {multipliersList !== undefined &&
+                  multipliersList.map((m: string) => <MultiplierHeaderCell key={m} contract={_contract} mult={m} />)}
                 <th className="w-[100px]">
                   <Text type="overline" text="final pay" />
                 </th>

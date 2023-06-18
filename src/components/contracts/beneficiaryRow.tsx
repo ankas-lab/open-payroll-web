@@ -23,7 +23,7 @@ interface BeneficiarieRowProps {
 
 const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
   const blockHeader = useBlockHeader();
-  const { amountToClaim } = useBeneficiary(beneficiaryAddress, contract);
+  const { amountToClaim, beneficiary } = useBeneficiary(beneficiaryAddress, contract);
   const { basePayment } = usePayrollContract(contract);
 
   const context = useContext(DappContext);
@@ -94,12 +94,11 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
         <p>{addressToShort(beneficiaryAddress)}</p>
       </td>
       {/* Multipliers */}
-      {/* {beneficiary !== null &&
-        Object.values(beneficiary?.Ok.multipliers).map((m: any) => (
-          <td className="w-[100px]">
-            <p>{m === '0' ? '1' : m}</p>
-          </td>
-        ))} */}
+      {Object.values(beneficiary?.multipliers).map((m: any) => (
+        <td className="w-[100px]">
+          <p>{m === '0' ? '1' : m}</p>
+        </td>
+      ))}
 
       {/* Final pay */}
       <td className="w-[100px]">

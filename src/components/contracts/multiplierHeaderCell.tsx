@@ -1,41 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useBlockHeader, useCall } from "useink";
-import { pickDecoded } from "useink/utils";
-import { AiOutlineLoading } from "react-icons/ai";
-import Text from "@/components/generals/text";
+import React, { useEffect, useState } from 'react';
+import { useBlockHeader, useCall } from 'useink';
+import { pickDecoded } from 'useink/utils';
+import { AiOutlineLoading } from 'react-icons/ai';
+import Text from '@/components/generals/text';
+import { useBaseMultiplier } from '@/hooks/useBaseMultiplier';
 
 interface multiplierHeaderCellProps {
   contract: any;
   mult: string;
 }
 
-const MultiplierHeaderCell = ({
-  contract,
-  mult,
-}: multiplierHeaderCellProps) => {
+const MultiplierHeaderCell = ({ contract, mult }: multiplierHeaderCellProps) => {
   //---------------------------------Connect to contract---------------------------------
-  const blockHeader = useBlockHeader();
+  const { baseMultiplier } = useBaseMultiplier(contract, mult);
 
-  const [baseMultipliers, setBaseMultipliers] = useState<any | null>(null);
-
-  // ❎ Get multipliers list from contratc
-  const getBaseMultiplier = useCall<any | undefined>(
-    contract,
-    "getBaseMultiplier"
-  );
-
-  const seeBaseMultiplier = async (mult: string) => {
-    setBaseMultipliers(pickDecoded(await getBaseMultiplier.send([mult])));
-  };
-
-  useEffect(() => {
-    if (blockHeader?.blockNumber && contract !== undefined)
-      seeBaseMultiplier(mult);
-  }, [blockHeader?.blockNumber]);
-
-  return baseMultipliers !== null ? (
+  return baseMultiplier !== undefined ? (
     <th className="w-[100px]">
-      <Text type="overline" text={`${baseMultipliers.name}`} />
+      <Text type="overline" text={`${baseMultiplier?.name}`} />
     </th>
   ) : (
     <div className="flex items-center w-full">
