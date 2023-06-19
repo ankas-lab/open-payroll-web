@@ -4,6 +4,8 @@ import { MdAddCircle, MdCancel, MdDelete, MdMenu, MdOutlinePauseCircleFilled } f
 import { IoIosAlert, IoIosCopy } from 'react-icons/io';
 import { CiMenuKebab } from 'react-icons/ci';
 import { AiFillCheckCircle, AiFillEdit, AiOutlineLoading } from 'react-icons/ai';
+import { TfiHandOpen } from 'react-icons/tfi';
+import { FaFileContract } from 'react-icons/fa';
 const archivo = Archivo({ subsets: ['latin'] });
 const podkova = Podkova({ subsets: ['latin'] });
 
@@ -32,6 +34,9 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
+      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {/* FIXME find correct icon to 'claim' */}
+      {icon === 'claim' && <TfiHandOpen className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
     </button>
   ) : type === 'disabled' ? (
@@ -51,6 +56,9 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
+      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {/* FIXME find correct icon to 'claim' */}
+      {icon === 'claim' && <TfiHandOpen className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
     </button>
   ) : type === 'outlined' ? (
@@ -70,6 +78,9 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
+      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {/* FIXME find correct icon to 'claim' */}
+      {icon === 'claim' && <TfiHandOpen className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
     </button>
   ) : type === 'text' ? (
@@ -89,6 +100,9 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
+      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {/* FIXME find correct icon to 'claim' */}
+      {icon === 'claim' && <TfiHandOpen className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
     </button>
   ) : type === 'danger' ? (
@@ -108,6 +122,9 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
+      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {/* FIXME find correct icon to 'claim' */}
+      {icon === 'claim' && <TfiHandOpen className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
     </button>
   ) : type === 'text disabled' ? (
@@ -128,6 +145,9 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
+      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {/* FIXME find correct icon to 'claim' */}
+      {icon === 'claim' && <TfiHandOpen className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
     </button>
   ) : type === 'disabled outlined' ? (
@@ -148,6 +168,9 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
+      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {/* FIXME find correct icon to 'claim' */}
+      {icon === 'claim' && <TfiHandOpen className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
     </button>
   ) : (
@@ -167,6 +190,9 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
+      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {/* FIXME find correct icon to 'claim' */}
+      {icon === 'claim' && <TfiHandOpen className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
     </button>
   );
