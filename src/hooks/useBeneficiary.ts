@@ -5,18 +5,25 @@ import { pickDecoded, pickResultOk, planckToDecimalFormatted, stringNumberToBN }
 
 import { BN } from 'bn.js';
 
+interface Beneficiary {
+  accountId: any;
+  multipliers: any;
+  unclaimedPayments: any;
+  lastUpdatedPeriodBlock: any;
+}
+
 export function useBeneficiary(address: string, contract: ChainContract<any> | undefined) {
   const [amountToClaim, setAmountToClaim] = useState<undefined | any>(undefined);
   const [beneficiaryMultipliers, setBeneficiaryMultipliers] = useState<undefined | any>(undefined);
   const [beneficiaryUnclaimedPayments, setBeneficiaryUnclaimedPayments] = useState<undefined | any>(undefined);
-  const [lastClaim, setLastClaim] = useState<undefined | any>(1111);
+  const [lastClaim, setLastClaim] = useState<undefined | any>(undefined);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
   const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
-  const getBeneficiary = useCall<any>(contract, 'getBeneficiary'); 
+  const getBeneficiary = useCall<any>(contract, 'getBeneficiary');
 
   useEffect(() => {
     getAmountToClaim.send([address], { defaultCaller: true });
@@ -27,18 +34,16 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     if (getAmountToClaim.result) {
       let data = stringNumberToBN(pickResultOk(getAmountToClaim.result!)!);
 
-      setAmountToClaim(planckToDecimalFormatted(data, api?.api));
+      setAmountToClaim(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
     }
   }, [getAmountToClaim.result]);
 
   useEffect(() => {
     if (getBeneficiary.result) {
-      let data = pickResultOk(getBeneficiary.result!)!;
-      console.log('data');
-      console.log(data);
-      setLastClaim(data.last_claim);//TODO Eslint throws error but it works
+      let data: Beneficiary = pickResultOk(getBeneficiary.result!)!;
+      setLastClaim(data.lastUpdatedPeriodBlock);
       setBeneficiaryMultipliers(data.multipliers);
-      setBeneficiaryUnclaimedPayments(data.unclaimed_payments);
+      setBeneficiaryUnclaimedPayments(data.unclaimedPayments);
     }
   }, [getBeneficiary.result]);
 
