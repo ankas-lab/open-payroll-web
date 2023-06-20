@@ -1,16 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
 
-import Text from '../generals/text';
-
 import { AiOutlineLoading } from 'react-icons/ai';
 
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useApi, useBlockHeader, useCall, useChainDecimals, useTokenSymbol } from 'useink';
-import { pickDecoded, planckToDecimalFormatted } from 'useink/utils';
+import { useApi, useBlockHeader } from 'useink';
 
-import { BN } from 'bn.js';
 import { useBeneficiary, usePayrollContract } from '@/hooks';
 
 import MultiplierCell from '@/components/contracts/multiplerCell';
@@ -24,8 +20,7 @@ interface BeneficiarieRowProps {
 }
 
 const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
-  const blockHeader = useBlockHeader();
-  const { amountToClaim, beneficiary, beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(
+  const { amountToClaim, beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(
     beneficiaryAddress,
     contract,
   );
@@ -37,10 +32,6 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
   //   //TODO This should not return null here
   //   return null;
   // }
-
-  useEffect(() => {
-    console.log(blockHeader?.blockNumber);
-  }, [blockHeader]);
 
   const { addressToShort } = context!;
 
