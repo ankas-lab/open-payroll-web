@@ -99,8 +99,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getMultipliersList.result?.ok) {
       let data = pickDecoded(getMultipliersList.result!);
-      console.log(data);
-
       setMultipliersList(data);
     }
   }, [getMultipliersList.result?.ok]);

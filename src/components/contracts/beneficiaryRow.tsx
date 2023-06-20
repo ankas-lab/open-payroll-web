@@ -25,7 +25,7 @@ interface BeneficiarieRowProps {
 
 const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
   const blockHeader = useBlockHeader();
-  const { amountToClaim, beneficiary, beneficiaryMultipliersToArray, finalPay } = useBeneficiary(
+  const { amountToClaim, beneficiary, beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(
     beneficiaryAddress,
     contract,
   );
@@ -37,6 +37,10 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
   //   //TODO This should not return null here
   //   return null;
   // }
+
+  useEffect(() => {
+    console.log(blockHeader?.blockNumber);
+  }, [blockHeader]);
 
   const { addressToShort } = context!;
 
@@ -58,8 +62,8 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
     <tr
       className={
         indexBeneficiary % 2 === 0
-          ? `flex gap-[50px] text-[14px] items-center h-11 px-1 font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
-          : `flex gap-[50px] text-[14px] items-center h-11 px-1 bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
+          ? `flex gap-[50px] text-[14px] items-center h-11 px-2 font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
+          : `flex gap-[50px] text-[14px] items-center h-11 px-2 bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
       }
     >
       {/* Beneficiary name */}
@@ -86,20 +90,29 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
         </td>
       ) : (
         <td className="w-[100px]">
-          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
+          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto" />
         </td>
       )}
       {/* Total to claim */}
-      <td className="w-[100px]">
-        <p>{amountToClaim}</p>
-      </td>
+      {amountToClaim !== undefined ? (
+        <td className="w-[100px]">
+          <p>{amountToClaim}</p>
+        </td>
+      ) : (
+        <td className="w-[100px]">
+          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto" />
+        </td>
+      )}
       {/* Last claim */}
-      <td className="w-[100px]">
-        <p>
-          {/* {beneficiary !== null &&
-            trunc(parseInt(beneficiary?.Ok.lastUpdatedPeriodBlock.replace(/,/g, '')) / periodicity / 7200)} */}
-        </p>
-      </td>{' '}
+      {lastClaim !== undefined ? (
+        <td className="w-[100px]">
+          <p>{lastClaim}</p>
+        </td>
+      ) : (
+        <td className="w-[100px]">
+          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto" />
+        </td>
+      )}
     </tr>
   ) : (
     <div className="flex items-center w-full">
