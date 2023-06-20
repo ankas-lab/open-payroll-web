@@ -14,10 +14,12 @@ const MultiplierHeaderCell = ({ contract, mult }: multiplierHeaderCellProps) => 
   //---------------------------------Connect to contract---------------------------------
   const { baseMultiplier } = useBaseMultiplier(contract, mult);
 
-  return baseMultiplier !== undefined ? (
-    <th className="w-[100px]">
-      <Text type="overline" text={`${baseMultiplier?.name}`} />
-    </th>
+  return baseMultiplier !== null ? (
+    baseMultiplier?.validUntilBlock === null && (
+      <th className="w-[100px]">
+        <Text type="overline" text={`${baseMultiplier?.name}`} />
+      </th>
+    )
   ) : (
     <div className="flex items-center w-full">
       <AiOutlineLoading className="animate-spin" />

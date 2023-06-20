@@ -18,6 +18,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const [multipliersList, setMultipliersList] = useState<undefined | string[]>(undefined);
 
   const [basePayment, setBasePayment] = useState<undefined | any>(undefined);
+  const [rawBasePayment, setRawBasePayment] = useState<undefined | any>(undefined);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
@@ -76,6 +77,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getBasePayment.result && api?.api) {
       let data = stringNumberToBN(pickDecoded(getBasePayment.result!));
+      setRawBasePayment(data);
       // TODO: format millions
       setBasePayment(planckToDecimalFormatted(data, api.api));
     }
@@ -97,6 +99,8 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getMultipliersList.result?.ok) {
       let data = pickDecoded(getMultipliersList.result!);
+      console.log(data);
+
       setMultipliersList(data);
     }
   }, [getMultipliersList.result?.ok]);
@@ -117,6 +121,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     amountBeneficiaries,
     listBeneficiaries,
     basePayment,
+    rawBasePayment,
     multipliersList,
   };
 }
