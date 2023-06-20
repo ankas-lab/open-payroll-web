@@ -51,6 +51,7 @@ export default function Contract() {
 
   const { findContractInLocalStorage } = context!;
   const _contract = useContract(contractAddress!, metadata);
+
   const {
     contractState,
     contractBalance,
@@ -60,6 +61,7 @@ export default function Contract() {
     amountBeneficiaries,
     basePayment,
     listBeneficiaries,
+    baseMultipliers,
   } = usePayrollContract(_contract);
 
   //---------------------------------UseStates---------------------------------
@@ -213,10 +215,12 @@ export default function Contract() {
                 <th className="w-[150px]">
                   <Text type="overline" text="address" />
                 </th>
-                {/*getMultipliersList.result &&
-                  pickDecoded(getMultipliersList.result!).map((m: string) => (
-                    <MultiplierHeaderCell key={m} contract={_contract?.contract} mult={m} />
-                  ))*/}
+                {baseMultipliers &&
+                  baseMultipliers.map((m, index, arr) => (
+                    <th key={index + 'mult'} className="w-[100px]">
+                      <Text type="overline" text={m.Name} />
+                    </th>
+                  ))}
                 <th className="w-[100px]">
                   <Text type="overline" text="final pay" />
                 </th>

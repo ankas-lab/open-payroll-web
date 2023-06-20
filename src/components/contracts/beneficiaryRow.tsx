@@ -23,7 +23,7 @@ interface BeneficiarieRowProps {
 
 const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
   const blockHeader = useBlockHeader();
-  const { amountToClaim } = useBeneficiary(beneficiaryAddress, contract);
+  const { amountToClaim, lastClaim, beneficiaryMultipliers } = useBeneficiary(beneficiaryAddress, contract);
   const { basePayment } = usePayrollContract(contract);
 
   const context = useContext(DappContext);
@@ -41,41 +41,15 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
 
-  //---------------------------------Set in states---------------------------------
-  /* const seeBeneficiary = async () => setBeneficiary(pickDecoded(await getBeneficiary.send([_beneficiary])));
-
-  const seeBasePayment = async () => {
-    const basePayment = pickDecoded(await getBasePayment.send());
-    basePayment !== undefined && setBasePayment(parseInt(basePayment.replace(/,/g, '')));
-  };
-
-  const seeAmountToClaim = async () => {
-    const amountToClaim = pickDecoded(await getAmountToClaim.send([_beneficiary]));
-    setAmountToClaim(parseInt(amountToClaim?.Ok.replace(/,/g, '')));
-  };
-  const seePeriodicity = async () => {
-    const periciodicty = pickDecoded(await getPeriodicity.send());
-    setPeriodicity(parseInt(periciodicty.replace(/,/g, '')));
-  };
-
-  const calculateTotalMultipliers = () => {
-    const multipliers = Object.values(beneficiary?.Ok.multipliers);
-    let multipliersSum;
-    multipliers.length === 0
-      ? (multipliersSum = 1)
-      : (multipliersSum = multipliers.reduce((acumulator: number, value: any) => {
-          return acumulator + parseInt(value);
-        }, 0));
-    return multipliersSum;
-  }; */
-
-  //---------------------------------Initialize functions---------------------------------
-
   useEffect(() => {
     if (amountToClaim) {
       setLoading('done');
     }
   }, [contract, amountToClaim]);
+
+  useEffect(() => {
+    console.log(beneficiaryMultipliers);
+  }, [beneficiaryMultipliers]);
 
   return loading === 'done' ? (
     <tr
@@ -94,12 +68,12 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
         <p>{addressToShort(beneficiaryAddress)}</p>
       </td>
       {/* Multipliers */}
-      {/* {beneficiary !== null &&
-        Object.values(beneficiary?.Ok.multipliers).map((m: any) => (
-          <td className="w-[100px]">
-            <p>{m === '0' ? '1' : m}</p>
+      {beneficiaryMultipliers &&
+        Object.values(beneficiaryMultipliers).map((m: any, index: number) => (
+          <td key={index + 's'} className="w-[100px]">
+            <p>{m}</p>
           </td>
-        ))} */}
+        ))}
 
       {/* Final pay */}
       <td className="w-[100px]">
@@ -111,10 +85,7 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
       </td>
       {/* Last claim */}
       <td className="w-[100px]">
-        <p>
-          {/* {beneficiary !== null &&
-            trunc(parseInt(beneficiary?.Ok.lastUpdatedPeriodBlock.replace(/,/g, '')) / periodicity / 7200)} */}
-        </p>
+        <p>{lastClaim}</p>
       </td>
     </tr>
   ) : (
