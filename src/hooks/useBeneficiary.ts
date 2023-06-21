@@ -1,10 +1,23 @@
 import { useState, useEffect } from 'react';
-import { useCall, useApi, ChainContract, useBlockHeader } from 'useink';
+import { useCall, useApi, ChainContract, useBlockHeader, useTx } from 'useink';
 
-import { pickDecoded, pickResultOk, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
+import {
+  pickResultOk,
+  planckToDecimalFormatted,
+  stringNumberToBN,
+  isBroadcast,
+  isErrored,
+  isFinalized,
+  isInBlock,
+  isInvalid,
+  isPendingSignature,
+  pickDecoded,
+  bnToBalance,
+} from 'useink/utils';
 
 import { BN } from 'bn.js';
 import { usePayrollContract } from '.';
+import { toast } from 'react-toastify';
 
 export function useBeneficiary(address: string, contract: ChainContract<any> | undefined) {
   const blockHeader = useBlockHeader();
@@ -24,6 +37,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   //---------------------------------Get from contract---------------------------------
   //const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
   const getBeneficiary = useCall<any>(contract, 'getBeneficiary');
+  const updateBeneficiary = useTx(contract, 'updateBeneficiary');
 
   const getBeneficiaryMultipliersToArray = (data: any) => {
     const multipliersArray = Object.entries(data.multipliers).map(([key, value]) => ({
@@ -51,6 +65,16 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
       setLastClaim(`${((blockHeader?.blockNumber! - lastClaimFromContract) / 300).toFixed(0)} hours`);
     blockHeader?.blockNumber! - lastClaimFromContract < 300 &&
       setLastClaim(`${((blockHeader?.blockNumber! - lastClaimFromContract) / 5).toFixed(0)} minutes`);
+  };
+
+  const handleUpdateBeneficiary = (beneficiaryAddress: string, newMultipliers: any) => {
+    console.log('handleUpdateBeneficiary');
+    console.log(beneficiaryAddress);
+    console.log(newMultipliers);
+    const newMultipliersToEntries = Object.entries(newMultipliers);
+    console.log(newMultipliersToEntries);
+
+    updateBeneficiary.signAndSend([beneficiaryAddress, newMultipliersToEntries]);
   };
 
   useEffect(() => {
@@ -94,6 +118,46 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     }
   }, [beneficiaryMultipliersToArray]);
 
+  useEffect(() => {
+    if (isPendingSignature(updateBeneficiary)) {
+      console.log({ type: updateBeneficiary.status, message: `Please sign the transaction in your wallet` });
+      toast(`Please sign the transaction in your wallet`);
+    }
+
+    if (isBroadcast(updateBeneficiary)) {
+      console.log({
+        type: updateBeneficiary.status,
+        message: 'Flip transaction has been broadcast!',
+      });
+      toast('Flip transaction has been broadcast!');
+    }
+
+    if (isInBlock(updateBeneficiary)) {
+      console.log({
+        type: updateBeneficiary.status,
+        message: 'Transaction is in the block.',
+      });
+
+      toast('Transaction is in the block.');
+    }
+
+    if (isErrored(updateBeneficiary)) {
+      console.log({ type: updateBeneficiary.status, message: `Error` });
+      toast(`Error`);
+    }
+    if (isInvalid(updateBeneficiary)) {
+      console.log({ type: updateBeneficiary.status, message: `IsInvalid` });
+      toast(`IsInvalid`);
+    }
+
+    if (isFinalized(updateBeneficiary)) {
+      console.log({ type: updateBeneficiary.status, message: `The transaction has been finalized.` });
+      toast(`The transaction has been finalized.`);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateBeneficiary.status]);
+
   return {
     beneficiary,
     amountToClaim,
@@ -102,5 +166,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     beneficiaryUnclaimedPayments,
     beneficiaryMultipliersToArray,
     finalPay,
+    handleUpdateBeneficiary,
   };
 }

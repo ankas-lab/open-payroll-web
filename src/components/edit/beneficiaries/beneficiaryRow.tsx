@@ -14,6 +14,10 @@ import MultiplierCell from '../beneficiaries/multiplierCell';
 
 import { DappContext } from '@/context';
 
+interface newMultiplier {
+  [index: number]: [string, string];
+}
+
 interface BeneficiarieRowProps {
   indexBeneficiary: number;
   contract: any | undefined;
@@ -21,7 +25,7 @@ interface BeneficiarieRowProps {
 }
 
 const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
-  const { amountToClaim, beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(
+  const { amountToClaim, beneficiaryMultipliersToArray, finalPay, lastClaim, handleUpdateBeneficiary } = useBeneficiary(
     beneficiaryAddress,
     contract,
   );
@@ -43,6 +47,8 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
   const [edit, setEdit] = useState<boolean>(false);
 
+  const [newMultipliers, setNewMultipliers] = useState({});
+
   //---------------------------------Initialize functions---------------------------------
 
   useEffect(() => {
@@ -51,19 +57,19 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
     }
   }, [contract]);
 
-  const getNewMultipliers = () => {};
+  const handleInputChange = (event: any) => {
+    const { id, value } = event.target;
+    const newValues = { ...newMultipliers, [id]: value };
+    setNewMultipliers(newValues);
+  };
 
-  //TODO
-  //si un input cambia, habilitar el done
-  //obtener los multiplicadores nuevos
-  //acomodar los multiplicadores nuevos para que los reciba el contrato
-  //enviar los multiplicadores nuevos al contrato
-  /*
-  accountId
-"5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25"
-multipliersVec
-[ [ "1", "2" ], [ "3", "2" ] ]
-  */
+  useEffect(() => {
+    console.log('newMultipliers state:', newMultipliers);
+  }, [newMultipliers]);
+
+  useEffect(() => {
+    console.log('beneficiaryMultipliersToArray:', beneficiaryMultipliersToArray);
+  }, [beneficiaryMultipliersToArray]);
 
   return loading === 'done' ? (
     <tr
@@ -75,7 +81,9 @@ multipliersVec
     >
       <td className="w-[50px]">
         {!edit && <Button type="text" icon="edit" action={() => setEdit(true)} />}
-        {edit && <Button type="text" icon="check" action={() => setEdit(false)} />}
+        {edit && (
+          <Button type="text" icon="check" action={() => handleUpdateBeneficiary(beneficiaryAddress, newMultipliers)} />
+        )}
       </td>
       {/* Beneficiary name */}
       <td className="w-[150px]">
@@ -104,6 +112,7 @@ multipliersVec
           mult={m}
           edit={edit}
           beneficiaryMultipliersToArray={beneficiaryMultipliersToArray}
+          getNewMultipliers={handleInputChange}
         />
       ))}
       {/* Final pay */}

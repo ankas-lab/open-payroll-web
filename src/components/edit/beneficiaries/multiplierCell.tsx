@@ -7,9 +7,16 @@ interface multiplierHeaderCellProps {
   mult: string;
   beneficiaryMultipliersToArray: any;
   edit: boolean;
+  getNewMultipliers: any;
 }
 
-const multiplerCell = ({ contract, mult, beneficiaryMultipliersToArray, edit }: multiplierHeaderCellProps) => {
+const multiplerCell = ({
+  contract,
+  mult,
+  beneficiaryMultipliersToArray,
+  edit,
+  getNewMultipliers,
+}: multiplierHeaderCellProps) => {
   const { baseMultiplier } = useBaseMultiplier(contract, mult);
 
   const [multiplier, setMultiplier] = useState<any | undefined>(undefined);
@@ -44,10 +51,10 @@ const multiplerCell = ({ contract, mult, beneficiaryMultipliersToArray, edit }: 
       <td className="w-[100px]">
         <input
           placeholder={multiplier.value == 0 ? 1 : multiplier.value}
-          id={multiplier.multiplierId}
-          type="text"
-          name={multiplier.multiplierId}
-          onChange={(e) => console.log(e)}
+          id={mult}
+          type="number"
+          name={mult}
+          onChange={getNewMultipliers}
           className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
         />
       </td>
@@ -58,27 +65,15 @@ const multiplerCell = ({ contract, mult, beneficiaryMultipliersToArray, edit }: 
       <td className="w-[100px]">
         <input
           placeholder="-"
-          id="a"
-          type="text"
-          name="a"
-          onChange={(e) => console.log(e)}
+          id={mult}
+          type="number"
+          name={mult}
+          onChange={getNewMultipliers}
           className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
         />
       </td>
     );
   }
-  /*
-   */
-
-  /*
-  return baseMultiplier?.validUntilBlock === null && multiplier !== undefined ? (
-    <td className="w-[100px]">{multiplier.value == 0 ? <p>1</p> : <p>{multiplier.value}</p>}</td>
-  ) : (
-    <td className="w-[100px]">
-      <p>-</p>
-    </td>
-  );
-  */
 };
 
 export default multiplerCell;

@@ -58,9 +58,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
     }
   }, [getCountOfUnclaimBeneficiaries.result?.ok]);
 
-  //necesito saber si puedo updatear o no
-  //mostrar si puedo o no updatear
-
   return (
     <div className="w-full md:w-8/12 flex flex-col gap-[20px]">
       <div>
