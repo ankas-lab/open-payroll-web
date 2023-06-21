@@ -20,10 +20,11 @@ import { usePayrollContract } from '.';
 import { toast } from 'react-toastify';
 
 export function useBeneficiary(address: string, contract: ChainContract<any> | undefined) {
+
   const blockHeader = useBlockHeader();
   const { rawBasePayment } = usePayrollContract(contract);
 
-  const [amountToClaim, SetAmountToClaim] = useState<undefined | any>(undefined);
+  const [amountToClaim, setAmountToClaim] = useState<undefined | any>(undefined);
   const [lastClaim, setLastClaim] = useState<undefined | any>(undefined);
   const [beneficiary, setBeneficiary] = useState<any | undefined>(undefined);
   const [beneficiaryMultipliers, setBeneficiaryMultipliers] = useState<undefined | any>(undefined);
@@ -35,7 +36,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
-  //const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
+  const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
   const getBeneficiary = useCall<any>(contract, 'getBeneficiary');
   const updateBeneficiary = useTx(contract, 'updateBeneficiary');
 
@@ -79,10 +80,11 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
   useEffect(() => {
     if (contract !== undefined) {
-      //getAmountToClaim.send([address]);
+      getAmountToClaim.send([address]);
       getBeneficiary.send([address]);
     }
-  }, [contract]);
+  }, [contract?.contract, address]);
+
 
   /*
   //FIXME
@@ -90,7 +92,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   useEffect(() => {
     if (getAmountToClaim.result?.ok) {
       let data = stringNumberToBN(pickResultOk(getAmountToClaim.result!)!);
-      SetAmountToClaim(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
+      setAmountToClaim(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
     }
   }, [getAmountToClaim.result?.ok]);
 */
@@ -103,12 +105,12 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
       getBeneficiaryMultipliersToArray(data);
       setBeneficiary(data);
 
+
       setBeneficiaryMultipliers(data.multipliers);
 
-      SetAmountToClaim(planckToDecimalFormatted(amountToClaim, api?.api, { decimals: 2 }));
+      setAmountToClaim(planckToDecimalFormatted(amountToClaim, api?.api, { decimals: 2 }));
 
       getLastClaim(data.lastUpdatedPeriodBlock);
-      //setBeneficiaryUnclaimedPayments(data.unclaimed_payments);
     }
   }, [getBeneficiary.result?.ok]);
 
@@ -157,6 +159,17 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateBeneficiary.status]);
+  
+  useEffect(() => {
+    if (getBeneficiary.result) {
+      let data = pickResultOk(getBeneficiary.result!)!;
+      console.log('data');
+      console.log(data);
+      setLastClaim(data.last_claim);//TODO Eslint throws error but it works
+      setBeneficiaryMultipliers(data.multipliers);
+      setBeneficiaryUnclaimedPayments(data.unclaimed_payments);
+    }
+  }, [getBeneficiary.result]);
 
   return {
     beneficiary,

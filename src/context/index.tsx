@@ -38,8 +38,8 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
       contracts = JSON.parse(storedContracts);
     } else {
       contracts.push({
-        name: 'My Contract by My',
-        address: '5EpK8bC2J4vUzgYG6rJG8xVmJKKnrGZGENgGHg9aXcbdNGra',
+        name: "My Contract by My",
+        address: "5DNj7Z75xZtNUzjZ8fVdK95hRjd7hEKbsLgTvYdDZ22MCaCK",
         email: '',
       });
       localStorage.setItem('contracts', JSON.stringify(contracts));
