@@ -162,7 +162,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   useEffect(() => {
     if (getBeneficiary.result) {
       let data: Beneficiary = pickResultOk(getBeneficiary.result!)!;
-      setLastClaim(data.lastUpdatedPeriodBlock);
       setBeneficiaryMultipliers(data.multipliers);
       setBeneficiaryUnclaimedPayments(data.unclaimedPayments);
     }

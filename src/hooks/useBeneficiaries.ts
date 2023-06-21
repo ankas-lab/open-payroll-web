@@ -14,7 +14,7 @@ export function useBeneficiaries(_contract: any) {
 
   useEffect(() => {
     if (getListBeneficiaries.result?.ok) {
-      const decoded = pickDecoded(getListBeneficiaries.result);
+      const decoded: string[] | undefined = pickDecoded(getListBeneficiaries.result);
       setBeneficiaries(decoded);
     }
   }, [getListBeneficiaries.result?.ok]);
