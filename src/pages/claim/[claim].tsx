@@ -20,6 +20,7 @@ export default function Claim() {
   const router = useRouter();
   const api = useApi('rococo-contracts-testnet');
 
+
   const { claim } = router.query;
   const contractAddress = claim?.toString();
 
@@ -34,6 +35,7 @@ export default function Claim() {
     account?.address,
     _contract,
   );
+
   const { basePayment, baseMultipliers, periodicity } = usePayrollContract(_contract);
 
   const chainSymbol = useTokenSymbol('rococo-contracts-testnet');
@@ -47,6 +49,7 @@ export default function Claim() {
       setLoading('done');
     }
   }, [baseMultipliers, basePayment, beneficiaryMultipliers]);
+
 
   useEffect(() => {
     if (_contract?.contract) {
