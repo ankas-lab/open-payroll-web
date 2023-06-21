@@ -1,8 +1,20 @@
-import React from "react";
-import Text from "../../generals/text";
-import Button from "../../generals/button";
+import React, { useState } from 'react';
+import Text from '../../generals/text';
+import Button from '../../generals/button';
+import { useMultipliers } from '@/hooks/useMultipliers';
+import MultiplierInput from './multiplierIntput';
+import { AiOutlineLoading } from 'react-icons/ai';
 
-const index = () => {
+interface ContractProps {
+  _contract: any | undefined;
+}
+
+const index = ({ _contract }: ContractProps) => {
+  const [createNewMultuplier, setCreateNewMultuplier] = useState(false);
+  const [newMultuplier, setNewMultuplier] = useState<string | undefined>(undefined);
+
+  const { multipliersList, handleAddBaseMultiplier } = useMultipliers(_contract);
+
   return (
     <div className="w-full md:w-8/12">
       <div className="">
@@ -15,57 +27,60 @@ To eliminate a multiplier it is necessary that it be paused for a period."
       </div>
 
       <div className="flex flex-col gap-[10px] mt-[10px]">
-        <form className="flex flex-col gap-[10px]">
-          <Text type="h6" text="Active" />
+        <div className="flex flex-col gap-[10px]">
+          <Text type="h5" text="Active" />
           <div className="grid grid-cols-1 w-full md:w-6/12 gap-[10px]">
-            {/* 👇 .map of active multipliers 👇 */}
-            {/*initialMultipliers
-            .filter((m) => m.state === "active")
-            .map((ma) => (
-              <div className="flex gap-[10px]">
-                <input
-                  value={ma.name}
-                  id="multiplier 1"
-                  type="text"
-                  name="multiplier 1"
-                  className="capitalize bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
-                  onChange={handleMultiplierChange}
-                />
-                <div>
-                  <Button type="text" text="" icon="pause" />
-                </div>
+            {multipliersList !== undefined ? (
+              multipliersList?.map((m) => (
+                <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={true} />
+              ))
+            ) : (
+              <div className="flex w-full h-full">
+                <AiOutlineLoading className="animate-spin m-auto" />
               </div>
-            ))*/}
+            )}
+            {createNewMultuplier && (
+              <form className="flex gap-[10px]">
+                <input
+                  placeholder="Name"
+                  type="text"
+                  className=" bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
+                  onChange={(e) => setNewMultuplier(e.target.value)}
+                />
+                <div className="flex">
+                  <Button
+                    type={newMultuplier ? 'text' : 'disabled outlined'}
+                    icon="check"
+                    action={() => handleAddBaseMultiplier(newMultuplier!)}
+                  />
+                  <Button type="text" text="" icon="cancel" action={() => setCreateNewMultuplier(false)} />
+                </div>
+              </form>
+            )}
           </div>
-          {/* 👆 .map of active multipliers 👆 */}
           <div>
-            <Button type="outlined" text="add other" icon="add" />
+            <Button
+              type={createNewMultuplier ? 'disabled' : 'outlined'}
+              text="add other"
+              icon="add"
+              action={() => setCreateNewMultuplier(true)}
+            />
           </div>
           <div className="mt-[10px]">
-            <Text type="h6" text="Paused" />
+            <Text type="h5" text="Paused" />
             <div className="grid grid-cols-1 gap-[10px]">
-              {/* 👇 .map of paused multipliers 👇 */}
-              {/*initialMultipliers
-              .filter((m) => m.state === "paused")
-              .map((ma) => (
-                <div className="flex gap-[10px] items-center capitalize">
-                  <Text text={ma.name} type="" />
-                  <div>
-                    <Button type="text" text="" icon="delete" />
-                  </div>
+              {multipliersList !== undefined ? (
+                multipliersList?.map((m) => (
+                  <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={false} />
+                ))
+              ) : (
+                <div className="flex w-full h-full">
+                  <AiOutlineLoading className="animate-spin m-auto" />
                 </div>
-              ))*/}
+              )}
             </div>
           </div>
-          {/* 👆 .map of paused multipliers 👆 */}
-          <div className="mt-[10px]">
-            {/*initialMultipliers !== newMultipliers ? (
-            <Button type="active" text="confirm update" icon="" />
-          ) : (
-            <Button type="disabled" text="confirm update" icon="" />
-          )*/}
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );
