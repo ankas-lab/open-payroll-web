@@ -25,10 +25,8 @@ interface BeneficiarieRowProps {
 }
 
 const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
-  const { amountToClaim, beneficiaryMultipliersToArray, finalPay, lastClaim, handleUpdateBeneficiary } = useBeneficiary(
-    beneficiaryAddress,
-    contract,
-  );
+  const { amountToClaim, beneficiaryMultipliersToArray, finalPay, lastClaim, handleUpdateBeneficiary, beneficiary } =
+    useBeneficiary(beneficiaryAddress, contract);
   const { multipliersIdList } = usePayrollContract(contract);
 
   const context = useContext(DappContext);
@@ -62,6 +60,11 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
     const newValues = { ...newMultipliers, [id]: value };
     setNewMultipliers(newValues);
   };
+
+  useEffect(() => {
+    beneficiary && setNewMultipliers(beneficiary.multipliers);
+    console.log('beneficiary', beneficiary);
+  }, [beneficiary]);
 
   useEffect(() => {
     console.log('newMultipliers state:', newMultipliers);
@@ -105,7 +108,7 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
         <p>{addressToShort(beneficiaryAddress)}</p>
       </td>
       {/* Multipliers */}
-      {multipliersList?.map((m: any) => (
+      {multipliersIdList?.map((m: any) => (
         <MultiplierCell
           key={m}
           contract={contract}
