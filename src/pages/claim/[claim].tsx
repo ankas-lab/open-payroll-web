@@ -10,12 +10,15 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { AiOutlineLoading } from 'react-icons/ai';
 import metadata from '../../contract/open_payroll.json';
-import { useContract, useCall, useWallet } from 'useink';
-import { pickDecoded, pickResultOk } from 'useink/utils';
+import { useContract, useCall, useWallet, useApi, useBlockHeader, useTokenSymbol } from 'useink';
+import { pickDecoded, pickResultOk, stringNumberToBN } from 'useink/utils';
 import { useBeneficiary, usePayrollContract } from '@/hooks';
+import { blocksToTime } from '@/utils/time';
 
 export default function Claim() {
+  //TODO: pasar a tabla los datos del beneficiario
   const router = useRouter();
+  const api = useApi('rococo-contracts-testnet');
 
   const { claim } = router.query;
   const contractAddress = claim?.toString();
@@ -23,6 +26,7 @@ export default function Claim() {
   const [beneficiaryList, setBeneficiaryList] = useState<string[]>([]);
   const [isBeneficiary, setIsBeneficiary] = useState(false);
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
+  const [timeToClaim, setTimeToClaim] = useState<string>("");
 
   const { account } = useWallet();
   const _contract = useContract(contractAddress!, metadata);
@@ -30,17 +34,19 @@ export default function Claim() {
     account?.address,
     _contract,
   );
-  const { basePayment, baseMultipliers } = usePayrollContract(_contract);
+  const { basePayment, baseMultipliers, periodicity } = usePayrollContract(_contract);
+
+  const chainSymbol = useTokenSymbol('rococo-contracts-testnet');
 
   const getListBeneficiaries = useCall<string[]>(_contract, 'getListBeneficiaries');
-  const getBeneficiary = useCall<any>(_contract, 'getBeneficiary');
+
+  const blockHeader = useBlockHeader();
 
   useEffect(() => {
-   console.log('baseMultipliers', baseMultipliers)
-   if(baseMultipliers && basePayment && beneficiaryMultipliers) {
-     setLoading('done')
-   }
-  }, [baseMultipliers, basePayment,beneficiaryMultipliers]);
+    if (baseMultipliers && basePayment && beneficiaryMultipliers) {
+      setLoading('done');
+    }
+  }, [baseMultipliers, basePayment, beneficiaryMultipliers]);
 
   useEffect(() => {
     if (_contract?.contract) {
@@ -68,6 +74,13 @@ export default function Claim() {
   useEffect(() => {
     console.log('beneficiaryMultipliers', beneficiaryMultipliers);
   }, [beneficiaryMultipliers]);
+
+  useEffect(() => {
+    if (lastClaim && periodicity && blockHeader?.blockNumber && amountToClaim && amountToClaim === `0 ${chainSymbol}`) {
+      let blocksUntilClaim = stringNumberToBN(lastClaim).toNumber() + periodicity - blockHeader.blockNumber;
+      setTimeToClaim(blocksToTime(blocksUntilClaim));
+    }
+  }, [lastClaim, blockHeader, periodicity, amountToClaim]);
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -151,13 +164,13 @@ export default function Claim() {
                       name="name"
                       className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
                     />
-                    <label>of XXX POL</label>
+                    <label>of {amountToClaim}</label>
                   </div>
                   {
                     /*<Button type="active" text="claim" />*/
                     <>
                       <Button type="disabled" text="claim" />
-                      <Text type="" text="You still can't claim your payment, try again in X days. + ICONO" />
+                      <Text type="" text={`You still can't claim your payment, try again in ${timeToClaim}`} />
                     </>
                   }
                 </form>

@@ -3,8 +3,6 @@ import { useCall, useApi, ChainContract } from 'useink';
 
 import { pickDecoded, pickResultOk, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
 
-import { BN } from 'bn.js';
-
 export function useBeneficiary(address: string, contract: ChainContract<any> | undefined) {
   const [amountToClaim, setAmountToClaim] = useState<undefined | any>(undefined);
   const [beneficiaryMultipliers, setBeneficiaryMultipliers] = useState<undefined | any>(undefined);
@@ -36,9 +34,9 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
       let data = pickResultOk(getBeneficiary.result!)!;
       console.log('data');
       console.log(data);
-      setLastClaim(data.last_claim);//TODO Eslint throws error but it works
+      setLastClaim(data.lastUpdatedPeriodBlock);//TODO Eslint throws error but it works
       setBeneficiaryMultipliers(data.multipliers);
-      setBeneficiaryUnclaimedPayments(data.unclaimed_payments);
+      setBeneficiaryUnclaimedPayments(data.unclaimedPayments);
     }
   }, [getBeneficiary.result]);
 
