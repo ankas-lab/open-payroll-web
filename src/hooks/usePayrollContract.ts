@@ -20,10 +20,10 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const [contractState, setContractState] = useState<undefined | boolean>(undefined);
   const [amountBeneficiaries, setAmountBeneficiaries] = useState<undefined | number>(undefined);
   const [listBeneficiaries, setListBeneficiaries] = useState<undefined | string[]>(undefined);
-  const [multipliersIdList, setMultipliersIdList] = useState<undefined | any>(undefined);
+  const [multipliersIdList, setMultipliersIdList] = useState<undefined | string[]>(undefined);
   const [baseMultipliers, setBaseMultipliers] = useState<undefined | BaseMultipliers[]>(undefined);
-
   const [basePayment, setBasePayment] = useState<undefined | any>(undefined);
+  const [rawBasePayment, setRawBasePayment] = useState<undefined | any>(undefined);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
@@ -35,8 +35,8 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const getTotalDebts = useCall<any>(contract, 'getTotalDebts');
   const getPeriodicity = useCall<number>(contract, 'getPeriodicity');
   const getBasePayment = useCall<any>(contract, 'getBasePayment');
-  const isPaused = useCall<boolean>(contract, 'isPaused');
   const getMultipliersList = useCall<any>(contract, 'getMultipliersList');
+  const isPaused = useCall<boolean>(contract, 'isPaused');
   const getBaseMultiplier = useCall<any>(contract, 'getBaseMultiplier');
 
   useEffect(() => {
@@ -83,6 +83,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getBasePayment.result && api?.api) {
       let data = stringNumberToBN(pickDecoded(getBasePayment.result!));
+      setRawBasePayment(data);
       // TODO: format millions
       setBasePayment(planckToDecimalFormatted(data, api.api, { decimals: 2 }));
     }
@@ -118,6 +119,13 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   }, [getNextBlockPeriod.result]);
 
   useEffect(() => {
+    if (getMultipliersList.result?.ok) {
+      let data = pickDecoded(getMultipliersList.result!);
+      setMultipliersIdList(data);
+    }
+  }, [getMultipliersList.result?.ok]);
+
+  useEffect(() => {
     if (isPaused.result) {
       let data = Boolean(pickDecoded(getTotalDebts.result!)).valueOf();
       setContractState(data);
@@ -133,6 +141,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     amountBeneficiaries,
     listBeneficiaries,
     basePayment,
+    rawBasePayment,
     multipliersIdList,
     baseMultipliers,
   };

@@ -61,7 +61,7 @@ export default function Contract() {
     amountBeneficiaries,
     basePayment,
     listBeneficiaries,
-    baseMultipliers,
+    multipliersIdList,
   } = usePayrollContract(_contract);
 
   //---------------------------------UseStates---------------------------------
@@ -97,7 +97,7 @@ export default function Contract() {
   };
 
   //---------------------------------Functions to Format-------------------------------------
-
+  //TODO If the beneficiary doesn't have a multiplier, show something that indicates an unassigned multiplier.
   return loading === 'done' ? (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
@@ -153,7 +153,7 @@ export default function Contract() {
           <div className="capitalize">
             <Text type="overline" text="next pay in (days)" />
             {nextBlockPeriodInDays ? (
-              <p className="text-ellipsis overflow-hidden">{nextBlockPeriodInDays}</p>
+              <p className="text-ellipsis  ">{nextBlockPeriodInDays}</p>
             ) : (
               <div className="flex items-center w-full">
                 <AiOutlineLoading className="animate-spin" />
@@ -185,7 +185,7 @@ export default function Contract() {
             <Text type="overline" text="funds in contract" />
 
             {contractBalance ? (
-              <p className="text-ellipsis overflow-hidden">{contractBalance}</p>
+              <p className="text-ellipsis  ">{contractBalance}</p>
             ) : (
               <div className="flex items-center w-full">
                 <AiOutlineLoading className="animate-spin" />
@@ -195,7 +195,7 @@ export default function Contract() {
           <div className="capitalize">
             <Text type="overline" text="total funds needed" />
             {totalDebts ? (
-              <p className="text-ellipsis overflow-hidden">{totalDebts}</p>
+              <p className="text-ellipsis  ">{totalDebts}</p>
             ) : (
               <div className="flex items-center w-full">
                 <AiOutlineLoading className="animate-spin" />
@@ -206,49 +206,49 @@ export default function Contract() {
         {/* BENEFICIARIES TABLE */}
         <div className=" ">
           <Text type="h4" text="Beneficiaries" />
-          <table className="mt-[30px]">
-            <tbody>
-              <tr className="flex gap-[50px] text-left px-2">
-                <th className="w-[150px]">
-                  <Text type="overline" text="name" />
-                </th>
-                <th className="w-[150px]">
-                  <Text type="overline" text="address" />
-                </th>
-                {baseMultipliers &&
-                  baseMultipliers.map((m, index, arr) => (
-                    <th key={index + 'mult'} className="w-[100px]">
-                      <Text type="overline" text={m.Name} />
-                    </th>
+          <div className="overflow-x-scroll">
+            <table className="mt-[30px]">
+              <tbody>
+                <tr className="flex gap-[50px] text-left px-2">
+                  <th className="w-[150px]">
+                    <Text type="overline" text="name" />
+                  </th>
+                  <th className="w-[150px]">
+                    <Text type="overline" text="address" />
+                  </th>
+                  {multipliersIdList !== undefined &&
+                    multipliersIdList.map((m: string) => (
+                      <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
+                    ))}
+                  <th className="w-[100px]">
+                    <Text type="overline" text="final pay" />
+                  </th>
+                  <th className="w-[100px]">
+                    <Text type="overline" text="total to claim" />
+                  </th>
+                  <th className="w-[100px]">
+                    <Text type="overline" text="last claim" />
+                  </th>
+                </tr>
+                {listBeneficiaries &&
+                  amountBeneficiaries &&
+                  amountBeneficiaries > 0 &&
+                  listBeneficiaries.map((address: string, index: number) => (
+                    <BeneficiaryRow
+                      key={index}
+                      indexBeneficiary={index}
+                      beneficiaryAddress={address}
+                      contract={_contract}
+                    />
                   ))}
-                <th className="w-[100px]">
-                  <Text type="overline" text="final pay" />
-                </th>
-                <th className="w-[100px]">
-                  <Text type="overline" text="total to claim" />
-                </th>
-                <th className="w-[100px]">
-                  <Text type="overline" text="last claim" />
-                </th>
-              </tr>
-              {listBeneficiaries &&
-                amountBeneficiaries &&
-                amountBeneficiaries > 0 &&
-                listBeneficiaries.map((address: string, index: number) => (
-                  <BeneficiaryRow
-                    key={index}
-                    indexBeneficiary={index}
-                    beneficiaryAddress={address}
-                    contract={_contract}
-                  />
-                ))}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </main>
   ) : (
-    <div className="flex items-center w-full">
+    <div className="flex items-center w-full min-h-screen">
       <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
     </div>
   );
