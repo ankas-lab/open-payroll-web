@@ -92,8 +92,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       let a = pickDecoded(a_async)
       localBaseMultipliers.push(a);
       setBaseMultipliers(localBaseMultipliers);
-      console.log("Awaiteeeeeed")
-      console.log(a)
     };
       
     if (getMultipliersList.result) {
@@ -102,11 +100,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       searchBaseMultipliers(data);
     }
   }, [getMultipliersList.result]);
-
-  useEffect(() => {
-    console.log("AAAAAbaseMultipliersAAAA")
-    console.log(baseMultipliers)
-  }, [baseMultipliers]);
 
   useEffect(() => {
     if (getNextBlockPeriod.result && periodicity) {

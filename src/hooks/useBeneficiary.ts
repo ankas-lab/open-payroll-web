@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useCall, useApi, ChainContract, useBlockHeader, useTx } from 'useink';
+import { BN } from 'bn.js';
+import { usePayrollContract } from '.';
+import { toast } from 'react-toastify';
 
 import {
   pickResultOk,
@@ -15,29 +18,24 @@ import {
   bnToBalance,
 } from 'useink/utils';
 
-import { BN } from 'bn.js';
-import { usePayrollContract } from '.';
-import { toast } from 'react-toastify';
-
 export function useBeneficiary(address: string, contract: ChainContract<any> | undefined) {
+  const [amountToClaim, setAmountToClaim] = useState<undefined | any>(undefined);
+  const [beneficiaryMultipliers, setBeneficiaryMultipliers] = useState<undefined | any>(undefined);
+  const [beneficiaryUnclaimedPayments, setBeneficiaryUnclaimedPayments] = useState<undefined | any>(undefined);
+  const [lastClaim, setLastClaim] = useState<undefined | any>(undefined);
+  const [beneficiary, setBeneficiary] = useState<any | undefined>(undefined);
+  const [beneficiaryMultipliersToArray, setBeneficiaryMultipliersToArray] = useState<undefined | any>(undefined);
+  const [finalPay, setFinalPay] = useState<undefined | any>(undefined);
 
   const blockHeader = useBlockHeader();
   const { rawBasePayment } = usePayrollContract(contract);
-
-  const [amountToClaim, setAmountToClaim] = useState<undefined | any>(undefined);
-  const [lastClaim, setLastClaim] = useState<undefined | any>(undefined);
-  const [beneficiary, setBeneficiary] = useState<any | undefined>(undefined);
-  const [beneficiaryMultipliers, setBeneficiaryMultipliers] = useState<undefined | any>(undefined);
-  const [beneficiaryMultipliersToArray, setBeneficiaryMultipliersToArray] = useState<undefined | any>(undefined);
-  const [finalPay, setFinalPay] = useState<undefined | any>(undefined);
-  const [beneficiaryUnclaimedPayments, setBeneficiaryUnclaimedPayments] = useState<undefined | any>(undefined);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
   const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
-  const getBeneficiary = useCall<any>(contract, 'getBeneficiary');
+  const getBeneficiary = useCall<any>(contract, 'getBeneficiary'); 
   const updateBeneficiary = useTx(contract, 'updateBeneficiary');
 
   const getBeneficiaryMultipliersToArray = (data: any) => {
@@ -84,18 +82,14 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
       getBeneficiary.send([address]);
     }
   }, [contract?.contract, address]);
-
-
-  /*
-  //FIXME
-  //amountToClaim is in the Beneficiary object like unclaimedPayments, it is unnecessary to call the blockchain twice.
+ 
   useEffect(() => {
-    if (getAmountToClaim.result?.ok) {
+    if (getAmountToClaim.result) {
       let data = stringNumberToBN(pickResultOk(getAmountToClaim.result!)!);
-      setAmountToClaim(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
+
+      setAmountToClaim(planckToDecimalFormatted(data, api?.api));
     }
-  }, [getAmountToClaim.result?.ok]);
-*/
+  }, [getAmountToClaim.result]);
 
   useEffect(() => {
     if (getBeneficiary.result?.ok) {
@@ -104,7 +98,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
       getBeneficiaryMultipliersToArray(data);
       setBeneficiary(data);
-
 
       setBeneficiaryMultipliers(data.multipliers);
 
@@ -160,16 +153,16 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateBeneficiary.status]);
   
+
   useEffect(() => {
     if (getBeneficiary.result) {
       let data = pickResultOk(getBeneficiary.result!)!;
-      console.log('data');
-      console.log(data);
-      setLastClaim(data.last_claim);//TODO Eslint throws error but it works
+      setLastClaim(data.lastUpdatedPeriodBlock);//TODO Eslint throws error but it works
       setBeneficiaryMultipliers(data.multipliers);
-      setBeneficiaryUnclaimedPayments(data.unclaimed_payments);
+      setBeneficiaryUnclaimedPayments(data.unclaimedPayments);
     }
   }, [getBeneficiary.result]);
+
 
   return {
     beneficiary,
