@@ -7,18 +7,20 @@ import { useBaseMultiplier } from '@/hooks/useBaseMultiplier';
 
 interface multiplierHeaderCellProps {
   contract: any;
-  mult: string;
+  multiplierId: string;
 }
 
-const MultiplierHeaderCell = ({ contract, mult }: multiplierHeaderCellProps) => {
+const MultiplierHeaderCell = ({ contract, multiplierId }: multiplierHeaderCellProps) => {
   //---------------------------------Connect to contract---------------------------------
-  const { baseMultiplier } = useBaseMultiplier(contract, mult);
+  const { baseMultiplier } = useBaseMultiplier(contract, multiplierId);
 
   return baseMultiplier !== null ? (
-    baseMultiplier?.validUntilBlock === null && (
+    baseMultiplier?.validUntilBlock === null ? (
       <th className="w-[100px]">
         <Text type="overline" text={`${baseMultiplier?.name}`} />
       </th>
+    ) : (
+      <></>
     )
   ) : (
     <div className="flex items-center w-full">

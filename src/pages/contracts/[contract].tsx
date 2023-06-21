@@ -51,6 +51,7 @@ export default function Contract() {
 
   const { findContractInLocalStorage } = context!;
   const _contract = useContract(contractAddress!, metadata);
+
   const {
     contractState,
     contractBalance,
@@ -216,7 +217,9 @@ export default function Contract() {
                     <Text type="overline" text="address" />
                   </th>
                   {multipliersIdList !== undefined &&
-                    multipliersIdList.map((m: string) => <MultiplierHeaderCell key={m} contract={_contract} mult={m} />)}
+                    multipliersIdList.map((m: string) => (
+                      <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
+                    ))}
                   <th className="w-[100px]">
                     <Text type="overline" text="final pay" />
                   </th>

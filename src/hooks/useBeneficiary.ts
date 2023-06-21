@@ -17,6 +17,13 @@ import {
   bnToBalance,
 } from 'useink/utils';
 
+interface Beneficiary {
+  accountId: any;
+  multipliers: any;
+  unclaimedPayments: any;
+  lastUpdatedPeriodBlock: any;
+}
+
 export function useBeneficiary(address: string, contract: ChainContract<any> | undefined) {
   const [amountToClaim, setAmountToClaim] = useState<undefined | any>(undefined);
   const [beneficiaryMultipliers, setBeneficiaryMultipliers] = useState<undefined | any>(undefined);
@@ -34,7 +41,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
   //---------------------------------Get from contract---------------------------------
   const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
-  const getBeneficiary = useCall<any>(contract, 'getBeneficiary'); 
+  const getBeneficiary = useCall<any>(contract, 'getBeneficiary');
   const updateBeneficiary = useTx(contract, 'updateBeneficiary');
 
   const getBeneficiaryMultipliersToArray = (data: any) => {
@@ -81,12 +88,12 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
       getBeneficiary.send([address]);
     }
   }, [contract?.contract, address]);
- 
+
   useEffect(() => {
     if (getAmountToClaim.result) {
       let data = stringNumberToBN(pickResultOk(getAmountToClaim.result!)!);
 
-      setAmountToClaim(planckToDecimalFormatted(data, api?.api));
+      setAmountToClaim(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
     }
   }, [getAmountToClaim.result]);
 
@@ -151,17 +158,14 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateBeneficiary.status]);
-  
 
   useEffect(() => {
     if (getBeneficiary.result) {
-      let data = pickResultOk(getBeneficiary.result!)!;
-      setLastClaim(data.lastUpdatedPeriodBlock);//TODO Eslint throws error but it works
+      let data: Beneficiary = pickResultOk(getBeneficiary.result!)!;
       setBeneficiaryMultipliers(data.multipliers);
       setBeneficiaryUnclaimedPayments(data.unclaimedPayments);
     }
   }, [getBeneficiary.result]);
-
 
   return {
     beneficiary,

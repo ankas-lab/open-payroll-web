@@ -5,6 +5,11 @@ import { DappContext } from '@/context';
 
 import { BN } from 'bn.js';
 
+interface BaseMultipliers {
+  Id: string;
+  Name: string;
+}
+
 export function usePayrollContract(contract: ChainContract<any> | undefined) {
   // TODO: ChainContract<ContractPromise> | undefined
 
@@ -16,7 +21,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const [amountBeneficiaries, setAmountBeneficiaries] = useState<undefined | number>(undefined);
   const [listBeneficiaries, setListBeneficiaries] = useState<undefined | string[]>(undefined);
   const [multipliersIdList, setMultipliersIdList] = useState<undefined | string[]>(undefined);
-  const [baseMultipliers, setBaseMultipliers] = useState<undefined | any>(undefined);
+  const [baseMultipliers, setBaseMultipliers] = useState<undefined | BaseMultipliers[]>(undefined);
   const [basePayment, setBasePayment] = useState<undefined | any>(undefined);
   const [rawBasePayment, setRawBasePayment] = useState<undefined | any>(undefined);
 
@@ -49,7 +54,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getContractBalance.result) {
       let data = stringNumberToBN(pickDecoded(getContractBalance.result!));
-      setContractBalance(planckToDecimalFormatted(data, api?.api));
+      setContractBalance(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
     }
   }, [getContractBalance.result]);
 
@@ -71,7 +76,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     if (getTotalDebts.result && api?.api) {
       let data = stringNumberToBN(pickDecoded(getTotalDebts.result!));
       // TODO: format millions
-      setTotalDebts(planckToDecimalFormatted(data, api.api));
+      setTotalDebts(planckToDecimalFormatted(data, api.api, { decimals: 2 }));
     }
   }, [getTotalDebts.result, api?.api]);
 
@@ -80,19 +85,19 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       let data = stringNumberToBN(pickDecoded(getBasePayment.result!));
       setRawBasePayment(data);
       // TODO: format millions
-      setBasePayment(planckToDecimalFormatted(data, api.api));
+      setBasePayment(planckToDecimalFormatted(data, api.api, { decimals: 2 }));
     }
   }, [getBasePayment.result, api?.api]);
 
   useEffect(() => {
-    const searchBaseMultipliers = async (multipliers:any) => {
+    const searchBaseMultipliers = async (multipliers: any) => {
       let localBaseMultipliers = [];
-      let a_async = await getBaseMultiplier.send(multipliers[0])
-      let a = pickDecoded(a_async)
+      let a_async = await getBaseMultiplier.send(multipliers[0]);
+      let a = pickDecoded(a_async);
       localBaseMultipliers.push(a);
       setBaseMultipliers(localBaseMultipliers);
     };
-      
+
     if (getMultipliersList.result) {
       let data = pickDecoded(getMultipliersList.result!);
       setMultipliersIdList(data);
