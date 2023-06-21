@@ -60,7 +60,7 @@ export default function Contract() {
     amountBeneficiaries,
     basePayment,
     listBeneficiaries,
-    multipliersList,
+    multipliersIdList,
   } = usePayrollContract(_contract);
 
   //---------------------------------UseStates---------------------------------
@@ -215,8 +215,8 @@ export default function Contract() {
                   <th className="w-[150px]">
                     <Text type="overline" text="address" />
                   </th>
-                  {multipliersList !== undefined &&
-                    multipliersList.map((m: string) => <MultiplierHeaderCell key={m} contract={_contract} mult={m} />)}
+                  {multipliersIdList !== undefined &&
+                    multipliersIdList.map((m: string) => <MultiplierHeaderCell key={m} contract={_contract} mult={m} />)}
                   <th className="w-[100px]">
                     <Text type="overline" text="final pay" />
                   </th>

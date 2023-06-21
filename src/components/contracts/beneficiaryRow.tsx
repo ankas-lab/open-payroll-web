@@ -24,7 +24,7 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
     beneficiaryAddress,
     contract,
   );
-  const { multipliersList } = usePayrollContract(contract);
+  const { multipliersIdList } = usePayrollContract(contract);
 
   const context = useContext(DappContext);
 
@@ -66,7 +66,7 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
         <p>{addressToShort(beneficiaryAddress)}</p>
       </td>
       {/* Multipliers */}
-      {multipliersList?.map((m: any) => (
+      {multipliersIdList?.map((m: any) => (
         <MultiplierCell
           key={m}
           contract={contract}

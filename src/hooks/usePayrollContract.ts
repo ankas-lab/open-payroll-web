@@ -32,7 +32,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const getBasePayment = useCall<any>(contract, 'getBasePayment');
   const getMultipliersList = useCall<any>(contract, 'getMultipliersList');
   const isPaused = useCall<boolean>(contract, 'isPaused');
-  const getMultipliersList = useCall<any>(contract, 'getMultipliersList');
   const getBaseMultiplier = useCall<any>(contract, 'getBaseMultiplier');
 
   useEffect(() => {
@@ -117,7 +116,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getMultipliersList.result?.ok) {
       let data = pickDecoded(getMultipliersList.result!);
-      setMultipliersList(data);
+      setMultipliersIdList(data);
     }
   }, [getMultipliersList.result?.ok]);
 

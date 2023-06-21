@@ -3,7 +3,6 @@ import { useCall, useApi, ChainContract, useBlockHeader, useTx } from 'useink';
 import { BN } from 'bn.js';
 import { usePayrollContract } from '.';
 import { toast } from 'react-toastify';
-
 import {
   pickResultOk,
   planckToDecimalFormatted,
@@ -41,7 +40,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   const getBeneficiaryMultipliersToArray = (data: any) => {
     const multipliersArray = Object.entries(data.multipliers).map(([key, value]) => ({
       multiplierId: parseInt(key),
-      value: parseInt(value),
+      value: parseInt(value as string),
     }));
     setBeneficiaryMultipliersToArray(multipliersArray);
   };
@@ -93,7 +92,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
   useEffect(() => {
     if (getBeneficiary.result?.ok) {
-      let data = pickResultOk(getBeneficiary.result!);
+      let data: any = pickResultOk(getBeneficiary.result!);
       let amountToClaim = stringNumberToBN(data.unclaimedPayments);
 
       getBeneficiaryMultipliersToArray(data);

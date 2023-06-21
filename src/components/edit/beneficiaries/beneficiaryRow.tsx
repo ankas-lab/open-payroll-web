@@ -29,7 +29,7 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
     beneficiaryAddress,
     contract,
   );
-  const { multipliersList } = usePayrollContract(contract);
+  const { multipliersIdList } = usePayrollContract(contract);
 
   const context = useContext(DappContext);
 

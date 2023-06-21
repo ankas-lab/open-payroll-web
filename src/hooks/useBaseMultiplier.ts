@@ -17,7 +17,7 @@ export function useBaseMultiplier(_contract: any, _multiplier: string) {
 
   useEffect(() => {
     if (getBaseMultiplier.result?.ok) {
-      const decodedBaseMultiplier = pickDecoded(getBaseMultiplier.result);
+      const decodedBaseMultiplier: any = pickDecoded(getBaseMultiplier.result);
       setBaseMultiplier(decodedBaseMultiplier);
     }
   }, [getBaseMultiplier.result?.ok]);
