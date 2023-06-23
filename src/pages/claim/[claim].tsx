@@ -10,8 +10,21 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { AiOutlineLoading } from 'react-icons/ai';
 import metadata from '../../contract/open_payroll.json';
-import { useContract, useCall, useWallet, useApi, useBlockHeader, useTokenSymbol } from 'useink';
-import { pickDecoded, pickResultOk, stringNumberToBN } from 'useink/utils';
+import { toast } from 'react-toastify';
+import { useTxNotifications, useNotifications } from 'useink/notifications'
+import { useContract, useCall, useTx, useWallet, useApi, useBlockHeader, useTokenSymbol } from 'useink';
+import {
+  pickDecoded,
+  pickResultOk,
+  pickResultErr,
+  stringNumberToBN,
+  isBroadcast,
+  isErrored,
+  isFinalized,
+  isInBlock,
+  isInvalid,
+  isPendingSignature,
+} from 'useink/utils';
 import { useBeneficiary, usePayrollContract } from '@/hooks';
 import { blocksToTime } from '@/utils/time';
 
@@ -20,18 +33,17 @@ export default function Claim() {
   const router = useRouter();
   const api = useApi('rococo-contracts-testnet');
 
-
   const { claim } = router.query;
   const contractAddress = claim?.toString();
 
   const [beneficiaryList, setBeneficiaryList] = useState<string[]>([]);
-  const [isBeneficiary, setIsBeneficiary] = useState(false);
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
-  const [timeToClaim, setTimeToClaim] = useState<string>("");
+  const [timeToClaim, setTimeToClaim] = useState<string>('');
+  const [inputValue, setInputValue] = useState<number | null>();
 
   const { account } = useWallet();
   const _contract = useContract(contractAddress!, metadata);
-  const { amountToClaim, lastClaim, beneficiaryMultipliers, beneficiaryUnclaimedPayments } = useBeneficiary(
+  const { amountToClaim, lastClaim, beneficiaryMultipliers, beneficiaryUnclaimedPayments, isBeneficiary } = useBeneficiary(
     account?.address,
     _contract,
   );
@@ -41,49 +53,95 @@ export default function Claim() {
   const chainSymbol = useTokenSymbol('rococo-contracts-testnet');
 
   const getListBeneficiaries = useCall<string[]>(_contract, 'getListBeneficiaries');
+  const claimPaymentTx = useTx(_contract, 'claimPayment');
+  useTxNotifications(claimPaymentTx);
+  const { notifications } = useNotifications()
 
   const blockHeader = useBlockHeader();
 
   useEffect(() => {
-    if (baseMultipliers && basePayment && beneficiaryMultipliers) {
+    if (baseMultipliers && basePayment) {
       setLoading('done');
     }
   }, [baseMultipliers, basePayment, beneficiaryMultipliers]);
 
-
   useEffect(() => {
-    if (_contract?.contract) {
-      getListBeneficiaries.send();
-    }
-  }, [_contract?.contract]);
-
-  useEffect(() => {
-    if (getListBeneficiaries?.result) {
-      let beneficiaries = pickDecoded(getListBeneficiaries.result!);
-      setBeneficiaryList(beneficiaries!);
-    }
-  }, [getListBeneficiaries?.result]);
-
-  useEffect(() => {
-    if (beneficiaryList?.includes(account.address)) {
-      setIsBeneficiary(true);
-      // setLoading('done')
-    } else {
-      setIsBeneficiary(false);
-      // setLoading('done')
-    }
-  }, [account, beneficiaryList]);
-
-  useEffect(() => {
-    console.log('beneficiaryMultipliers', beneficiaryMultipliers);
-  }, [beneficiaryMultipliers]);
-
-  useEffect(() => {
-    if (lastClaim && periodicity && blockHeader?.blockNumber && amountToClaim && amountToClaim === `0 ${chainSymbol}`) {
+    if (
+      isBeneficiary &&
+      lastClaim &&
+      periodicity &&
+      blockHeader?.blockNumber &&
+      amountToClaim &&
+      amountToClaim === `0 ${chainSymbol}`
+    ) {
       let blocksUntilClaim = stringNumberToBN(lastClaim).toNumber() + periodicity - blockHeader.blockNumber;
       setTimeToClaim(blocksToTime(blocksUntilClaim));
     }
   }, [lastClaim, blockHeader, periodicity, amountToClaim]);
+
+  useEffect(() => {
+    if (isPendingSignature(claimPaymentTx)) {
+      console.log({ type: claimPaymentTx.status, message: `Please sign the transaction in your wallet` });
+      toast(`Please sign the transaction in your wallet`);
+    }
+
+    if (isBroadcast(claimPaymentTx)) {
+      console.log({
+        type: claimPaymentTx.status,
+        message: 'Transaction has been broadcast!',
+      });
+      toast('Transaction has been broadcast!');
+    }
+
+    if (isInBlock(claimPaymentTx)) {
+      console.log({
+        type: claimPaymentTx.status,
+        message: 'Transaction is in the block.',
+      });
+
+      toast('Transaction is in block.');
+    }
+
+    if (isErrored(claimPaymentTx)) {
+      console.log({ type: claimPaymentTx.status, message: `Error` });
+      toast(`Error`);
+    }
+    if (isInvalid(claimPaymentTx)) {
+      console.log({ type: claimPaymentTx.status, message: `IsInvalid` });
+      toast(`IsInvalid`);
+    }
+
+    if (isFinalized(claimPaymentTx)) {
+      console.log({ type: claimPaymentTx.status, message: `The transaction has been finalized.` });
+      toast(`The transaction has been finalized.`);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [claimPaymentTx.status]);
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    console.log(value);
+    setInputValue(value);
+  };
+
+  const handleClaimPayment = () => {
+    const options = undefined;
+    claimPaymentTx.signAndSend([account.address, inputValue], options, (result, api, error) => {
+
+      if (error) {
+        console.log('error');
+
+        console.error(JSON.stringify(error));
+      }
+
+      if (result) {
+        console.log('result');
+
+        console.log(JSON.stringify(result));
+      }
+    });
+  };
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -96,7 +154,7 @@ export default function Claim() {
           <div className="flex items-center w-full">
             <AiOutlineLoading className="animate-spin" />
           </div>
-        ) : loading === 'done' && isBeneficiary ? (
+        ) : loading === 'done' && isBeneficiary && beneficiaryMultipliers ? (
           <div>
             <Text type="h2" text="Claiming in My contract" />
             <div className="">
@@ -163,8 +221,9 @@ export default function Claim() {
                   <div className="flex gap-[20px] items-center">
                     <input
                       id="GET-name"
-                      type="text"
-                      name="name"
+                      type="number"
+                      name=""
+                      onChange={handleInputChange}
                       className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
                     />
                     <label>of {amountToClaim}</label>
@@ -172,7 +231,13 @@ export default function Claim() {
                   {
                     /*<Button type="active" text="claim" />*/
                     <>
-                      <Button type="disabled" text="claim" />
+                      <Button
+                        type={timeToClaim === '' ? 'active' : 'disabled'}
+                        text="claim"
+                        action={() => {
+                          handleClaimPayment();
+                        }}
+                      />
                       <Text type="" text={`You still can't claim your payment, try again in ${timeToClaim}`} />
                     </>
                   }
