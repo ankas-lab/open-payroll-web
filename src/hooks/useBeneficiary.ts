@@ -32,6 +32,8 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   const [beneficiary, setBeneficiary] = useState<any | undefined>(undefined);
   const [beneficiaryMultipliersToArray, setBeneficiaryMultipliersToArray] = useState<undefined | any>(undefined);
   const [finalPay, setFinalPay] = useState<undefined | any>(undefined);
+  const [isBeneficiary, setIsBeneficiary] = useState<boolean>(false);
+  const [beneficiaryList, setBeneficiaryList] = useState<string[] | undefined>(undefined);
 
   const blockHeader = useBlockHeader();
   const { rawBasePayment } = usePayrollContract(contract);
@@ -42,6 +44,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   //---------------------------------Get from contract---------------------------------
   const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
   const getBeneficiary = useCall<any>(contract, 'getBeneficiary');
+  const getListBeneficiaries = useCall<string[]>(contract, 'getListBeneficiaries');
   const updateBeneficiary = useTx(contract, 'updateBeneficiary');
 
   const getBeneficiaryMultipliersToArray = (data: any) => {
@@ -90,17 +93,45 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     updateBeneficiary.signAndSend([beneficiaryAddress, newMultipliersToEntries]);
   };
 
+  const checkIfBeneficiary = () => {
+    if (address && beneficiaryList?.includes(address)) {
+      setIsBeneficiary(true);
+    } else {
+      setIsBeneficiary(false);
+    }
+  }
+
   useEffect(() => {
-    if (contract !== undefined) {
+    setIsBeneficiary(false);
+  }, [address]);
+
+  useEffect(() => {
+    checkIfBeneficiary();
+  }, [address,beneficiaryList]);
+    
+  useEffect(() => {
+    if (contract?.contract) {
+      getListBeneficiaries.send();
+    }
+  }, [contract?.contract]);
+
+  useEffect(() => {
+    if (getListBeneficiaries?.result) {
+      let beneficiaries = pickDecoded(getListBeneficiaries.result!);
+      setBeneficiaryList(beneficiaries!);
+    }
+  }, [getListBeneficiaries?.result]);
+
+  useEffect(() => {
+    if (contract !== undefined && isBeneficiary) {
       getAmountToClaim.send([address]);
       getBeneficiary.send([address]);
     }
-  }, [contract?.contract, address]);
+  }, [contract?.contract, isBeneficiary]);
 
   useEffect(() => {
-    if (getAmountToClaim.result) {
+    if (getAmountToClaim.result?.ok) {
       let data = stringNumberToBN(pickResultOk(getAmountToClaim.result!)!);
-
       setAmountToClaim(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
     }
   }, [getAmountToClaim.result]);
@@ -184,5 +215,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     beneficiaryMultipliersToArray,
     finalPay,
     handleUpdateBeneficiary,
+    isBeneficiary,
   };
 }
