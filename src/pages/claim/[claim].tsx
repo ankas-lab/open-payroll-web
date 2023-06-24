@@ -48,7 +48,7 @@ export default function Claim() {
     _contract,
   );
 
-  const { basePayment, baseMultipliers, periodicity } = usePayrollContract(_contract);
+  const { basePayment, baseMultipliers, periodicity, contractBalance, contractState } = usePayrollContract(_contract);
 
   const chainSymbol = useTokenSymbol('rococo-contracts-testnet');
 
@@ -66,6 +66,8 @@ export default function Claim() {
   }, [baseMultipliers, basePayment, beneficiaryMultipliers]);
 
   useEffect(() => {
+    // TODO: check if there are no enough funds to claim, we have to limited the amount to claim
+    // and if funds are 0, we have to hide the claim button
     if (
       isBeneficiary &&
       lastClaim &&
@@ -78,6 +80,7 @@ export default function Claim() {
       setTimeToClaim(blocksToTime(blocksUntilClaim));
     }
   }, [lastClaim, blockHeader, periodicity, amountToClaim]);
+  
 
   useEffect(() => {
     if (isPendingSignature(claimPaymentTx)) {
@@ -98,7 +101,6 @@ export default function Claim() {
         type: claimPaymentTx.status,
         message: 'Transaction is in the block.',
       });
-
       toast('Transaction is in block.');
     }
 
@@ -181,7 +183,7 @@ export default function Claim() {
                 </form>
                 <div className="grid grid-cols-4 gap-[20px]">
                   <div className="">
-                    <Text type="h6" text="Base pay" />
+                    <Text type="h6" text="Base payment" />
                     <Text type="" text={basePayment} />
                   </div>
                   {baseMultipliers?.map((multiplier: any, index: any) => (
@@ -190,26 +192,25 @@ export default function Claim() {
                       <Text type="" text={beneficiaryMultipliers[index]} />
                     </div>
                   ))}
-
                   <div className="">
-                    <Text type="h6" text="Unclaimed" />
-                    <Text type="" text="0" />
-                  </div>
-                  <div className="">
-                    <Text type="h6" text="Final pay" />
+                    <Text type="h6" text="Amount to claim" />
                     <Text type="" text={amountToClaim} />
                   </div>
                   <div className="">
                     <Text type="h6" text="Last claim" />
-                    <Text type="" text="Last claim" />
+                    <Text type="" text={`${lastClaim} ago`} />
                   </div>
                   <div className="">
-                    <Text type="h6" text="Last mount claimed" />
-                    <Text type="" text="Last mount claimed" />
+                    <Text type="h6" text="Funds in contract" />
+                    {contractBalance ? (
+                      <Text type="" text={contractBalance} />
+                    ) : (
+                      <AiOutlineLoading className="animate-spin" />
+                    )}
                   </div>
                   <div className="">
-                    <Text type="h6" text="In contract" />
-                    <Text type="" text="In contract" />
+                    <Text type="h6" text="Status" />
+                    <Text type="" text={contractState ? 'ON' : 'OFF'} />
                   </div>
                 </div>
               </div>

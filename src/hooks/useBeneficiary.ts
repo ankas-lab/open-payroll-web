@@ -66,13 +66,21 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
   const getLastClaim = (lastClaim: any) => {
     let lastClaimFromContract = parseInt(lastClaim.replace(/,/g, ''));
-    blockHeader?.blockNumber! - lastClaimFromContract > 7200 &&
-      setLastClaim(`${((blockHeader?.blockNumber! - lastClaimFromContract) / 7200).toFixed(0)} days`);
-    blockHeader?.blockNumber! - lastClaimFromContract < 7200 &&
-      blockHeader?.blockNumber! - lastClaimFromContract > 300 &&
-      setLastClaim(`${((blockHeader?.blockNumber! - lastClaimFromContract) / 300).toFixed(0)} hours`);
-    blockHeader?.blockNumber! - lastClaimFromContract < 300 &&
-      setLastClaim(`${((blockHeader?.blockNumber! - lastClaimFromContract) / 5).toFixed(0)} minutes`);
+    const timeDifference = blockHeader?.blockNumber! - lastClaimFromContract;
+
+    if (timeDifference > 7200) {
+      const days = Math.floor(timeDifference / 7200);
+      const dayText = days === 1 ? 'day' : 'days';
+      setLastClaim(`${days} ${dayText}`);
+    } else if (timeDifference > 300) {
+      const hours = Math.floor(timeDifference / 300);
+      const hourText = hours === 1 ? 'hour' : 'hours';
+      setLastClaim(`${hours} ${hourText}`);
+    } else {
+      const minutes = Math.floor(timeDifference / 5);
+      const minuteText = minutes === 1 ? 'minute' : 'minutes';
+      setLastClaim(`${minutes} ${minuteText}`);
+    }
   };
 
   const handleUpdateBeneficiary = (beneficiaryAddress: string, newMultipliers: any) => {
