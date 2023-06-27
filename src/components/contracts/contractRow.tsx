@@ -11,7 +11,7 @@ const archivo = Archivo({ subsets: ['latin'] });
 import { useContract } from 'useink';
 import { usePayrollContract } from '@/hooks';
 import metadata from '@/contract/open_payroll.json';
-import { BN } from 'bn.js';
+import { toast } from 'react-toastify';
 
 interface ContractRowProps {
   contract: {
@@ -26,7 +26,7 @@ interface ContractRowProps {
 const ContractRow = ({ contract, i }: ContractRowProps) => {
   //---------------------------------Connect to contract---------------------------------
   const _contract = useContract(contract.address, metadata);
-  const { contractState, contractBalance, periodicity, totalDebts, nextBlockPeriodInDays, amountBeneficiaries } =
+  const { contractState, contractBalance, periodicity, totalDebts, nextBlockPeriod, amountBeneficiaries } =
     usePayrollContract(_contract);
 
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
@@ -42,10 +42,20 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
       <tr
         className={
           i % 2 === 0
-            ? `flex gap-[50px] items-center px-3 text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
-            : `flex gap-[50px] items-center px-3 text-[14px] bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
+            ? `flex gap-[50px] items-center px-2 text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
+            : `flex gap-[50px] items-center px-2 text-[14px] bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
         }
       >
+        {totalDebts! > contractBalance! && (
+          <td
+            className="w-[25px] flex"
+            onMouseEnter={() => toast(`You do not have sufficient funds in ${contract.name}`)}
+          >
+            <div className="flex w-full">
+              <IoIosAlert className="w-5 h-5 text-opdanger m-auto" />
+            </div>
+          </td>
+        )}
         <td className="w-[150px]">
           <p>{contract.name}</p>
         </td>
@@ -86,9 +96,8 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
           )}
         </td>
         <td className="w-[80px]">
-          {/* 🤟🤟🤟 Calculate real next pay day 🤟🤟🤟 */}
-          {nextBlockPeriodInDays !== null ? (
-            <p className="text-ellipsis overflow-hidden">{nextBlockPeriodInDays}</p>
+          {nextBlockPeriod !== null ? (
+            <p className="text-ellipsis overflow-hidden">{nextBlockPeriod}</p>
           ) : (
             <div className="flex items-center w-full">
               <AiOutlineLoading className="animate-spin" />
@@ -110,15 +119,16 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
             <Button type="text" text="view" icon="" />
           </Link>
         </td>
-        <td className="w-[100px]">
-          <IoIosAlert className="w-5 h-5 text-opdanger" />
-        </td>
       </tr>
     </Link>
   ) : (
-    <div className="flex items-center w-full">
-      <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
-    </div>
+    <tr className="flex items-center w-full">
+      <td className="flex w-full">
+        <div className="flex w-full">
+          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
+        </div>
+      </td>
+    </tr>
   );
 };
 

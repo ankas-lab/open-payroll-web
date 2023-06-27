@@ -118,9 +118,11 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                     />
                   </div>
                   {/* TODO Link to permaClaim */}
+                  {/*
                   <Link href={''}>
                     <Button type="outlined" text="claim for them" />
                   </Link>
+                  */}
                 </div>
               </div>
             )}
@@ -257,50 +259,3 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
 };
 
 export default Index;
-
-/*canUpadte ? (
-                    <div className="flex gap-[10px] items-center">
-                      <div className="bg-opwhite border-2 border-oppurple rounded-[5px] flex py-1.5 px-1.5">
-                        <input
-                          placeholder={basePayment}
-                          id="basePayment"
-                          type="number"
-                          name="basePayment"
-                          className="p-0 m-0 bg-opwhite ring-0 focus:ring-0"
-                          onChange={(e) => handleInputNewBasePayment(e)}
-                        />
-                        ROC
-                      </div>
-                      <Button
-                        type={newBasePayment !== undefined ? 'outlined' : 'disabled'}
-                        text="Update"
-                        action={() => handleUpdateBasePayment(newBasePayment)}
-                      />
-                    </div>
-                  ) : (
-                    //FIXME better UI @gera
-                    <div className="flex flex-col gap-[10px]">
-                      <div className="flex gap-[10px] items-center">
-                        <div className="bg-opgray border-2 border-oplightpurple rounded-[5px] flex py-1.5 px-1.5">
-                          <input
-                            placeholder={basePayment}
-                            id="basePayment"
-                            type="number"
-                            name="basePayment"
-                            className="p-0 m-0 bg-opwhite ring-0 focus:ring-0"
-                            onChange={(e) => handleInputNewBasePayment(e)}
-                          />
-                          ROC
-                        </div>
-                        <Button
-                          type={'disabled'}
-                          text="Update"
-                          action={() => handleUpdateBasePayment(newBasePayment)}
-                        />
-                      </div>
-                      <div className="flex gap-[10px] items-center">
-                        <IoIosAlert className="w-5 h-5 text-opdanger" />{' '}
-                        <Text type="" text="You can't update yet, some beneficiaries have not claimed." />
-                      </div>
-                    </div>
-                  )*/

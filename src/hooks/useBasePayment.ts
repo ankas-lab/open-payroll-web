@@ -11,8 +11,11 @@ import {
   pickDecoded,
   bnToBalance,
 } from 'useink/utils';
-//USE CALL SUBCRIOTION
+
 export function useBasePayment(_contract: any) {
+  //TODO: change notifications
+  //TODO: separate get/update?
+
   const [basePayment, setBasePayment] = useState<string | undefined>(undefined);
 
   const api = useApi('rococo-contracts-testnet');
@@ -46,38 +49,25 @@ export function useBasePayment(_contract: any) {
 
   useEffect(() => {
     if (isPendingSignature(updateBasePayment)) {
-      console.log({ type: updateBasePayment.status, message: `Please sign the transaction in your wallet` });
       toast(`Please sign the transaction in your wallet`);
     }
 
     if (isBroadcast(updateBasePayment)) {
-      console.log({
-        type: updateBasePayment.status,
-        message: 'Flip transaction has been broadcast!',
-      });
       toast('Flip transaction has been broadcast!');
     }
 
     if (isInBlock(updateBasePayment)) {
-      console.log({
-        type: updateBasePayment.status,
-        message: 'Transaction is in the block.',
-      });
-
       toast('Transaction is in the block.');
     }
 
     if (isErrored(updateBasePayment)) {
-      console.log({ type: updateBasePayment.status, message: `Error` });
       toast(`Error`);
     }
     if (isInvalid(updateBasePayment)) {
-      console.log({ type: updateBasePayment.status, message: `IsInvalid` });
       toast(`IsInvalid`);
     }
 
     if (isFinalized(updateBasePayment)) {
-      console.log({ type: updateBasePayment.status, message: `The transaction has been finalized.` });
       toast(`The transaction has been finalized.`);
     }
 

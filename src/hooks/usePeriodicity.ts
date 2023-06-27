@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useApi, useCall, useChainDecimals, useTx } from 'useink';
+import { useApi, useCall, useCallSubscription, useChainDecimals, useTx } from 'useink';
 import {
   isBroadcast,
   isErrored,
@@ -15,24 +15,17 @@ export function usePeriodicty(_contract: any) {
   const [periodicity, setPeriodicity] = useState<string | undefined>(undefined);
   const [periodicityType, setPeriodicityType] = useState<'fixed' | 'custom'>('fixed');
 
-  const api = useApi('rococo-contracts-testnet');
+  //TODO: separate get/Tx?
+
   const chainDecimals = useChainDecimals(_contract?.chainId);
 
-  const options = undefined;
-
-  const getPeriodicity = useCall(_contract, 'getPeriodicity');
+  const getPeriodicity = useCallSubscription(_contract, 'getPeriodicity');
 
   const updatePeriodicity = useTx(_contract, 'updatePeriodicity');
 
   const handleUpdatePeriodicity = (_newPeriodicity: any) => {
     updatePeriodicity.signAndSend([_newPeriodicity]);
   };
-
-  useEffect(() => {
-    if (_contract) {
-      getPeriodicity.send();
-    }
-  }, [_contract]);
 
   useEffect(() => {
     if (getPeriodicity.result?.ok && chainDecimals) {

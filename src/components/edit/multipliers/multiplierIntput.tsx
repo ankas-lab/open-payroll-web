@@ -14,8 +14,9 @@ interface ContractProps {
   _active: boolean;
 }
 
-const multiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) => {
+const MultiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) => {
   //TODO when a multiplier is created, paused or deleted, actualize the UI
+  //I try using useCallSubscription, but it still doesn't work, it should because it calls the contract for each new block.
 
   const { baseMultiplier } = useBaseMultiplier(_contract, _multiplier);
 
@@ -38,24 +39,14 @@ const multiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) =>
         <div>
           <div className="flex gap-1">
             <div className="flex">
-              {/*
-                TODO this is correct?
-                block?.blockNumber is updated multiple times
-                */}
-              {block?.blockNumber! < parseInt(baseMultiplier?.validUntilBlock.replace(/,/g, '')) ? (
-                <button
-                  onClick={() => handleDeleteUnusedMultipliers(_multiplier)}
-                  className="items-center text-center flex rounded-[5px] py-[10px] px-[10px]  w-full justify-center text-oppurple"
-                >
-                  <MdDelete className="w-5 h-5" />
-                </button>
+              {block?.blockNumber! > parseInt(baseMultiplier?.validUntilBlock.replace(/,/g, '')) ? (
+                <Button type="text" icon="delete" action={() => handleDeleteUnusedMultipliers(_multiplier)} />
               ) : (
-                <button
-                  disabled
-                  className="items-center text-center flex rounded-[5px] py-[10px] px-[10px]  w-full justify-center text-opgray"
-                >
-                  <MdDelete className="w-5 h-5" />
-                </button>
+                <Button
+                  type="disabled outlined"
+                  icon="delete"
+                  action={() => handleDeleteUnusedMultipliers(_multiplier)}
+                />
               )}
             </div>
             <p className="my-auto">{baseMultiplier?.name}</p>
@@ -64,4 +55,4 @@ const multiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) =>
       );
 };
 
-export default multiplierIntput;
+export default MultiplierIntput;

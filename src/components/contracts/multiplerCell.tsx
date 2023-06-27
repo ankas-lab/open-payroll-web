@@ -8,7 +8,7 @@ interface multiplierHeaderCellProps {
   beneficiaryMultipliersToArray: any;
 }
 
-const multiplerCell = ({ contract, mult, beneficiaryMultipliersToArray }: multiplierHeaderCellProps) => {
+const MultiplerCell = ({ contract, mult, beneficiaryMultipliersToArray }: multiplierHeaderCellProps) => {
   const { baseMultiplier } = useBaseMultiplier(contract, mult);
 
   const [multiplierValue, setMultiplierValue] = useState<any | undefined>(undefined);
@@ -27,7 +27,7 @@ const multiplerCell = ({ contract, mult, beneficiaryMultipliersToArray }: multip
   }, [beneficiaryMultipliersToArray]);
 
   return baseMultiplier !== null ? (
-    baseMultiplier?.validUntilBlock === null && <td className="w-[100px]">{multiplierValue || '-'}</td>
+    baseMultiplier?.validUntilBlock === null && <td className="w-[100px]">{multiplierValue / 100 || '-'}</td>
   ) : (
     <div className="w-[100px]">
       <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
@@ -35,4 +35,4 @@ const multiplerCell = ({ contract, mult, beneficiaryMultipliersToArray }: multip
   );
 };
 
-export default multiplerCell;
+export default MultiplerCell;

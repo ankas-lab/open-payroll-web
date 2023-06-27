@@ -4,7 +4,7 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-const WalletManager = () => {
+const Index = () => {
   const { account, accounts, setAccount, connect, disconnect } = useWallet();
   const [show, setShow] = useState<boolean>(false);
   const handleAccount = (account: any) => {
@@ -23,7 +23,7 @@ const WalletManager = () => {
           {show && (
             <div className="flex flex-col gap-[10px] border-t-2 border-t-oppurple">
               {accounts?.map((a) => (
-                <button className="rounded hover:bg-opwhite p-1.5 text-left" onClick={() => handleAccount(a)}>
+                <button key={a} className="rounded hover:bg-opwhite p-1.5 text-left" onClick={() => handleAccount(a)}>
                   {a?.name} ({account?.address.slice(0, 5)}...
                   {a?.address.slice(a?.address.length - 5, a?.address.length)})
                 </button>
@@ -45,4 +45,4 @@ const WalletManager = () => {
   );
 };
 
-export default WalletManager;
+export default Index;

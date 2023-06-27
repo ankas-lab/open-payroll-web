@@ -9,22 +9,13 @@ import ContractRow from '../../components/contracts/contractRow';
 
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
-import { usePayrollContract } from '@/hooks';
-import { useRouter } from 'next/router';
 
 import { DappContext } from '@/context';
 import WalletManager from '@/components/walletManager';
 
-export default function Contracts() {
-  //---------------------------------Security---------------------------------
-  const router = useRouter();
-  {
-    /*  const { account } = useWallet();
-  useEffect(() => {
-    !account && router.push('/');
-  }, [account]);*/
-  }
+import { ToastContainer } from 'react-toastify';
 
+export default function Contracts() {
   //---------------------------------Get contracts from context---------------------------------
   const context = useContext(DappContext);
 
@@ -37,6 +28,7 @@ export default function Contracts() {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
+      <ToastContainer />
       <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
@@ -57,7 +49,8 @@ export default function Contracts() {
           {contracts.length > 0 ? (
             <table className="mt-[30px] md:mt-[50px]">
               <tbody>
-                <tr className="flex gap-[50px] text-left">
+                <tr className="flex gap-[50px] text-left px-2">
+                  <th className="w-[25px]"></th>
                   <th className="w-[150px]">
                     <Text type="overline" text="contract name" />
                   </th>
@@ -74,7 +67,7 @@ export default function Contracts() {
                     <Text type="overline" text="funds needed" />
                   </th>
                   <th className="w-[80px]">
-                    <Text type="overline" text="next pay in (day)" />
+                    <Text type="overline" text="next pay in" />
                   </th>
                   <th className="w-[80px]">
                     <Text type="overline" text="network" />

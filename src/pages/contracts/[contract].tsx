@@ -31,25 +31,21 @@ interface BaseMultiplier {
 }
 
 export default function Contract() {
-  //---------------------------------Security---------------------------------
-  const router = useRouter();
-
-  const { account } = useWallet();
-
+  //TODO if not owner,return
   //---------------------------------Get contract address---------------------------------
+  const router = useRouter();
   const {
     query: { contract },
   } = router;
   const contractAddress = contract?.toString();
-  //---------------------------------Get any from context---------------------------------
+
+  //---------------------------------Context---------------------------------
   const context = useContext(DappContext);
-
-  // if (!context) {
-  //   //TODO This should not return null here
-  //   return null;
-  // }
-
   const { findContractInLocalStorage } = context!;
+
+  //---------------------------------Hooks---------------------------------
+  const { account } = useWallet();
+
   const _contract = useContract(contractAddress!, metadata);
 
   const {
@@ -57,7 +53,7 @@ export default function Contract() {
     contractBalance,
     periodicity,
     totalDebts,
-    nextBlockPeriodInDays,
+    nextBlockPeriod,
     amountBeneficiaries,
     basePayment,
     listBeneficiaries,
@@ -66,8 +62,6 @@ export default function Contract() {
 
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
-
-  //TODO: showMenu
   //---------------------------------Show menu---------------------------------
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -96,8 +90,6 @@ export default function Contract() {
     textToCopy !== undefined && navigator.clipboard.writeText(textToCopy.toString());
   };
 
-  //---------------------------------Functions to Format-------------------------------------
-  //TODO If the beneficiary doesn't have a multiplier, show something that indicates an unassigned multiplier.
   return loading === 'done' ? (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
@@ -139,8 +131,10 @@ export default function Contract() {
         <div
           className={`mt-[30px] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-[20px] text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`}
         >
-          <div className="capitalize">
-            <Text type="overline" text="periodicity" />
+          <div className=" ">
+            <div className="h-[30px]">
+              <Text type="overline" text="periodicity" />
+            </div>
             {periodicity ? (
               <p>{periodicity}</p>
             ) : (
@@ -150,10 +144,12 @@ export default function Contract() {
             )}
           </div>
 
-          <div className="capitalize">
-            <Text type="overline" text="next pay in (days)" />
-            {nextBlockPeriodInDays ? (
-              <p className="text-ellipsis  ">{nextBlockPeriodInDays}</p>
+          <div className=" ">
+            <div className="h-[30px]">
+              <Text type="overline" text="next pay in" />
+            </div>
+            {nextBlockPeriod ? (
+              <p className="text-ellipsis  ">{nextBlockPeriod}</p>
             ) : (
               <div className="flex items-center w-full">
                 <AiOutlineLoading className="animate-spin" />
@@ -161,8 +157,10 @@ export default function Contract() {
             )}
           </div>
 
-          <div className="capitalize">
-            <Text type="overline" text="beneficiaries" />
+          <div className=" ">
+            <div className="h-[30px]">
+              <Text type="overline" text="beneficiaries" />
+            </div>
             {amountBeneficiaries ? (
               <p>{amountBeneficiaries}</p>
             ) : (
@@ -171,8 +169,10 @@ export default function Contract() {
               </div>
             )}
           </div>
-          <div className="capitalize">
-            <Text type="overline" text="base payment" />
+          <div className=" ">
+            <div className="h-[30px]">
+              <Text type="overline" text="base payment" />
+            </div>
             {basePayment ? (
               <p>{basePayment}</p>
             ) : (
@@ -181,8 +181,10 @@ export default function Contract() {
               </div>
             )}
           </div>
-          <div className="capitalize">
-            <Text type="overline" text="funds in contract" />
+          <div className=" ">
+            <div className="h-[30px]">
+              <Text type="overline" text="funds in contract" />
+            </div>
 
             {contractBalance ? (
               <p className="text-ellipsis  ">{contractBalance}</p>
@@ -192,8 +194,10 @@ export default function Contract() {
               </div>
             )}
           </div>
-          <div className="capitalize">
-            <Text type="overline" text="total funds needed" />
+          <div className=" ">
+            <div className="h-[30px]">
+              <Text type="overline" text="total funds needed" />
+            </div>
             {totalDebts ? (
               <p className="text-ellipsis  ">{totalDebts}</p>
             ) : (
@@ -227,7 +231,7 @@ export default function Contract() {
                     <Text type="overline" text="total to claim" />
                   </th>
                   <th className="w-[100px]">
-                    <Text type="overline" text="last claim" />
+                    <Text type="overline" text="last update" />
                   </th>
                 </tr>
                 {listBeneficiaries &&

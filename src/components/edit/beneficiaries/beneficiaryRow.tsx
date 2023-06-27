@@ -6,75 +6,121 @@ import Button from '@/components/generals/button';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useApi, useBlockHeader } from 'useink';
+import { useApi } from 'useink';
 
 import { useBeneficiary, usePayrollContract } from '@/hooks';
+
+import { planckToDecimalFormatted } from 'useink/utils';
 
 import MultiplierCell from '../beneficiaries/multiplierCell';
 
 import { DappContext } from '@/context';
-
-interface newMultiplier {
-  [index: number]: [string, string];
-}
+import { useRemoveBeneficiary } from '@/hooks/useRemoveBeneficiary';
+import { useUpdateBeneficiary } from '@/hooks/useUpdateBeneficiary';
 
 interface BeneficiarieRowProps {
   indexBeneficiary: number;
   contract: any | undefined;
   beneficiaryAddress: string;
+  contractAddress: string | undefined;
+  multipliersIdList: string[] | undefined;
 }
 
-const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
-  const { amountToClaim, beneficiaryMultipliersToArray, finalPay, lastClaim, handleUpdateBeneficiary, beneficiary } =
-    useBeneficiary(beneficiaryAddress, contract);
-  const { multipliersIdList } = usePayrollContract(contract);
+const BeneficiaryRow = ({
+  beneficiaryAddress,
+  indexBeneficiary,
+  contract,
+  contractAddress,
+  multipliersIdList,
+}: BeneficiarieRowProps) => {
+  //TODO when finalized, refresh component
+  //TODO error when set a XXXX mult
+  const { rawBasePayment } = usePayrollContract(contract);
+
+  const { beneficiaryMultipliersToArray, finalPay, beneficiary } = useBeneficiary(beneficiaryAddress, contract);
+  const { handleUpdateBeneficiary, isProcessing, finalized, edit, setEdit } = useUpdateBeneficiary(
+    beneficiaryAddress,
+    contract,
+  );
+  const { handleRemoveBeneficiary, isProcessingRemove } = useRemoveBeneficiary(
+    contract,
+    contractAddress!,
+    beneficiaryAddress,
+  );
 
   const context = useContext(DappContext);
 
-  // if (!context) {
-  //   //TODO This should not return null here
-  //   return null;
-  // }
-
-  const { addressToShort } = context!;
+  const { addressToShort, updateBeneficiaryName, getBeneficiaryName, removeBeneficiaryFromLocalStorage } = context!;
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------UseStates---------------------------------
-  const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
-  const [edit, setEdit] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const [newMultipliers, setNewMultipliers] = useState({});
+  const [newMultipliers, setNewMultipliers] = useState<any | undefined>(undefined);
+  const [initialMultipliers, setInitialMultipliers] = useState<any | undefined>(undefined);
+  const [newBeneficiaryName, setNewBeneficiaryName] = useState<string | undefined>(undefined);
+
+  const handleInputChange = (event: any) => {
+    const { id, value } = event.target;
+    const floatValue = parseFloat(value.replace(',', '.'));
+    const roundedValue = floatValue.toFixed(2);
+    const decimalValue = parseFloat(roundedValue) * 100;
+
+    const newValues =
+      value === '' ? { ...newMultipliers, [id]: initialMultipliers?.[id] } : { ...newMultipliers, [id]: decimalValue };
+    setNewMultipliers(newValues);
+  };
+
+  const calculateNewFinalPayment = () => {
+    const oldMultToArray = Object.values(beneficiary.multipliers);
+    const multToArray = Object.values(newMultipliers);
+    let sum = 0;
+    for (let i = 0; i < multToArray.length; i++) {
+      multToArray[i] === '' ? (sum += parseInt(oldMultToArray[i]) / 100) : (sum += parseInt(multToArray[i]) / 100);
+    }
+    const newFinalPay = planckToDecimalFormatted(sum * rawBasePayment, api?.api);
+    return newFinalPay;
+  };
+
+  const handleUpdate = () => {
+    newMultipliers !== beneficiary.multipliers && handleUpdateBeneficiary(beneficiaryAddress, newMultipliers);
+    if (newBeneficiaryName !== undefined) {
+      updateBeneficiaryName(contractAddress, beneficiaryAddress, newBeneficiaryName);
+    }
+  };
+
+  const handleDelete = () => {
+    //TODO: This works but the localStorage is updated before sending the Tx,
+    // if the user would like to cancel the Tx, the beneficiary has already
+    // been deleted from the localStorage.
+    handleRemoveBeneficiary(beneficiaryAddress);
+    removeBeneficiaryFromLocalStorage(contractAddress, beneficiaryAddress);
+  };
 
   //---------------------------------Initialize functions---------------------------------
 
   useEffect(() => {
     if (contract) {
-      setLoading('done');
+      setLoading(false);
     }
   }, [contract]);
 
-  const handleInputChange = (event: any) => {
-    const { id, value } = event.target;
-    const newValues = { ...newMultipliers, [id]: value };
-    setNewMultipliers(newValues);
-  };
-
   useEffect(() => {
     beneficiary && setNewMultipliers(beneficiary.multipliers);
-    console.log('beneficiary', beneficiary);
+    beneficiary && setInitialMultipliers(beneficiary.multipliers);
   }, [beneficiary]);
 
   useEffect(() => {
-    console.log('newMultipliers state:', newMultipliers);
+    newMultipliers !== undefined && calculateNewFinalPayment();
   }, [newMultipliers]);
 
   useEffect(() => {
-    console.log('beneficiaryMultipliersToArray:', beneficiaryMultipliersToArray);
-  }, [beneficiaryMultipliersToArray]);
+    finalized && setEdit(false);
+  }, [finalized]);
 
-  return loading === 'done' ? (
+  return !loading ? (
     <tr
       className={
         indexBeneficiary % 2 === 0
@@ -84,23 +130,37 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
     >
       <td className="w-[50px]">
         {!edit && <Button type="text" icon="edit" action={() => setEdit(true)} />}
-        {edit && (
-          <Button type="text" icon="check" action={() => handleUpdateBeneficiary(beneficiaryAddress, newMultipliers)} />
+        {isProcessingRemove && <Button type="disabled outlined" icon="loading" />}
+        {isProcessing && <Button type="disabled outlined" icon="loading" />}
+        {edit && !isProcessing && !isProcessingRemove && (
+          <div className="flex">
+            <Button
+              type={isProcessing || isProcessingRemove ? 'disabled outlined' : 'text'}
+              icon={isProcessing || isProcessingRemove ? 'loading' : 'check'}
+              action={() => handleUpdate()}
+            />
+            <Button type={'text danger'} icon={'delete'} action={() => handleDelete()} />
+          </div>
         )}
       </td>
       {/* Beneficiary name */}
       <td className="w-[150px]">
         {edit ? (
           <input
-            placeholder={'name'}
+            placeholder={getBeneficiaryName(contractAddress, beneficiaryAddress)}
             id="name"
             type="text"
             name="name"
-            onChange={(e) => console.log(e)}
-            className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
+            disabled={isProcessing}
+            onChange={(e) => setNewBeneficiaryName(e.target.value)}
+            className={
+              isProcessing || isProcessingRemove
+                ? 'bg-opwhite border-2 border-opgray rounded-[5px] py-1.5 px-1.5 w-full'
+                : 'bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full'
+            }
           />
         ) : (
-          <p>Name</p>
+          <p>{getBeneficiaryName(contractAddress, beneficiaryAddress)}</p>
         )}
       </td>
       {/* Beneficiary address */}
@@ -113,16 +173,15 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
           key={m}
           contract={contract}
           mult={m}
-          edit={edit}
-          beneficiaryMultipliersToArray={beneficiaryMultipliersToArray}
-          getNewMultipliers={handleInputChange}
+          showInput={edit}
+          disabled={isProcessing || isProcessingRemove}
+          beneficiaryMultipliers={beneficiaryMultipliersToArray}
+          onChange={handleInputChange}
         />
       ))}
       {/* Final pay */}
       {finalPay !== undefined ? (
-        <td className="w-[100px]">
-          <p>{finalPay}</p>
-        </td>
+        <td className="w-[100px]">{edit ? <p>{calculateNewFinalPayment()}</p> : <p>{finalPay}</p>}</td>
       ) : (
         <td className="w-[100px]">
           <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto" />

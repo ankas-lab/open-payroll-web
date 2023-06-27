@@ -1,21 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useCall, useApi, ChainContract, useBlockHeader, useTx } from 'useink';
-import { BN } from 'bn.js';
-import { usePayrollContract } from '.';
-import { toast } from 'react-toastify';
-import {
-  pickResultOk,
-  planckToDecimalFormatted,
-  stringNumberToBN,
-  isBroadcast,
-  isErrored,
-  isFinalized,
-  isInBlock,
-  isInvalid,
-  isPendingSignature,
-  pickDecoded,
-  bnToBalance,
-} from 'useink/utils';
+import { useCall, useApi, ChainContract, useBlockHeader, useCallSubscription } from 'useink';
+import { usePayrollContract } from '../hooks/usePayrollContract';
+
+import { pickDecoded, pickResultOk, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
 
 interface Beneficiary {
   accountId: any;
@@ -42,15 +29,12 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
-  const getAmountToClaim = useCall<any>(contract, 'getAmountToClaim');
-  const getBeneficiary = useCall<any>(contract, 'getBeneficiary');
-  const getListBeneficiaries = useCall<string[]>(contract, 'getListBeneficiaries');
-  const updateBeneficiary = useTx(contract, 'updateBeneficiary');
+  const getBeneficiary = useCallSubscription(contract, 'getBeneficiary', [address]);
 
   const getBeneficiaryMultipliersToArray = (data: any) => {
-    const multipliersArray = Object.entries(data.multipliers).map(([key, value]) => ({
+    const multipliersArray = Object.entries(data).map(([key, value]) => ({
       multiplierId: parseInt(key),
-      value: parseInt(value as string),
+      value: parseInt(value as string) === 0 ? 1 : parseInt(value as string),
     }));
     setBeneficiaryMultipliersToArray(multipliersArray);
   };
@@ -58,7 +42,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   const getFinalPay = (mults: any) => {
     let sum = 0;
     for (let i = 0; i < mults.length; i++) {
-      sum += mults[i].value;
+      sum += mults[i].value / 100;
     }
     const finalPay = sum * rawBasePayment;
     setFinalPay(planckToDecimalFormatted(finalPay, api?.api));
@@ -83,128 +67,39 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     }
   };
 
-  const handleUpdateBeneficiary = (beneficiaryAddress: string, newMultipliers: any) => {
-    console.log('handleUpdateBeneficiary');
-    console.log(beneficiaryAddress);
-    console.log(newMultipliers);
-    const newMultipliersToEntries = Object.entries(newMultipliers);
-    console.log(newMultipliersToEntries);
-
-    updateBeneficiary.signAndSend([beneficiaryAddress, newMultipliersToEntries]);
-  };
-
   const checkIfBeneficiary = () => {
     if (address && beneficiaryList?.includes(address)) {
       setIsBeneficiary(true);
     } else {
       setIsBeneficiary(false);
     }
-  }
-
-  useEffect(() => {
-    setIsBeneficiary(false);
-  }, [address]);
+  };
 
   useEffect(() => {
     checkIfBeneficiary();
-  }, [address,beneficiaryList]);
-    
-  useEffect(() => {
-    if (contract?.contract) {
-      getListBeneficiaries.send();
-    }
-  }, [contract?.contract]);
-
-  useEffect(() => {
-    if (getListBeneficiaries?.result) {
-      let beneficiaries = pickDecoded(getListBeneficiaries.result!);
-      setBeneficiaryList(beneficiaries!);
-    }
-  }, [getListBeneficiaries?.result]);
-
-  useEffect(() => {
-    if (contract !== undefined && isBeneficiary) {
-      getAmountToClaim.send([address]);
-      getBeneficiary.send([address]);
-    }
-  }, [contract?.contract, isBeneficiary]);
-
-  useEffect(() => {
-    if (getAmountToClaim.result?.ok) {
-      let data = stringNumberToBN(pickResultOk(getAmountToClaim.result!)!);
-      setAmountToClaim(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
-    }
-  }, [getAmountToClaim.result]);
+  }, [address, beneficiaryList]);
 
   useEffect(() => {
     if (getBeneficiary.result?.ok) {
-      let data: any = pickResultOk(getBeneficiary.result!);
-      let amountToClaim = stringNumberToBN(data.unclaimedPayments);
+      const data = pickDecoded(getBeneficiary.result);
+      if (data?.Ok) {
+        getBeneficiaryMultipliersToArray(data?.Ok.multipliers);
+        getLastClaim(data?.Ok.lastUpdatedPeriodBlock);
 
-      getBeneficiaryMultipliersToArray(data);
-      setBeneficiary(data);
-
-      setBeneficiaryMultipliers(data.multipliers);
-
-      setAmountToClaim(planckToDecimalFormatted(amountToClaim, api?.api, { decimals: 2 }));
-
-      getLastClaim(data.lastUpdatedPeriodBlock);
+        setBeneficiary(data?.Ok);
+        setBeneficiaryMultipliers(data?.Ok.multipliers);
+        const amountToClaim = stringNumberToBN(data?.Ok.unclaimedPayments);
+        setAmountToClaim(planckToDecimalFormatted(amountToClaim, api?.api, { decimals: 2 }));
+        setBeneficiaryUnclaimedPayments(data?.Ok.unclaimedPayments);
+      }
     }
-  }, [getBeneficiary.result?.ok]);
+  }, [getBeneficiary.result]);
 
   useEffect(() => {
     if (beneficiaryMultipliersToArray !== undefined) {
       getFinalPay(beneficiaryMultipliersToArray);
     }
   }, [beneficiaryMultipliersToArray]);
-
-  useEffect(() => {
-    if (isPendingSignature(updateBeneficiary)) {
-      console.log({ type: updateBeneficiary.status, message: `Please sign the transaction in your wallet` });
-      toast(`Please sign the transaction in your wallet`);
-    }
-
-    if (isBroadcast(updateBeneficiary)) {
-      console.log({
-        type: updateBeneficiary.status,
-        message: 'Flip transaction has been broadcast!',
-      });
-      toast('Flip transaction has been broadcast!');
-    }
-
-    if (isInBlock(updateBeneficiary)) {
-      console.log({
-        type: updateBeneficiary.status,
-        message: 'Transaction is in the block.',
-      });
-
-      toast('Transaction is in the block.');
-    }
-
-    if (isErrored(updateBeneficiary)) {
-      console.log({ type: updateBeneficiary.status, message: `Error` });
-      toast(`Error`);
-    }
-    if (isInvalid(updateBeneficiary)) {
-      console.log({ type: updateBeneficiary.status, message: `IsInvalid` });
-      toast(`IsInvalid`);
-    }
-
-    if (isFinalized(updateBeneficiary)) {
-      console.log({ type: updateBeneficiary.status, message: `The transaction has been finalized.` });
-      toast(`The transaction has been finalized.`);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateBeneficiary.status]);
-
-  useEffect(() => {
-    if (getBeneficiary.result) {
-      let data: Beneficiary = pickResultOk(getBeneficiary.result!)!;
-      setBeneficiaryMultipliers(data.multipliers);
-      setBeneficiaryUnclaimedPayments(data.unclaimedPayments);
-    }
-  }, [getBeneficiary.result]);
 
   return {
     beneficiary,
@@ -214,7 +109,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     beneficiaryUnclaimedPayments,
     beneficiaryMultipliersToArray,
     finalPay,
-    handleUpdateBeneficiary,
     isBeneficiary,
+    rawBasePayment,
   };
 }

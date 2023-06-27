@@ -15,12 +15,10 @@ const MultiplierHeaderCell = ({ contract, multiplierId }: multiplierHeaderCellPr
   const { baseMultiplier } = useBaseMultiplier(contract, multiplierId);
 
   return baseMultiplier !== null ? (
-    baseMultiplier?.validUntilBlock === null ? (
+    baseMultiplier?.validUntilBlock === null && (
       <th className="w-[100px]">
         <Text type="overline" text={`${baseMultiplier?.name}`} />
       </th>
-    ) : (
-      <></>
     )
   ) : (
     <div className="flex items-center w-full">

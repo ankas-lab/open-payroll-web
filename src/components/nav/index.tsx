@@ -62,14 +62,14 @@ const Index = () => {
                 {pathname === '/contracts' ? (
                   <Button type="active" text="" icon="contract" />
                 ) : (
-                  <Button type="outlined" text="" icon="contract" />
+                  <Button type="text" text="" icon="contract" />
                 )}
               </Link>
               <Link href="/claim">
                 {pathname === '/claim' ? (
                   <Button type="active" text="" icon="claim" />
                 ) : (
-                  <Button type="outlined" text="" icon="claim" />
+                  <Button type="text" text="" icon="claim" />
                 )}
               </Link>
             </div>
@@ -92,7 +92,7 @@ const Index = () => {
             </div>
           )}
           {closeLateralNav ? (
-            <div>
+            <div className="hidden md:flex">
               <BsFillArrowRightCircleFill
                 className="w-5 h-5 text-oppurple cursor-pointer"
                 onClick={() => {
@@ -101,7 +101,7 @@ const Index = () => {
               />
             </div>
           ) : (
-            <div>
+            <div className="hidden md:flex">
               <BsFillArrowLeftCircleFill
                 className="w-5 h-5 text-oppurple cursor-pointer"
                 onClick={() => {

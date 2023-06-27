@@ -1,9 +1,6 @@
-import { useState, useEffect, useContext } from 'react';
-import { useCall, useApi, ChainContract } from 'useink';
+import { useState, useEffect } from 'react';
+import { useCall, useApi, ChainContract, useCallSubscription, useBlockHeader } from 'useink';
 import { pickDecoded, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
-import { DappContext } from '@/context';
-
-import { BN } from 'bn.js';
 
 interface BaseMultipliers {
   Id: string;
@@ -11,12 +8,13 @@ interface BaseMultipliers {
 }
 
 export function usePayrollContract(contract: ChainContract<any> | undefined) {
+  const blockHeader = useBlockHeader();
   // TODO: ChainContract<ContractPromise> | undefined
 
   const [contractBalance, setContractBalance] = useState<undefined | string>(undefined);
   const [periodicity, setPeriodicity] = useState<undefined | number>(undefined);
   const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
-  const [nextBlockPeriodInDays, setNextBlockPeriodInDays] = useState<undefined | number>(undefined);
+  const [nextBlockPeriod, setNextBlockPeriod] = useState<undefined | string>(undefined);
   const [contractState, setContractState] = useState<undefined | boolean>(undefined);
   const [amountBeneficiaries, setAmountBeneficiaries] = useState<undefined | number>(undefined);
   const [listBeneficiaries, setListBeneficiaries] = useState<undefined | string[]>(undefined);
@@ -29,7 +27,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
-  const getListBeneficiaries = useCall<string[]>(contract, 'getListBeneficiaries');
+  const getListBeneficiaries = useCallSubscription<string[]>(contract, 'getListBeneficiaries');
   const getNextBlockPeriod = useCall<any>(contract, 'getNextBlockPeriod');
   const getContractBalance = useCall<any>(contract, 'getContractBalance');
   const getTotalDebts = useCall<any>(contract, 'getTotalDebts');
@@ -40,7 +38,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const getBaseMultiplier = useCall<any>(contract, 'getBaseMultiplier');
 
   useEffect(() => {
-    getListBeneficiaries.send();
     getContractBalance.send();
     getNextBlockPeriod.send();
     getTotalDebts.send();
@@ -48,7 +45,8 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     getBasePayment.send();
     getMultipliersList.send();
     isPaused.send();
-    return () => {};
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract?.contract]);
 
   useEffect(() => {
@@ -67,8 +65,13 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getListBeneficiaries.result) {
       let data = pickDecoded(getListBeneficiaries.result!);
-      setAmountBeneficiaries(Number(data?.length));
+      setAmountBeneficiaries(data?.length);
       setListBeneficiaries(data);
+    }
+  }, [getListBeneficiaries.result]);
+
+  useEffect(() => {
+    if (getListBeneficiaries.result) {
     }
   }, [getListBeneficiaries.result]);
 
@@ -107,14 +110,16 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
 
   useEffect(() => {
     if (getNextBlockPeriod.result && periodicity) {
-      let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result!)?.toString();
-      if (getNextBlockPeriodValueString) {
-        let getNextBlockPeriodValuePlainBN = stringNumberToBN(getNextBlockPeriodValueString);
-        let totalBlocks = getNextBlockPeriodValuePlainBN.div(new BN(periodicity));
-        let totalBlocksInDays = totalBlocks.div(new BN(7200));
-        // TODO: less than a day if days < 0
-        setNextBlockPeriodInDays(totalBlocksInDays.toNumber());
-      }
+      let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result);
+      let nextBlockPeriod = stringNumberToBN(getNextBlockPeriodValueString).words[0];
+
+      nextBlockPeriod - blockHeader?.blockNumber! > 7200 &&
+        setNextBlockPeriod(`${((nextBlockPeriod - blockHeader?.blockNumber!) / 7200).toFixed(0)} days`);
+      nextBlockPeriod - blockHeader?.blockNumber! < 7200 &&
+        nextBlockPeriod - blockHeader?.blockNumber! > 300 &&
+        setNextBlockPeriod(`${((nextBlockPeriod - blockHeader?.blockNumber!) / 300).toFixed(0)} hours`);
+      nextBlockPeriod - blockHeader?.blockNumber! < 300 &&
+        setNextBlockPeriod(`${((nextBlockPeriod - blockHeader?.blockNumber!) / 5).toFixed(0)} minutes`);
     }
   }, [getNextBlockPeriod.result]);
 
@@ -137,7 +142,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     contractBalance,
     periodicity,
     totalDebts,
-    nextBlockPeriodInDays,
+    nextBlockPeriod,
     amountBeneficiaries,
     listBeneficiaries,
     basePayment,

@@ -2,78 +2,85 @@ import { useBaseMultiplier } from '@/hooks/useBaseMultiplier';
 import React, { useState, useEffect } from 'react';
 import { AiOutlineLoading } from 'react-icons/ai';
 
-interface multiplierHeaderCellProps {
+interface multiplierCellProps {
   contract: any;
   mult: string;
-  beneficiaryMultipliersToArray: any;
-  edit: boolean;
-  getNewMultipliers: any;
+  beneficiaryMultipliers?: any;
+  showInput?: boolean;
+  onChange: any;
+  disabled?: boolean;
 }
 
-const multiplerCell = ({
+const MultiplerCell = ({
   contract,
   mult,
-  beneficiaryMultipliersToArray,
-  edit,
-  getNewMultipliers,
-}: multiplierHeaderCellProps) => {
+  beneficiaryMultipliers,
+  showInput,
+  onChange,
+  disabled,
+}: multiplierCellProps) => {
   const { baseMultiplier } = useBaseMultiplier(contract, mult);
 
   const [multiplier, setMultiplier] = useState<any | undefined>(undefined);
 
   const findMultiplier = () => {
-    const multiplier = beneficiaryMultipliersToArray.find((m: any) => mult == m.multiplierId);
+    const multiplier = beneficiaryMultipliers.find((m: any) => mult == m.multiplierId);
     setMultiplier(multiplier);
   };
 
   useEffect(() => {
-    beneficiaryMultipliersToArray !== undefined && findMultiplier();
-  }, [beneficiaryMultipliersToArray]);
+    beneficiaryMultipliers !== undefined && findMultiplier();
+  }, [beneficiaryMultipliers]);
 
-  useEffect(() => {
-    console.log(mult);
-    console.log(multiplier);
-  }, [multiplier]);
-
-  if (baseMultiplier?.validUntilBlock === null && multiplier !== undefined && !edit) {
-    return <td className="w-[100px]">{multiplier.value == 0 ? <p>1</p> : <p>{multiplier.value}</p>}</td>;
+  if (baseMultiplier?.validUntilBlock === null && multiplier !== undefined && !showInput) {
+    return <td className="w-[100px]">{multiplier.value == 0 ? <p>1</p> : <p>{multiplier.value / 100}</p>}</td>;
   }
 
-  if (baseMultiplier?.validUntilBlock === null && multiplier === undefined && !edit) {
+  if (baseMultiplier?.validUntilBlock === null && multiplier === undefined && !showInput) {
     return (
       <td className="w-[100px]">
         <p>-</p>
       </td>
     );
   }
-  if (baseMultiplier?.validUntilBlock === null && multiplier !== undefined && edit) {
+  if (baseMultiplier?.validUntilBlock === null && multiplier !== undefined && showInput) {
     return (
       <td className="w-[100px]">
         <input
-          placeholder={multiplier.value == 0 ? 1 : multiplier.value}
+          placeholder={multiplier.value == 0 ? 1 : parseInt(multiplier.value) / 100}
           id={mult}
           type="number"
+          disabled={disabled}
           name={mult}
-          onChange={getNewMultipliers}
-          className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
+          onChange={onChange}
+          className={
+            disabled
+              ? 'bg-opwhite border-2 border-opgray rounded-[5px] py-1.5 px-1.5 w-full'
+              : 'bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full'
+          }
         />
       </td>
     );
   }
-  if (baseMultiplier?.validUntilBlock === null && multiplier === undefined && edit) {
+  if (baseMultiplier?.validUntilBlock === null && multiplier === undefined && showInput) {
     return (
       <td className="w-[100px]">
         <input
           placeholder="-"
           id={mult}
           type="number"
+          disabled={disabled}
           name={mult}
-          onChange={getNewMultipliers}
-          className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
+          onChange={onChange}
+          className={
+            disabled
+              ? 'bg-opwhite border-2 border-opgray rounded-[5px] py-1.5 px-1.5 w-full'
+              : 'bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full'
+          }
         />
       </td>
     );
   }
 };
 
-export default multiplerCell;
+export default MultiplerCell;

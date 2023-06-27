@@ -13,7 +13,7 @@ const index = ({ _contract }: ContractProps) => {
   const [createNewMultuplier, setCreateNewMultuplier] = useState(false);
   const [newMultuplier, setNewMultuplier] = useState<string | undefined>(undefined);
 
-  const { multipliersList, handleAddBaseMultiplier } = useMultipliers(_contract);
+  const { multipliersIdList, handleAddBaseMultiplier } = useMultipliers(_contract);
 
   return (
     <div className="w-full md:w-8/12">
@@ -30,8 +30,8 @@ To eliminate a multiplier it is necessary that it be paused for a period."
         <div className="flex flex-col gap-[10px]">
           <Text type="h5" text="Active" />
           <div className="grid grid-cols-1 w-full md:w-6/12 gap-[10px]">
-            {multipliersList !== undefined ? (
-              multipliersList?.map((m) => (
+            {multipliersIdList !== undefined ? (
+              multipliersIdList?.map((m: any) => (
                 <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={true} />
               ))
             ) : (
@@ -69,8 +69,8 @@ To eliminate a multiplier it is necessary that it be paused for a period."
           <div className="mt-[10px]">
             <Text type="h5" text="Paused" />
             <div className="grid grid-cols-1 gap-[10px]">
-              {multipliersList !== undefined ? (
-                multipliersList?.map((m) => (
+              {multipliersIdList !== undefined ? (
+                multipliersIdList?.map((m) => (
                   <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={false} />
                 ))
               ) : (

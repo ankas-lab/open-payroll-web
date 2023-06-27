@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useCall } from 'useink';
+import { useCall, useCallSubscription } from 'useink';
 import { pickDecoded } from 'useink/utils';
+
+//TODO: this hook is used two times, here and usePayrollContract
 
 export function useBeneficiaries(_contract: any) {
   const [beneficiaries, setBeneficiaries] = useState<string[] | undefined>(undefined);
 
-  const getListBeneficiaries = useCall(_contract, 'getListBeneficiaries');
-
-  useEffect(() => {
-    getListBeneficiaries.send();
-  }, [_contract]);
+  const getListBeneficiaries = useCallSubscription(_contract, 'getListBeneficiaries');
 
   useEffect(() => {
     if (getListBeneficiaries.result?.ok) {

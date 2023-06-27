@@ -28,11 +28,6 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
 
   const context = useContext(DappContext);
 
-  // if (!context) {
-  //   //TODO This should not return null here
-  //   return null;
-  // }
-
   const { addressToShort } = context!;
 
   //---------------------------------Api---------------------------------
@@ -106,9 +101,13 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
       )}
     </tr>
   ) : (
-    <div className="flex items-center w-full">
-      <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
-    </div>
+    <tr className="flex items-center w-full">
+      <td className="flex w-full">
+        <div className="flex w-full">
+          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
+        </div>
+      </td>
+    </tr>
   );
 };
 
