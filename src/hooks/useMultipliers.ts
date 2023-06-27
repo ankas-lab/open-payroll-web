@@ -11,7 +11,6 @@ export function useMultipliers(_contract: any) {
     if (getMultipliersList.result?.ok) {
       const data = pickDecoded(getMultipliersList.result);
       setMultipliersIdList(data);
-      console.log(data);
     }
   }, [getMultipliersList.result]);
 

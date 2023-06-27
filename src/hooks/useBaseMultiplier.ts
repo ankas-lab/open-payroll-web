@@ -19,9 +19,5 @@ export function useBaseMultiplier(_contract: any, _multiplier: string) {
     }
   }, [getBaseMultiplier.result]);
 
-  useEffect(() => {
-    baseMultiplier && console.log('baseMultiplier changed: ', baseMultiplier);
-  }, [baseMultiplier]);
-
   return { baseMultiplier };
 }

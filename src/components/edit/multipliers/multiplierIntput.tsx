@@ -21,6 +21,8 @@ const MultiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) =>
 
   const block = useBlockHeader();
 
+  //TODO Multipliers not delete
+
   return _active === true
     ? baseMultiplier?.validUntilBlock === null && (
         <div>
