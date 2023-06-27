@@ -16,6 +16,7 @@ import { useLocalStorageData } from '@/hooks/useLocalStorageData';
 import { useBasePayment } from '@/hooks/useBasePayment';
 import { usePeriodicty } from '@/hooks/usePeriodicity';
 import Link from 'next/link';
+import { useUpdateBasePayment } from '@/hooks/useUpdateBasePayment';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -30,7 +31,9 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
     handleNewEmailLocalStorageData,
     updateContract,
   } = useLocalStorageData(_contractAddress);
-  const { handleUpdateBasePayment, basePayment } = useBasePayment(_contract);
+
+  const { basePayment } = useBasePayment(_contract);
+  const { handleUpdateBasePayment } = useUpdateBasePayment(_contract);
   const { handleUpdatePeriodicity, periodicity, periodicityType, setPeriodicityType } = usePeriodicty(_contract);
 
   const [newBasePayment, setNewBasePayment] = useState<number | bigint | undefined>(undefined);
