@@ -36,10 +36,10 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
 
   const { unclaimBeneficiaries } = usePayrollContract(_contract);
   const { basePayment } = useBasePayment(_contract);
-  const { handleUpdateBasePayment } = useUpdateBasePayment(_contract);
+  const { handleUpdateBasePayment, isUpdatingBasePayment } = useUpdateBasePayment(_contract);
 
   const { periodicity, periodicityType, setPeriodicityType } = usePeriodicty(_contract);
-  const { handleUpdatePeriodicity } = useUpdatePeriodicty(_contract);
+  const { handleUpdatePeriodicity, isUpdatingPeriodicity } = useUpdatePeriodicty(_contract);
 
   const [newBasePayment, setNewBasePayment] = useState<number | bigint | undefined>(undefined);
   const [newPeriodicity, setNewPeriodicity] = useState<any | undefined>(undefined);
@@ -155,11 +155,18 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                       />
                       ROC
                     </div>
-                    <Button
-                      type={newBasePayment !== undefined && canUpdate ? 'outlined' : 'disabled'}
-                      text="Update"
-                      action={() => handleUpdateBasePayment(newBasePayment)}
-                    />
+                    {isUpdatingBasePayment ? (
+                      <Button
+                        type={newBasePayment !== undefined && canUpdate ? 'outlined' : 'text disabled'}
+                        icon="loading"
+                      />
+                    ) : (
+                      <Button
+                        type={newBasePayment !== undefined && canUpdate ? 'outlined' : 'disabled'}
+                        text="Update"
+                        action={() => handleUpdateBasePayment(newBasePayment)}
+                      />
+                    )}
                   </div>
                 ) : (
                   <div className="flex w-full h-full">
@@ -239,11 +246,18 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                         />
                       )}
                     </div>
-                    <Button
-                      type={newPeriodicity === undefined ? 'disabled' : 'outlined'}
-                      text="update"
-                      action={() => handleUpdatePeriodicity(newPeriodicity)}
-                    />
+                    {isUpdatingPeriodicity ? (
+                      <Button
+                        type={newBasePayment !== undefined && canUpdate ? 'outlined' : 'text disabled'}
+                        icon="loading"
+                      />
+                    ) : (
+                      <Button
+                        type={newPeriodicity === undefined ? 'disabled' : 'outlined'}
+                        text="update"
+                        action={() => handleUpdatePeriodicity(newPeriodicity)}
+                      />
+                    )}
                   </div>
                 ) : (
                   <div className="flex w-full min-h-screen">

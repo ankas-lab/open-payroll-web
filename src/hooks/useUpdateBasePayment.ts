@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useChainDecimals, useTx } from 'useink';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isInvalid, isPendingSignature } from 'useink/utils';
 
 export function useUpdateBasePayment(_contract: any) {
   //TODO: change notifications
+
+  const [isUpdatingBasePayment, setIsUpdatingBasePayment] = useState<boolean>(false);
 
   const chainDecimals = useChainDecimals(_contract?.chainId);
 
@@ -21,10 +23,12 @@ export function useUpdateBasePayment(_contract: any) {
     }
 
     if (isBroadcast(updateBasePayment)) {
+      setIsUpdatingBasePayment(true);
       toast('Flip transaction has been broadcast!');
     }
 
     if (isInBlock(updateBasePayment)) {
+      setIsUpdatingBasePayment(false);
       toast('Transaction is in the block.');
     }
 
@@ -42,5 +46,5 @@ export function useUpdateBasePayment(_contract: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateBasePayment.status]);
 
-  return { chainDecimals, handleUpdateBasePayment };
+  return { handleUpdateBasePayment, isUpdatingBasePayment };
 }
