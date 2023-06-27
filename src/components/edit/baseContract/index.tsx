@@ -17,6 +17,7 @@ import { useBasePayment } from '@/hooks/useBasePayment';
 import { usePeriodicty } from '@/hooks/usePeriodicity';
 import Link from 'next/link';
 import { useUpdateBasePayment } from '@/hooks/useUpdateBasePayment';
+import { useUpdatePeriodicty } from '@/hooks/useUpdatePeriodicity';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -34,7 +35,9 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
 
   const { basePayment } = useBasePayment(_contract);
   const { handleUpdateBasePayment } = useUpdateBasePayment(_contract);
-  const { handleUpdatePeriodicity, periodicity, periodicityType, setPeriodicityType } = usePeriodicty(_contract);
+
+  const { periodicity, periodicityType, setPeriodicityType } = usePeriodicty(_contract);
+  const { handleUpdatePeriodicity } = useUpdatePeriodicty(_contract);
 
   const [newBasePayment, setNewBasePayment] = useState<number | bigint | undefined>(undefined);
   const [newPeriodicity, setNewPeriodicity] = useState<any | undefined>(undefined);
