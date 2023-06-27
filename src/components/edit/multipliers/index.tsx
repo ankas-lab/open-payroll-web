@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Text from '../../generals/text';
 import Button from '../../generals/button';
 import { useMultipliers } from '@/hooks/useMultipliers';
 import MultiplierInput from './multiplierIntput';
 import { AiOutlineLoading } from 'react-icons/ai';
+import { useAddMultiplier } from '@/hooks/useAddMultiplier';
 
 interface ContractProps {
   _contract: any | undefined;
 }
 
-const index = ({ _contract }: ContractProps) => {
+const Index = ({ _contract }: ContractProps) => {
   const [createNewMultuplier, setCreateNewMultuplier] = useState(false);
   const [newMultuplier, setNewMultuplier] = useState<string | undefined>(undefined);
 
-  const { multipliersIdList, handleAddBaseMultiplier } = useMultipliers(_contract);
+  const { multipliersIdList } = useMultipliers(_contract);
+
+  const { handleAddBaseMultiplier, isAdded, isAdding } = useAddMultiplier(_contract);
+
+  useEffect(() => {
+    isAdded && setCreateNewMultuplier(false);
+  }, [isAdded]);
 
   return (
     <div className="w-full md:w-8/12">
@@ -48,12 +55,18 @@ To eliminate a multiplier it is necessary that it be paused for a period."
                   onChange={(e) => setNewMultuplier(e.target.value)}
                 />
                 <div className="flex">
-                  <Button
-                    type={newMultuplier ? 'text' : 'disabled outlined'}
-                    icon="check"
-                    action={() => handleAddBaseMultiplier(newMultuplier!)}
-                  />
-                  <Button type="text" text="" icon="cancel" action={() => setCreateNewMultuplier(false)} />
+                  {isAdding ? (
+                    <Button type="disabled outlined" text="" icon="loading" />
+                  ) : (
+                    <>
+                      <Button
+                        type={newMultuplier !== undefined && !isAdding ? 'text' : 'disabled outlined'}
+                        icon="check"
+                        action={() => handleAddBaseMultiplier(newMultuplier!)}
+                      />
+                      <Button type="text" text="" icon="cancel" action={() => setCreateNewMultuplier(false)} />
+                    </>
+                  )}
                 </div>
               </form>
             )}
@@ -86,4 +99,4 @@ To eliminate a multiplier it is necessary that it be paused for a period."
   );
 };
 
-export default index;
+export default Index;

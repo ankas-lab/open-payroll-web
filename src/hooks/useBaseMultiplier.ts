@@ -9,14 +9,19 @@ interface baseMultiplier {
 
 export function useBaseMultiplier(_contract: any, _multiplier: string) {
   const [baseMultiplier, setBaseMultiplier] = useState<baseMultiplier | undefined>(undefined);
+
   const getBaseMultiplier = useCallSubscription(_contract, 'getBaseMultiplier', [_multiplier]);
 
   useEffect(() => {
     if (getBaseMultiplier.result?.ok) {
-      const decodedBaseMultiplier = pickDecoded(getBaseMultiplier.result);
-      setBaseMultiplier(decodedBaseMultiplier);
+      const decoded = pickDecoded(getBaseMultiplier.result);
+      setBaseMultiplier(decoded);
     }
-  }, [getBaseMultiplier.result?.ok]);
+  }, [getBaseMultiplier.result]);
+
+  useEffect(() => {
+    baseMultiplier && console.log('baseMultiplier changed: ', baseMultiplier);
+  }, [baseMultiplier]);
 
   return { baseMultiplier };
 }

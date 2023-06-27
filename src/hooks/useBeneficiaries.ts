@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import { useCall, useCallSubscription } from 'useink';
+import { useCallSubscription } from 'useink';
 import { pickDecoded } from 'useink/utils';
 
 //TODO: this hook is used two times, here and usePayrollContract

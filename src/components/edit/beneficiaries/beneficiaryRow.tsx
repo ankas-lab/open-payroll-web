@@ -33,7 +33,6 @@ const BeneficiaryRow = ({
   contractAddress,
   multipliersIdList,
 }: BeneficiarieRowProps) => {
-  //TODO when finalized, refresh component
   //TODO error when set a XXXX mult
   const { rawBasePayment } = usePayrollContract(contract);
 
@@ -92,7 +91,7 @@ const BeneficiaryRow = ({
   };
 
   const handleDelete = () => {
-    //TODO: This works but the localStorage is updated before sending the Tx,
+    //FIXME: This works but the localStorage is updated before sending the Tx,
     // if the user would like to cancel the Tx, the beneficiary has already
     // been deleted from the localStorage.
     handleRemoveBeneficiary(beneficiaryAddress);

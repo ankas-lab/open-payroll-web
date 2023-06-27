@@ -2,11 +2,11 @@ import React from 'react';
 
 import { useBaseMultiplier } from '@/hooks/useBaseMultiplier';
 import Button from '@/components/generals/button';
-import { useMultipliers } from '@/hooks/useMultipliers';
 
 import { useBlockHeader } from 'useink';
 
-import { MdDelete } from 'react-icons/md';
+import { useDeactivateMultiplier } from '@/hooks/useDeactivateMultiplier';
+import { useDeleteMultiplier } from '@/hooks/useDeleteMultiplier';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -15,12 +15,9 @@ interface ContractProps {
 }
 
 const MultiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) => {
-  //TODO when a multiplier is created, paused or deleted, actualize the UI
-  //I try using useCallSubscription, but it still doesn't work, it should because it calls the contract for each new block.
-
   const { baseMultiplier } = useBaseMultiplier(_contract, _multiplier);
-
-  const { handleDeactivateMultiplier, handleDeleteUnusedMultipliers } = useMultipliers(_contract);
+  const { handleDeactivateMultiplier, isDeactivating } = useDeactivateMultiplier(_contract);
+  const { handleDeleteUnusedMultipliers, isDeleting } = useDeleteMultiplier(_contract);
 
   const block = useBlockHeader();
 
@@ -29,7 +26,11 @@ const MultiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) =>
         <div>
           <div className="flex gap-1">
             <div className="flex">
-              <Button type="text" text="" icon="pause" action={() => handleDeactivateMultiplier(_multiplier)} />
+              {isDeactivating ? (
+                <Button type="disabled outlined" text="" icon="loading" />
+              ) : (
+                <Button type="text" text="" icon="pause" action={() => handleDeactivateMultiplier(_multiplier)} />
+              )}
             </div>
             <p className="my-auto">{baseMultiplier?.name}</p>
           </div>
@@ -40,7 +41,11 @@ const MultiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) =>
           <div className="flex gap-1">
             <div className="flex">
               {block?.blockNumber! > parseInt(baseMultiplier?.validUntilBlock.replace(/,/g, '')) ? (
-                <Button type="text" icon="delete" action={() => handleDeleteUnusedMultipliers(_multiplier)} />
+                isDeleting ? (
+                  <Button type="disabled outlined" text="" icon="loading" />
+                ) : (
+                  <Button type="text" icon="delete" action={() => handleDeleteUnusedMultipliers(_multiplier)} />
+                )
               ) : (
                 <Button
                   type="disabled outlined"
