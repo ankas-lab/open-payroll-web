@@ -22,11 +22,14 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const [baseMultipliers, setBaseMultipliers] = useState<undefined | BaseMultipliers[]>(undefined);
   const [basePayment, setBasePayment] = useState<undefined | any>(undefined);
   const [rawBasePayment, setRawBasePayment] = useState<undefined | any>(undefined);
+  const [unclaimBeneficiaries, setUnclaimBeneficiaries] = useState<undefined | any>(undefined);
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
+  //FIXME: perhaps useCallSubscribe could be used to keep the entire site up to date.
+
   const getListBeneficiaries = useCallSubscription<string[]>(contract, 'getListBeneficiaries');
   const getNextBlockPeriod = useCall<any>(contract, 'getNextBlockPeriod');
   const getContractBalance = useCall<any>(contract, 'getContractBalance');
@@ -37,6 +40,15 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const isPaused = useCall<boolean>(contract, 'isPaused');
   const getBaseMultiplier = useCall<any>(contract, 'getBaseMultiplier');
 
+  const getCountOfUnclaimBeneficiaries = useCall(contract, 'getCountOfUnclaimBeneficiaries');
+
+  useEffect(() => {
+    if (getCountOfUnclaimBeneficiaries.result?.ok) {
+      const decodedData = pickDecoded(getCountOfUnclaimBeneficiaries.result);
+      setUnclaimBeneficiaries(decodedData);
+    }
+  }, [getCountOfUnclaimBeneficiaries.result]);
+
   useEffect(() => {
     getContractBalance.send();
     getNextBlockPeriod.send();
@@ -45,6 +57,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     getBasePayment.send();
     getMultipliersList.send();
     isPaused.send();
+    getCountOfUnclaimBeneficiaries.send();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract?.contract]);
@@ -149,5 +162,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     rawBasePayment,
     multipliersIdList,
     baseMultipliers,
+    unclaimBeneficiaries,
   };
 }

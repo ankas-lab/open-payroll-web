@@ -18,6 +18,7 @@ import { usePeriodicty } from '@/hooks/usePeriodicity';
 import Link from 'next/link';
 import { useUpdateBasePayment } from '@/hooks/useUpdateBasePayment';
 import { useUpdatePeriodicty } from '@/hooks/useUpdatePeriodicity';
+import { usePayrollContract } from '@/hooks';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -33,6 +34,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
     updateContract,
   } = useLocalStorageData(_contractAddress);
 
+  const { unclaimBeneficiaries } = usePayrollContract(_contract);
   const { basePayment } = useBasePayment(_contract);
   const { handleUpdateBasePayment } = useUpdateBasePayment(_contract);
 
@@ -43,8 +45,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
   const [newPeriodicity, setNewPeriodicity] = useState<any | undefined>(undefined);
   const [canUpdate, setCanUpdate] = useState<boolean>(false);
 
-  const getCountOfUnclaimBeneficiaries = useCall(_contract, 'getCountOfUnclaimBeneficiaries');
-
   const handleInputNewBasePayment = (e: any) => {
     setNewBasePayment(e.target.value);
   };
@@ -54,15 +54,10 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
   };
 
   useEffect(() => {
-    getCountOfUnclaimBeneficiaries.send();
-  }, [_contract]);
-
-  useEffect(() => {
-    if (getCountOfUnclaimBeneficiaries.result?.ok) {
-      const decodedData = pickDecoded(getCountOfUnclaimBeneficiaries.result);
-      decodedData > 0 ? setCanUpdate(false) : setCanUpdate(true);
+    if (unclaimBeneficiaries !== undefined) {
+      unclaimBeneficiaries > 0 ? setCanUpdate(false) : setCanUpdate(true);
     }
-  }, [getCountOfUnclaimBeneficiaries.result?.ok]);
+  }, [unclaimBeneficiaries]);
 
   return (
     <div className="w-full md:w-8/12 flex flex-col gap-[20px]">
