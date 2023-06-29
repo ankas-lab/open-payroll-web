@@ -23,7 +23,7 @@ export default function Contracts() {
     return null;
   }
 
-  const { contracts } = context;
+  const { ownerContracts } = context;
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -45,8 +45,8 @@ export default function Contracts() {
             text="These are your contracts, you can select one to inspect what's inside, edit them or add funds to them. If you don't have any contract, create one!"
           />
         </div>
-        <div className="overflow-x-scroll">
-          {contracts.length > 0 ? (
+        <div className="overflow-x-auto">
+          {ownerContracts.length > 0 ? (
             <table className="mt-[30px] md:mt-[50px]">
               <tbody>
                 <tr className="flex gap-[50px] text-left px-2">
@@ -77,13 +77,13 @@ export default function Contracts() {
                   </th>
                 </tr>
                 {/* .map of contracts */}
-                {contracts.map((c, i) => (
+                {ownerContracts.map((c, i) => (
                   <ContractRow key={i} contract={c} i={i} />
                 ))}
               </tbody>
             </table>
           ) : (
-            <p>It seems like there are no contracts here.</p>
+            <Text type="" text="It seems like there are no contracts here." />
           )}
         </div>
       </div>

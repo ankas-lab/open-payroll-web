@@ -67,6 +67,8 @@ const BeneficiaryRow = ({
     const roundedValue = floatValue.toFixed(2);
     const decimalValue = parseFloat(roundedValue) * 100;
 
+    console.log(id, value, decimalValue);
+
     const newValues =
       value === '' ? { ...newMultipliers, [id]: initialMultipliers?.[id] } : { ...newMultipliers, [id]: decimalValue };
     setNewMultipliers(newValues);
@@ -84,7 +86,11 @@ const BeneficiaryRow = ({
   };
 
   const handleUpdate = () => {
-    newMultipliers !== beneficiary.multipliers && handleUpdateBeneficiary(beneficiaryAddress, newMultipliers);
+    console.log('djskald');
+
+    if (newMultipliers !== beneficiary.multipliers) {
+      handleUpdateBeneficiary(beneficiaryAddress, newMultipliers);
+    }
     if (newBeneficiaryName !== undefined) {
       updateBeneficiaryName(contractAddress, beneficiaryAddress, newBeneficiaryName);
     }
@@ -99,12 +105,17 @@ const BeneficiaryRow = ({
   };
 
   //---------------------------------Initialize functions---------------------------------
-
+  //FIXME change loading w contract
   useEffect(() => {
     if (contract) {
       setLoading(false);
     }
   }, [contract]);
+
+  useEffect(() => {
+    console.log('newMultipliers', newMultipliers);
+    console.log('beneficiary multipliers', beneficiary?.multipliers);
+  }, [newMultipliers]);
 
   useEffect(() => {
     beneficiary && setNewMultipliers(beneficiary.multipliers);
@@ -133,11 +144,7 @@ const BeneficiaryRow = ({
         {isProcessing && <Button type="disabled outlined" icon="loading" />}
         {edit && !isProcessing && !isProcessingRemove && (
           <div className="flex">
-            <Button
-              type={isProcessing || isProcessingRemove ? 'disabled outlined' : 'text'}
-              icon={isProcessing || isProcessingRemove ? 'loading' : 'check'}
-              action={() => handleUpdate()}
-            />
+            <Button type={'text'} icon={'check'} action={() => handleUpdate()} />
             <Button type={'text danger'} icon={'delete'} action={() => handleDelete()} />
           </div>
         )}

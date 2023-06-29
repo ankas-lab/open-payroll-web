@@ -8,6 +8,7 @@ const archivo = Archivo({ subsets: ['latin'] });
 import { useBeneficiary, usePayrollContract } from '@/hooks';
 
 import MultiplierCell from '@/components/contracts/multiplerCell';
+import { useAmountToClaim } from '@/hooks/useAmountToClaim';
 
 interface BeneficiarieRowProps {
   contract: any | undefined;
@@ -15,10 +16,8 @@ interface BeneficiarieRowProps {
 }
 
 const BeneficiaryDataRow = ({ beneficiaryAddress, contract }: BeneficiarieRowProps) => {
-  const { amountToClaim, beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(
-    beneficiaryAddress,
-    contract,
-  );
+  const { beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(beneficiaryAddress, contract);
+  const { amountToClaim } = useAmountToClaim(contract, beneficiaryAddress);
   const { multipliersIdList } = usePayrollContract(contract);
 
   //---------------------------------UseStates---------------------------------

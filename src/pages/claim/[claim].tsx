@@ -26,6 +26,7 @@ import { useBaseMultiplier } from '@/hooks/useBaseMultiplier';
 import { useMultipliers } from '@/hooks/useMultipliers';
 import ClaimInput from '@/components/claim/ClaimInput';
 import MultiplierName from '@/components/generals/MultiplierName';
+import { useAmountToClaim } from '@/hooks/useAmountToClaim';
 
 export default function Claim() {
   //---------------------------------Get ContractAddress---------------------------------
@@ -47,7 +48,8 @@ export default function Claim() {
 
   const _contract = useContract(contractAddress!, metadata);
 
-  const { amountToClaim, lastClaim } = useBeneficiary(account?.address, _contract);
+  const { lastClaim } = useBeneficiary(account?.address, _contract);
+  const { amountToClaim } = useAmountToClaim(_contract, account?.address);
 
   const { basePayment, periodicity, contractBalance, contractState, listBeneficiaries } = usePayrollContract(_contract);
 
@@ -99,7 +101,7 @@ export default function Claim() {
               <Header />
               <div className="flex flex-col gap-5 mt-5">
                 <div className="flex flex-col md:w-12/12 lg:w-8/12 md:flex-row gap-[20px]">
-                  <div className="order-2 md:order-1">
+                  <div className="order-2 md:order-1 md:w-8/12">
                     <Text type="h4" text="Contract data" />
                     <div className="grid grid-cols-2 gap-[20px]">
                       <div className="">
@@ -178,7 +180,7 @@ export default function Claim() {
                 </div>
                 <div className="">
                   <Text type="h4" text="My payment info" />
-                  <div className="overflow-x-scroll">
+                  <div className="overflow-x-auto">
                     <table>
                       <tbody>
                         <tr className="flex gap-[50px] text-left px-2">
@@ -212,8 +214,4 @@ export default function Claim() {
       </div>
     </main>
   );
-}
-
-{
-  /**/
 }

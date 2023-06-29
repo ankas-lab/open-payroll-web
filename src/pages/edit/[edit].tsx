@@ -56,7 +56,7 @@ export default function Edit() {
           <div className="hidden md:flex h-[100px] justify-end">
             <WalletManager />
           </div>
-          <div className="flex flex-col justify-between md:w-10/12 lg:w-7/12">
+          <div className="flex flex-col gap-[20px] justify-between md:w-10/12 lg:w-7/12">
             <Text type="h2" text="Edit contract" />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px]">
               {tab === 'contract' ? (

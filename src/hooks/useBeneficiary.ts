@@ -9,6 +9,7 @@ import {
   decimalToPlanck,
   stringNumberToBN,
   planckToDecimal,
+  bnToBalance,
 } from 'useink/utils';
 
 interface Beneficiary {
@@ -19,14 +20,12 @@ interface Beneficiary {
 }
 
 export function useBeneficiary(address: string, contract: ChainContract<any> | undefined) {
-  const [amountToClaim, setAmountToClaim] = useState<undefined | any>(undefined);
   const [beneficiaryMultipliers, setBeneficiaryMultipliers] = useState<undefined | any>(undefined);
   const [beneficiaryUnclaimedPayments, setBeneficiaryUnclaimedPayments] = useState<undefined | any>(undefined);
   const [lastClaim, setLastClaim] = useState<undefined | any>(undefined);
   const [beneficiary, setBeneficiary] = useState<any | undefined>(undefined);
   const [beneficiaryMultipliersToArray, setBeneficiaryMultipliersToArray] = useState<undefined | any>(undefined);
   const [finalPay, setFinalPay] = useState<undefined | any>(undefined);
-  const [rawAmountToClaim, setRawAmountToClaim] = useState<undefined | number>(undefined);
 
   const blockHeader = useBlockHeader();
   const { rawBasePayment } = usePayrollContract(contract);
@@ -37,7 +36,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
   //---------------------------------Get from contract---------------------------------
   const getBeneficiary = useCallSubscription(contract, 'getBeneficiary', [address]);
-  const getAmountToClaim = useCallSubscription(contract, 'getAmountToClaim', [address]);
 
   const getBeneficiaryMultipliersToArray = (data: any) => {
     const multipliersArray = Object.entries(data).map(([key, value]) => ({
@@ -94,15 +92,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   }, [getBeneficiary.result]);
 
   useEffect(() => {
-    if (getAmountToClaim.result?.ok) {
-      const data = pickDecoded(getAmountToClaim.result);
-      const dataToNumber = parseInt(data?.Ok.replace(/,/g, ''));
-      setRawAmountToClaim(dataToNumber);
-      setAmountToClaim(planckToDecimalFormatted(dataToNumber, api?.api, { decimals: 2 }));
-    }
-  }, [getAmountToClaim.result]);
-
-  useEffect(() => {
     if (beneficiaryMultipliersToArray !== undefined) {
       getFinalPay(beneficiaryMultipliersToArray);
     }
@@ -110,13 +99,11 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
   return {
     beneficiary,
-    amountToClaim,
     lastClaim,
     beneficiaryMultipliers,
     beneficiaryUnclaimedPayments,
     beneficiaryMultipliersToArray,
     finalPay,
     rawBasePayment,
-    rawAmountToClaim,
   };
 }

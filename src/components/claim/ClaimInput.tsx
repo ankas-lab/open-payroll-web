@@ -8,6 +8,7 @@ import metadata from '../../contract/open_payroll.json';
 import { useBeneficiary, usePayrollContract } from '@/hooks';
 import { planckToDecimal, planckToDecimalFormatted } from 'useink/utils';
 import Loader from '../generals/Loader';
+import { useAmountToClaim } from '@/hooks/useAmountToClaim';
 
 const ClaimInput = () => {
   //---------------------------------Get ContractAddress---------------------------------
@@ -20,7 +21,7 @@ const ClaimInput = () => {
   const { account } = useWallet();
   const _contract = useContract(contractAddress!, metadata);
   const { handleClaimPayment, isClaiming, isClaimed } = useClaim(_contract);
-  const { rawAmountToClaim } = useBeneficiary(account?.address, _contract);
+  const { rawAmountToClaim } = useAmountToClaim(_contract, account?.address);
   const { rawContractBalance } = usePayrollContract(_contract);
 
   //TODO: handle Time

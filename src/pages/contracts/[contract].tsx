@@ -4,12 +4,10 @@ import Nav from '../../components/nav';
 import Text from '../../components/generals/text';
 import Button from '../../components/generals/button';
 
-import { AiOutlineLoading } from 'react-icons/ai';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useContract, useCall, useBlockHeader, useApi, useWallet, useChainDecimals, useTokenSymbol } from 'useink';
-import { pickDecoded, planckToDecimalFormatted } from 'useink/utils';
+import { useContract, useWallet } from 'useink';
 import metadata from '../../contract/open_payroll.json';
 import { useRouter } from 'next/router';
 import BeneficiaryRow from '@/components/contracts/beneficiaryRow';
@@ -21,17 +19,13 @@ import { DappContext } from '@/context';
 import { IoIosCopy } from 'react-icons/io';
 
 import { usePayrollContract } from '@/hooks';
+import { useGetOwner } from '@/hooks/useGetOwner';
 
-import { BN } from 'bn.js';
-import Result from '../create/results';
-
-interface BaseMultiplier {
-  name: string;
-  validUntilBlock: any;
-}
+import { ToastContainer, toast } from 'react-toastify';
+import Loader from '@/components/generals/Loader';
+import NotOwner from '@/components/contracts/NotOwner';
 
 export default function Contract() {
-  //TODO if not owner,return
   //---------------------------------Get contract address---------------------------------
   const router = useRouter();
   const {
@@ -48,8 +42,9 @@ export default function Contract() {
 
   const _contract = useContract(contractAddress!, metadata);
 
+  const { owner } = useGetOwner(_contract);
+
   const {
-    contractState,
     contractBalance,
     periodicity,
     totalDebts,
@@ -60,17 +55,9 @@ export default function Contract() {
     multipliersIdList,
   } = usePayrollContract(_contract);
 
-  //---------------------------------UseStates---------------------------------
-  const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
   //---------------------------------Show menu---------------------------------
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (_contract) {
-      setLoading('done');
-    }
-  }, [_contract]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -90,170 +77,142 @@ export default function Contract() {
     textToCopy !== undefined && navigator.clipboard.writeText(textToCopy.toString());
   };
 
-  return loading === 'done' ? (
+  return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
+      <ToastContainer />
       <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
-        <div className="flex flex-col-reverse md:flex-row justify-between">
-          <div className="flex flex-col">
-            {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress).name}`} />}
-            <div className="flex items-center -mt-1">
-              <Text type="overline" text={`${contractAddress}`} />
-              <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
-            </div>
-          </div>
-          <div className="flex gap-2 ml-auto mt-0 md:mt-4 relative">
-            <div>
-              <Button type="active" text="add funds" icon="" />
-            </div>
-            <div ref={menuRef} className="cursor-pointer w-12">
-              {showMenu ? (
-                <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] border-2 border-oppurple rounded-[5px] bg-[#FFFFFF] flex flex-col gap-[16px] w-[300px] z-[100]">
-                  <Link className="rounded hover:bg-opwhite p-1.5 cursor-pointer" href={`/edit/${contractAddress}`}>
-                    <Text text="Edit" type="" />
-                  </Link>
+        {contract && owner !== undefined ? (
+          owner === account.address ? (
+            <div className="flex flex-col gap-[30px]">
+              <div className="flex flex-col-reverse md:flex-row justify-between">
+                <div className="flex flex-col">
+                  {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress).name}`} />}
+                  <div className="flex items-center -mt-1">
+                    <Text type="overline" text={`${contractAddress}`} />
+                    <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
+                  </div>
                 </div>
-              ) : (
-                <div
-                  onClick={() => setShowMenu(true)}
-                  className="text-center border-oppurple border-2 flex gap-[10px] rounded-[5px] py-[13px] px-[13px] bg-opwhite text-[14px] uppercase w-full justify-center hover:bg-opwhite transition duration-100"
-                >
-                  <GoKebabHorizontal className="leading-none p-0 m-0 text-base rotate-90" />
+                <div className="flex gap-2 ml-auto mt-0 md:mt-4 relative">
+                  <div>
+                    <Button type="active" text="add funds" icon="" />
+                  </div>
+                  <div ref={menuRef} className="cursor-pointer w-12">
+                    {showMenu ? (
+                      <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] border-2 border-oppurple rounded-[5px] bg-[#FFFFFF] flex flex-col gap-[16px] w-[300px] z-[100]">
+                        <Link
+                          className="rounded hover:bg-opwhite p-1.5 cursor-pointer"
+                          href={`/edit/${contractAddress}`}
+                        >
+                          <Text text="Edit" type="" />
+                        </Link>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => setShowMenu(true)}
+                        className="text-center border-oppurple border-2 flex gap-[10px] rounded-[5px] py-[13px] px-[13px] bg-opwhite text-[14px] uppercase w-full justify-center hover:bg-opwhite transition duration-100"
+                      >
+                        <GoKebabHorizontal className="leading-none p-0 m-0 text-base rotate-90" />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-        {/* CONTRACT INFO */}
-        <div
-          className={`mt-[30px] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-[20px] text-[14px] font-normal text-black tracking-[0.25px] ${archivo.className}`}
-        >
-          <div className=" ">
-            <div className="h-[30px]">
-              <Text type="overline" text="periodicity" />
-            </div>
-            {periodicity ? (
-              <p>{periodicity}</p>
-            ) : (
-              <div className="flex items-center w-full">
-                <AiOutlineLoading className="animate-spin" />
               </div>
-            )}
-          </div>
+              {/* CONTRACT INFO */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-[20px] text-[14px] font-normal text-black tracking-[0.25px]">
+                <div className=" ">
+                  <div className="h-[30px]">
+                    <Text type="overline" text="periodicity" />
+                  </div>
+                  {periodicity ? <p>{periodicity}</p> : <Loader />}
+                </div>
 
-          <div className=" ">
-            <div className="h-[30px]">
-              <Text type="overline" text="next pay in" />
-            </div>
-            {nextBlockPeriod ? (
-              <p className="text-ellipsis  ">{nextBlockPeriod}</p>
-            ) : (
-              <div className="flex items-center w-full">
-                <AiOutlineLoading className="animate-spin" />
-              </div>
-            )}
-          </div>
+                <div className=" ">
+                  <div className="h-[30px]">
+                    <Text type="overline" text="next pay in" />
+                  </div>
+                  {nextBlockPeriod ? <p className="text-ellipsis  ">{nextBlockPeriod}</p> : <Loader />}
+                </div>
 
-          <div className=" ">
-            <div className="h-[30px]">
-              <Text type="overline" text="beneficiaries" />
-            </div>
-            {amountBeneficiaries ? (
-              <p>{amountBeneficiaries}</p>
-            ) : (
-              <div className="flex items-center w-full">
-                <AiOutlineLoading className="animate-spin" />
-              </div>
-            )}
-          </div>
-          <div className=" ">
-            <div className="h-[30px]">
-              <Text type="overline" text="base payment" />
-            </div>
-            {basePayment ? (
-              <p>{basePayment}</p>
-            ) : (
-              <div className="flex items-center w-full">
-                <AiOutlineLoading className="animate-spin" />
-              </div>
-            )}
-          </div>
-          <div className=" ">
-            <div className="h-[30px]">
-              <Text type="overline" text="funds in contract" />
-            </div>
+                <div className=" ">
+                  <div className="h-[30px]">
+                    <Text type="overline" text="beneficiaries" />
+                  </div>
+                  {amountBeneficiaries ? <p>{amountBeneficiaries}</p> : <Loader />}
+                </div>
+                <div className=" ">
+                  <div className="h-[30px]">
+                    <Text type="overline" text="base payment" />
+                  </div>
+                  {basePayment ? <p>{basePayment}</p> : <Loader />}
+                </div>
+                <div className=" ">
+                  <div className="h-[30px]">
+                    <Text type="overline" text="funds in contract" />
+                  </div>
 
-            {contractBalance ? (
-              <p className="text-ellipsis  ">{contractBalance}</p>
-            ) : (
-              <div className="flex items-center w-full">
-                <AiOutlineLoading className="animate-spin" />
+                  {contractBalance ? <p className="text-ellipsis  ">{contractBalance}</p> : <Loader />}
+                </div>
+                <div className=" ">
+                  <div className="h-[30px]">
+                    <Text type="overline" text="total funds needed" />
+                  </div>
+                  {totalDebts ? <p className="text-ellipsis  ">{totalDebts}</p> : <Loader />}
+                </div>
               </div>
-            )}
-          </div>
-          <div className=" ">
-            <div className="h-[30px]">
-              <Text type="overline" text="total funds needed" />
+              {/* BENEFICIARIES TABLE */}
+              <div className="flex flex-col gap-3">
+                <Text type="h4" text="Beneficiaries" />
+                <div className="overflow-x-auto">
+                  <table>
+                    <tbody>
+                      <tr className="flex gap-[50px] text-left px-2">
+                        <th className="w-[150px]">
+                          <Text type="overline" text="name" />
+                        </th>
+                        <th className="w-[150px]">
+                          <Text type="overline" text="address" />
+                        </th>
+                        {multipliersIdList !== undefined &&
+                          multipliersIdList.map((m: string) => (
+                            <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
+                          ))}
+                        <th className="w-[100px]">
+                          <Text type="overline" text="final pay" />
+                        </th>
+                        <th className="w-[100px]">
+                          <Text type="overline" text="total to claim" />
+                        </th>
+                        <th className="w-[100px]">
+                          <Text type="overline" text="last update" />
+                        </th>
+                      </tr>
+                      {listBeneficiaries &&
+                        amountBeneficiaries &&
+                        amountBeneficiaries > 0 &&
+                        listBeneficiaries.map((address: string, index: number) => (
+                          <BeneficiaryRow
+                            key={index}
+                            indexBeneficiary={index}
+                            beneficiaryAddress={address}
+                            contract={_contract}
+                          />
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-            {totalDebts ? (
-              <p className="text-ellipsis  ">{totalDebts}</p>
-            ) : (
-              <div className="flex items-center w-full">
-                <AiOutlineLoading className="animate-spin" />
-              </div>
-            )}
-          </div>
-        </div>
-        {/* BENEFICIARIES TABLE */}
-        <div className=" ">
-          <Text type="h4" text="Beneficiaries" />
-          <div className="overflow-x-scroll">
-            <table className="mt-[30px]">
-              <tbody>
-                <tr className="flex gap-[50px] text-left px-2">
-                  <th className="w-[150px]">
-                    <Text type="overline" text="name" />
-                  </th>
-                  <th className="w-[150px]">
-                    <Text type="overline" text="address" />
-                  </th>
-                  {multipliersIdList !== undefined &&
-                    multipliersIdList.map((m: string) => (
-                      <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
-                    ))}
-                  <th className="w-[100px]">
-                    <Text type="overline" text="final pay" />
-                  </th>
-                  <th className="w-[100px]">
-                    <Text type="overline" text="total to claim" />
-                  </th>
-                  <th className="w-[100px]">
-                    <Text type="overline" text="last update" />
-                  </th>
-                </tr>
-                {listBeneficiaries &&
-                  amountBeneficiaries &&
-                  amountBeneficiaries > 0 &&
-                  listBeneficiaries.map((address: string, index: number) => (
-                    <BeneficiaryRow
-                      key={index}
-                      indexBeneficiary={index}
-                      beneficiaryAddress={address}
-                      contract={_contract}
-                    />
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+          ) : (
+            <NotOwner />
+          )
+        ) : (
+          <Loader />
+        )}
       </div>
     </main>
-  ) : (
-    <div className="flex items-center w-full min-h-screen">
-      <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
-    </div>
   );
 }

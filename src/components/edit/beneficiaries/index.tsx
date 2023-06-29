@@ -39,7 +39,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
           <Text type="" text={basePayment} />
         </div>
       </div>
-      <div className="overflow-x-scroll">
+      <div className="overflow-x-auto">
         <table className="mt-5">
           <tbody>
             <tr className="flex gap-[50px] text-left px-2">

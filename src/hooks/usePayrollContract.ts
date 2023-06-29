@@ -29,20 +29,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
-  //FIXME: perhaps useCallSubscribe could be used to keep the entire site up to date.
-  /*
-  const getListBeneficiaries = useCallSubscription<string[]>(contract, 'getListBeneficiaries');
-  const getNextBlockPeriod = useCall<any>(contract, 'getNextBlockPeriod');
-  const getContractBalance = useCall<any>(contract, 'getContractBalance');
-  const getTotalDebts = useCall<any>(contract, 'getTotalDebts');
-  const getPeriodicity = useCall<number>(contract, 'getPeriodicity');
-  const getBasePayment = useCall<any>(contract, 'getBasePayment');
-  const getMultipliersList = useCall<any>(contract, 'getMultipliersList');
-  const isPaused = useCall<boolean>(contract, 'isPaused');
-  const getBaseMultiplier = useCall<any>(contract, 'getBaseMultiplier');
-
-  const getCountOfUnclaimBeneficiaries = useCall(contract, 'getCountOfUnclaimBeneficiaries');
-*/
   const getListBeneficiaries = useCallSubscription<string[]>(contract, 'getListBeneficiaries');
   const getNextBlockPeriod = useCallSubscription<any>(contract, 'getNextBlockPeriod');
   const getContractBalance = useCallSubscription<any>(contract, 'getContractBalance');
@@ -60,21 +46,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       setUnclaimBeneficiaries(decodedData);
     }
   }, [getCountOfUnclaimBeneficiaries.result]);
-
-  /*
-  useEffect(() => {
-    getContractBalance.send();
-    getNextBlockPeriod.send();
-    getTotalDebts.send();
-    getPeriodicity.send();
-    getBasePayment.send();
-    getMultipliersList.send();
-    isPaused.send();
-    getCountOfUnclaimBeneficiaries.send();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contract?.contract]);
-*/
 
   useEffect(() => {
     if (getContractBalance.result) {
