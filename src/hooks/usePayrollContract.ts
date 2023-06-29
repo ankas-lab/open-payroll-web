@@ -12,6 +12,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   // TODO: ChainContract<ContractPromise> | undefined
 
   const [contractBalance, setContractBalance] = useState<undefined | string>(undefined);
+  const [rawContractBalance, setRawContractBalance] = useState<undefined | number>(undefined);
   const [periodicity, setPeriodicity] = useState<undefined | number>(undefined);
   const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
   const [nextBlockPeriod, setNextBlockPeriod] = useState<undefined | string>(undefined);
@@ -29,7 +30,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
 
   //---------------------------------Get from contract---------------------------------
   //FIXME: perhaps useCallSubscribe could be used to keep the entire site up to date.
-
+  /*
   const getListBeneficiaries = useCallSubscription<string[]>(contract, 'getListBeneficiaries');
   const getNextBlockPeriod = useCall<any>(contract, 'getNextBlockPeriod');
   const getContractBalance = useCall<any>(contract, 'getContractBalance');
@@ -41,6 +42,17 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const getBaseMultiplier = useCall<any>(contract, 'getBaseMultiplier');
 
   const getCountOfUnclaimBeneficiaries = useCall(contract, 'getCountOfUnclaimBeneficiaries');
+*/
+  const getListBeneficiaries = useCallSubscription<string[]>(contract, 'getListBeneficiaries');
+  const getNextBlockPeriod = useCallSubscription<any>(contract, 'getNextBlockPeriod');
+  const getContractBalance = useCallSubscription<any>(contract, 'getContractBalance');
+  const getTotalDebts = useCallSubscription<any>(contract, 'getTotalDebts');
+  const getPeriodicity = useCallSubscription<number>(contract, 'getPeriodicity');
+  const getBasePayment = useCallSubscription<any>(contract, 'getBasePayment');
+  const getMultipliersList = useCallSubscription<any>(contract, 'getMultipliersList');
+  const isPaused = useCallSubscription<boolean>(contract, 'isPaused');
+  const getCountOfUnclaimBeneficiaries = useCallSubscription(contract, 'getCountOfUnclaimBeneficiaries');
+  const getBaseMultiplier = useCall<any>(contract, 'getBaseMultiplier');
 
   useEffect(() => {
     if (getCountOfUnclaimBeneficiaries.result?.ok) {
@@ -49,6 +61,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     }
   }, [getCountOfUnclaimBeneficiaries.result]);
 
+  /*
   useEffect(() => {
     getContractBalance.send();
     getNextBlockPeriod.send();
@@ -61,11 +74,15 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract?.contract]);
+*/
 
   useEffect(() => {
     if (getContractBalance.result) {
-      let data = stringNumberToBN(pickDecoded(getContractBalance.result!));
-      setContractBalance(planckToDecimalFormatted(data, api?.api, { decimals: 2 }));
+      const data = pickDecoded(getContractBalance.result!);
+      const dataToNumber = parseInt(data?.replace(/,/g, ''));
+      setRawContractBalance(dataToNumber);
+      let stringToBN = stringNumberToBN(data);
+      setContractBalance(planckToDecimalFormatted(stringToBN, api?.api, { decimals: 2 }));
     }
   }, [getContractBalance.result]);
 
@@ -80,11 +97,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       let data = pickDecoded(getListBeneficiaries.result!);
       setAmountBeneficiaries(data?.length);
       setListBeneficiaries(data);
-    }
-  }, [getListBeneficiaries.result]);
-
-  useEffect(() => {
-    if (getListBeneficiaries.result) {
     }
   }, [getListBeneficiaries.result]);
 
@@ -163,5 +175,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     multipliersIdList,
     baseMultipliers,
     unclaimBeneficiaries,
+    rawContractBalance,
   };
 }

@@ -3,7 +3,7 @@ import Link from 'next/link.js';
 
 import Button from '../../components/generals/button';
 
-import { IoIosAlert } from 'react-icons/io';
+import { IoIosAlert, IoIosCheckmarkCircle } from 'react-icons/io';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
@@ -46,13 +46,19 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
             : `flex gap-[50px] items-center px-2 text-[14px] bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
         }
       >
-        {totalDebts! > contractBalance! && (
+        {totalDebts! > contractBalance! ? (
           <td
             className="w-[25px] flex"
             onMouseEnter={() => toast(`You do not have sufficient funds in ${contract.name}`)}
           >
             <div className="flex w-full">
               <IoIosAlert className="w-5 h-5 text-opdanger m-auto" />
+            </div>
+          </td>
+        ) : (
+          <td className="w-[25px] flex" onMouseEnter={() => toast(`${contract.name} is Ok.`)}>
+            <div className="flex w-full">
+              <IoIosCheckmarkCircle className="w-5 h-5 text-opgreen m-auto" />
             </div>
           </td>
         )}

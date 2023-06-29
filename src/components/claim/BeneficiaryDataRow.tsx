@@ -5,33 +5,21 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useApi, useBlockHeader } from 'useink';
-
 import { useBeneficiary, usePayrollContract } from '@/hooks';
 
 import MultiplierCell from '@/components/contracts/multiplerCell';
 
-import { DappContext } from '@/context';
-
 interface BeneficiarieRowProps {
-  indexBeneficiary: number;
   contract: any | undefined;
   beneficiaryAddress: string;
 }
 
-const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
+const BeneficiaryDataRow = ({ beneficiaryAddress, contract }: BeneficiarieRowProps) => {
   const { amountToClaim, beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(
     beneficiaryAddress,
     contract,
   );
   const { multipliersIdList } = usePayrollContract(contract);
-
-  const context = useContext(DappContext);
-
-  const { addressToShort } = context!;
-
-  //---------------------------------Api---------------------------------
-  const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
@@ -46,21 +34,8 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
 
   return loading === 'done' ? (
     <tr
-      className={
-        indexBeneficiary % 2 === 0
-          ? `flex gap-[50px] text-[14px] items-center h-11 px-2 font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
-          : `flex gap-[50px] text-[14px] items-center h-11 px-2 bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
-      }
+      className={`flex gap-[50px] text-[14px] items-center h-11 px-2 font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`}
     >
-      {/* Beneficiary name */}
-      {/* TODO: show name */}
-      <td className="w-[150px]">
-        <p>Name</p>
-      </td>
-      {/* Beneficiary address */}
-      <td className="w-[150px]">
-        <p>{addressToShort(beneficiaryAddress)}</p>
-      </td>
       {/* Multipliers */}
       {multipliersIdList?.map((m: any) => (
         <MultiplierCell
@@ -112,4 +87,4 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
   );
 };
 
-export default BeneficiaryRow;
+export default BeneficiaryDataRow;

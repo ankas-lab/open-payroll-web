@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useCall, useApi, ChainContract, useBlockHeader, useCallSubscription } from 'useink';
+import { useCall, useApi, ChainContract, useBlockHeader, useCallSubscription, useTokenSymbol } from 'useink';
 import { usePayrollContract } from '../hooks/usePayrollContract';
 
-import { pickDecoded, pickResultOk, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
+import {
+  pickDecoded,
+  pickResultOk,
+  planckToDecimalFormatted,
+  decimalToPlanck,
+  stringNumberToBN,
+  planckToDecimal,
+} from 'useink/utils';
 
 interface Beneficiary {
   accountId: any;
@@ -19,17 +26,18 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   const [beneficiary, setBeneficiary] = useState<any | undefined>(undefined);
   const [beneficiaryMultipliersToArray, setBeneficiaryMultipliersToArray] = useState<undefined | any>(undefined);
   const [finalPay, setFinalPay] = useState<undefined | any>(undefined);
-  const [isBeneficiary, setIsBeneficiary] = useState<boolean>(false);
-  const [beneficiaryList, setBeneficiaryList] = useState<string[] | undefined>(undefined);
+  const [rawAmountToClaim, setRawAmountToClaim] = useState<undefined | number>(undefined);
 
   const blockHeader = useBlockHeader();
   const { rawBasePayment } = usePayrollContract(contract);
 
+  const chainSymbol = useTokenSymbol('rococo-contracts-testnet');
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
   const getBeneficiary = useCallSubscription(contract, 'getBeneficiary', [address]);
+  const getAmountToClaim = useCallSubscription(contract, 'getAmountToClaim', [address]);
 
   const getBeneficiaryMultipliersToArray = (data: any) => {
     const multipliersArray = Object.entries(data).map(([key, value]) => ({
@@ -45,7 +53,11 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
       sum += mults[i].value / 100;
     }
     const finalPay = sum * rawBasePayment;
-    setFinalPay(planckToDecimalFormatted(finalPay, api?.api));
+    const plancked = planckToDecimal(finalPay, api?.api)?.toFixed(2);
+
+    const formated = plancked! + ' ' + chainSymbol;
+
+    setFinalPay(formated);
   };
 
   const getLastClaim = (lastClaim: any) => {
@@ -67,18 +79,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     }
   };
 
-  const checkIfBeneficiary = () => {
-    if (address && beneficiaryList?.includes(address)) {
-      setIsBeneficiary(true);
-    } else {
-      setIsBeneficiary(false);
-    }
-  };
-
-  useEffect(() => {
-    checkIfBeneficiary();
-  }, [address, beneficiaryList]);
-
   useEffect(() => {
     if (getBeneficiary.result?.ok) {
       const data = pickDecoded(getBeneficiary.result);
@@ -88,12 +88,19 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
         setBeneficiary(data?.Ok);
         setBeneficiaryMultipliers(data?.Ok.multipliers);
-        const amountToClaim = stringNumberToBN(data?.Ok.unclaimedPayments);
-        setAmountToClaim(planckToDecimalFormatted(amountToClaim, api?.api, { decimals: 2 }));
         setBeneficiaryUnclaimedPayments(data?.Ok.unclaimedPayments);
       }
     }
   }, [getBeneficiary.result]);
+
+  useEffect(() => {
+    if (getAmountToClaim.result?.ok) {
+      const data = pickDecoded(getAmountToClaim.result);
+      const dataToNumber = parseInt(data?.Ok.replace(/,/g, ''));
+      setRawAmountToClaim(dataToNumber);
+      setAmountToClaim(planckToDecimalFormatted(dataToNumber, api?.api, { decimals: 2 }));
+    }
+  }, [getAmountToClaim.result]);
 
   useEffect(() => {
     if (beneficiaryMultipliersToArray !== undefined) {
@@ -109,7 +116,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     beneficiaryUnclaimedPayments,
     beneficiaryMultipliersToArray,
     finalPay,
-    isBeneficiary,
     rawBasePayment,
+    rawAmountToClaim,
   };
 }

@@ -17,7 +17,7 @@ const MultiplierHeaderCell = ({ contract, multiplierId }: multiplierHeaderCellPr
   return baseMultiplier !== null ? (
     baseMultiplier?.validUntilBlock === null && (
       <th className="w-[100px]">
-        <Text type="overline" text={`${baseMultiplier?.name}`} />
+        <Text type="overline" text={`${baseMultiplier?.name || `multiplier ${multiplierId}`}`} />
       </th>
     )
   ) : (

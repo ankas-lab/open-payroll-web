@@ -4,7 +4,7 @@ import { MdAddCircle, MdCancel, MdDelete, MdMenu, MdOutlinePauseCircleFilled } f
 import { IoIosAlert, IoIosCopy, IoMdHand } from 'react-icons/io';
 import { CiMenuKebab } from 'react-icons/ci';
 import { AiFillCheckCircle, AiFillEdit, AiOutlineLoading } from 'react-icons/ai';
-import { FaFileContract } from 'react-icons/fa';
+import { IoDocument } from 'react-icons/io5';
 const archivo = Archivo({ subsets: ['latin'] });
 const podkova = Podkova({ subsets: ['latin'] });
 
@@ -33,7 +33,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
@@ -55,7 +55,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
@@ -77,7 +77,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
@@ -99,7 +99,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
@@ -121,7 +121,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
@@ -143,7 +143,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
@@ -166,7 +166,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
@@ -189,7 +189,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
@@ -211,7 +211,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
       {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
       {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <FaFileContract className="w-5 h-5" />}
+      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
 
       {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
       {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
