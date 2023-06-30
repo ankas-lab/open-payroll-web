@@ -5,8 +5,6 @@ import { AiOutlineLoading } from 'react-icons/ai';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useApi, useBlockHeader } from 'useink';
-
 import { useBeneficiary, usePayrollContract } from '@/hooks';
 
 import MultiplierCell from '@/components/contracts/multiplerCell';
@@ -18,9 +16,10 @@ interface BeneficiarieRowProps {
   indexBeneficiary: number;
   contract: any | undefined;
   beneficiaryAddress: string;
+  contractAddress: string | undefined;
 }
 
-const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: BeneficiarieRowProps) => {
+const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract, contractAddress }: BeneficiarieRowProps) => {
   const { beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(beneficiaryAddress, contract);
   const { amountToClaim } = useAmountToClaim(contract, beneficiaryAddress);
 
@@ -28,16 +27,12 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
 
   const context = useContext(DappContext);
 
-  const { addressToShort } = context!;
-
-  //---------------------------------Api---------------------------------
-  const api = useApi('rococo-contracts-testnet');
+  const { addressToShort, getBeneficiaryName } = context!;
 
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
 
   //---------------------------------Initialize functions---------------------------------
-
   useEffect(() => {
     if (contract) {
       setLoading('done');
@@ -55,7 +50,7 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract }: Bene
       {/* Beneficiary name */}
       {/* TODO: show name */}
       <td className="w-[150px]">
-        <p>Name</p>
+        <p>{getBeneficiaryName(contractAddress, beneficiaryAddress) || '-'}</p>
       </td>
       {/* Beneficiary address */}
       <td className="w-[150px]">

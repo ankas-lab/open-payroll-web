@@ -43,7 +43,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
         <table className="mt-5">
           <tbody>
             <tr className="flex gap-[50px] text-left px-2">
-              <th className="w-[50px]"></th>
+              <th className="w-[100px]"></th>
               <th className="w-[150px]">
                 <Text type="overline" text="name" />
               </th>

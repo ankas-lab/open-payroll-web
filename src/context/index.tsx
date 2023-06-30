@@ -62,29 +62,13 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
     if (storedContracts) {
       contracts = JSON.parse(storedContracts);
     } else {
-      contracts.push(
-        {
-          name: 'My Contract by My',
-          address: '5DNj7Z75xZtNUzjZ8fVdK95hRjd7hEKbsLgTvYdDZ22MCaCK',
-          owner: '5Dsykc2KUHcziwcTgZkHxyDDTotBJbGNh3BakfZ5PdDGMzfm',
-          email: '',
-          beneficiaries: [{ name: 'gera', address: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25' }],
-        },
-        {
-          name: 'My Contract by My2',
-          address: '5Ev9gHh7VTZZQVAa9TfoyNCMAy91zXVqBQR38iBqScAdmk9c',
-          owner: '5G1WsvjyWoaVZzJKnCpn3iK3sScmXrtuTdU3VSVhZAabREot',
-          email: '',
-          beneficiaries: [{ name: 'gera2', address: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25' }],
-        },
-        {
-          name: 'Cuenta de prueba como Owner',
-          address: '5HHgY1XcWuvJXWFQ7agbe5xMZHgEGbY6K7x3SF75DCapSJWT',
-          owner: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25',
-          email: '',
-          beneficiaries: [{ name: 'Yo mismo', address: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25' }],
-        },
-      );
+      contracts.push({
+        name: 'dhjaskdad',
+        address: '5H3QaazsFy4y9sexX9d3HwFgKjsAkQydirVWj54YWDm7mxjF',
+        owner: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25',
+        email: '',
+        beneficiaries: [{ name: 'Yo mismo', address: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25' }],
+      });
       localStorage.setItem('contracts', JSON.stringify(contracts));
     }
 
@@ -218,7 +202,8 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   };
 
   //--------------------------------------Const----------------------------------
-  const codeHash = '0x4a8a55c4a112cb4d754d89966ee3b3f788b96c3f87f73493a33cf7c1ea3261f5';
+  //const codeHash = '0x4a8a55c4a112cb4d754d89966ee3b3f788b96c3f87f73493a33cf7c1ea3261f5';
+  const codeHash = '0x194e2a7260a9886c604a2533eb3a09126b71fc9411657b6a248a9f1e580c3b69';
 
   useEffect(() => {
     getStoredContracts();

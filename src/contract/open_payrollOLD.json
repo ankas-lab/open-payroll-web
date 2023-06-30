@@ -1,7 +1,7 @@
 {
   "source": {
-    "hash": "0x194e2a7260a9886c604a2533eb3a09126b71fc9411657b6a248a9f1e580c3b69",
-    "language": "ink! 4.2.0",
+    "hash": "0x4a8a55c4a112cb4d754d89966ee3b3f788b96c3f87f73493a33cf7c1ea3261f5",
+    "language": "ink! 4.2.1",
     "compiler": "rustc 1.69.0",
     "build_info": {
       "build_mode": "Release",
@@ -796,7 +796,7 @@
         "args": [],
         "default": false,
         "docs": [
-          " Ensure if all payments up to date or storage unclaiumed_payments is up-to-date",
+          " Check if all payments up to date or storage unclaiumed_payments is up-to-date",
           " TODO: this function should be renamed and separated in two different functions",
           " The view function should just return a bool, and the ensure function should return an error"
         ],
@@ -840,35 +840,6 @@
           "type": 21
         },
         "selector": "0x1ebbad2a"
-      },
-      {
-        "args": [
-          {
-            "label": "account_id",
-            "type": {
-              "displayName": [
-                "AccountId"
-              ],
-              "type": 0
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
-          " Get amount in storage without transferring the funds",
-          " Read Only function"
-        ],
-        "label": "get_amount_to_claim_for_one_period",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 21
-        },
-        "selector": "0xfd2fae4a"
       },
       {
         "args": [],

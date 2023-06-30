@@ -91,7 +91,7 @@ export default function Contract() {
               <div className="flex flex-col-reverse md:flex-row justify-between">
                 <div className="flex flex-col">
                   {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress).name}`} />}
-                  <div className="flex items-center -mt-1">
+                  <div className="flex items-center mt-2">
                     <Text type="overline" text={`${contractAddress}`} />
                     <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
                   </div>
@@ -199,6 +199,7 @@ export default function Contract() {
                             indexBeneficiary={index}
                             beneficiaryAddress={address}
                             contract={_contract}
+                            contractAddress={contractAddress}
                           />
                         ))}
                     </tbody>

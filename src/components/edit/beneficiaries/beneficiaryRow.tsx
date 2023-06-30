@@ -55,8 +55,6 @@ const BeneficiaryRow = ({
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------UseStates---------------------------------
-  const [loading, setLoading] = useState<boolean>(true);
-
   const [newMultipliers, setNewMultipliers] = useState<any | undefined>(undefined);
   const [initialMultipliers, setInitialMultipliers] = useState<any | undefined>(undefined);
   const [newBeneficiaryName, setNewBeneficiaryName] = useState<string | undefined>(undefined);
@@ -66,8 +64,6 @@ const BeneficiaryRow = ({
     const floatValue = parseFloat(value.replace(',', '.'));
     const roundedValue = floatValue.toFixed(2);
     const decimalValue = parseFloat(roundedValue) * 100;
-
-    console.log(id, value, decimalValue);
 
     const newValues =
       value === '' ? { ...newMultipliers, [id]: initialMultipliers?.[id] } : { ...newMultipliers, [id]: decimalValue };
@@ -80,14 +76,12 @@ const BeneficiaryRow = ({
     let sum = 0;
     for (let i = 0; i < multToArray.length; i++) {
       multToArray[i] === '' ? (sum += parseInt(oldMultToArray[i]) / 100) : (sum += parseInt(multToArray[i]) / 100);
-    }
-    const newFinalPay = planckToDecimalFormatted(sum * rawBasePayment, api?.api);
+    } //TODO ask if final pay is mult + base or mult
+    const newFinalPay = planckToDecimalFormatted(sum * rawBasePayment + parseInt(rawBasePayment), api?.api);
     return newFinalPay;
   };
 
   const handleUpdate = () => {
-    console.log('djskald');
-
     if (newMultipliers !== beneficiary.multipliers) {
       handleUpdateBeneficiary(beneficiaryAddress, newMultipliers);
     }
@@ -105,18 +99,6 @@ const BeneficiaryRow = ({
   };
 
   //---------------------------------Initialize functions---------------------------------
-  //FIXME change loading w contract
-  useEffect(() => {
-    if (contract) {
-      setLoading(false);
-    }
-  }, [contract]);
-
-  useEffect(() => {
-    console.log('newMultipliers', newMultipliers);
-    console.log('beneficiary multipliers', beneficiary?.multipliers);
-  }, [newMultipliers]);
-
   useEffect(() => {
     beneficiary && setNewMultipliers(beneficiary.multipliers);
     beneficiary && setInitialMultipliers(beneficiary.multipliers);
@@ -130,7 +112,7 @@ const BeneficiaryRow = ({
     finalized && setEdit(false);
   }, [finalized]);
 
-  return !loading ? (
+  return contract ? (
     <tr
       className={
         indexBeneficiary % 2 === 0
@@ -138,13 +120,14 @@ const BeneficiaryRow = ({
           : `flex gap-[50px] text-[14px] items-center h-11 px-2 bg-[#ECECEC] font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`
       }
     >
-      <td className="w-[50px]">
+      <td className="w-[100px]">
         {!edit && <Button type="text" icon="edit" action={() => setEdit(true)} />}
         {isProcessingRemove && <Button type="disabled outlined" icon="loading" />}
         {isProcessing && <Button type="disabled outlined" icon="loading" />}
         {edit && !isProcessing && !isProcessingRemove && (
           <div className="flex">
             <Button type={'text'} icon={'check'} action={() => handleUpdate()} />
+            <Button type={'text'} icon={'cancel'} action={() => setEdit(false)} />
             <Button type={'text danger'} icon={'delete'} action={() => handleDelete()} />
           </div>
         )}

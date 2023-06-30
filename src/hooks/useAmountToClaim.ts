@@ -14,8 +14,11 @@ export function useAmountToClaim(_contract: any, address: string) {
     if (getAmountToClaim.result?.ok) {
       const data = pickDecoded(getAmountToClaim.result);
       const dataToNumber = parseInt(data?.Ok.replace(/,/g, ''));
-      console.log(dataToNumber);
-      setAmountToClaim(planckToDecimal(dataToNumber, api?.api)?.toFixed(2) + ' ' + chainSymbol);
+      if (dataToNumber === 0) {
+        setAmountToClaim(dataToNumber + ' ' + chainSymbol);
+      } else {
+        setAmountToClaim(planckToDecimal(dataToNumber, api?.api)?.toFixed(2) + ' ' + chainSymbol);
+      }
       setRawAmountToClaim(dataToNumber);
     }
   }, [getAmountToClaim.result]);
