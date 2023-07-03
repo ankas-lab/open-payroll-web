@@ -1,6 +1,6 @@
 import { useBaseMultiplier } from '@/hooks/useBaseMultiplier';
 import React, { useState, useEffect } from 'react';
-import { AiOutlineLoading } from 'react-icons/ai';
+import Loader from '../generals/Loader';
 
 interface multiplierHeaderCellProps {
   contract: any;
@@ -29,9 +29,7 @@ const MultiplerCell = ({ contract, mult, beneficiaryMultipliersToArray }: multip
   return baseMultiplier !== null ? (
     baseMultiplier?.validUntilBlock === null && <td className="w-[100px]">{multiplierValue / 100 || '-'}</td>
   ) : (
-    <div className="w-[100px]">
-      <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
-    </div>
+    <Loader />
   );
 };
 

@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react';
-
-import { AiOutlineLoading } from 'react-icons/ai';
 import Button from '@/components/generals/button';
 
 import { Archivo } from 'next/font/google';
@@ -17,6 +15,7 @@ import MultiplierCell from '../beneficiaries/multiplierCell';
 import { DappContext } from '@/context';
 import { useRemoveBeneficiary } from '@/hooks/useRemoveBeneficiary';
 import { useUpdateBeneficiary } from '@/hooks/useUpdateBeneficiary';
+import Loader from '@/components/generals/Loader';
 
 interface BeneficiarieRowProps {
   indexBeneficiary: number;
@@ -172,15 +171,11 @@ const BeneficiaryRow = ({
       {finalPay !== undefined ? (
         <td className="w-[100px]">{edit ? <p>{calculateNewFinalPayment()}</p> : <p>{finalPay}</p>}</td>
       ) : (
-        <td className="w-[100px]">
-          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto" />
-        </td>
+        <Loader />
       )}
     </tr>
   ) : (
-    <div className="flex items-center w-full">
-      <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
-    </div>
+    <Loader />
   );
 };
 

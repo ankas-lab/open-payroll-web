@@ -1,6 +1,5 @@
 import { useBaseMultiplier } from '@/hooks/useBaseMultiplier';
 import React, { useState, useEffect } from 'react';
-import { AiOutlineLoading } from 'react-icons/ai';
 
 interface multiplierCellProps {
   contract: any;

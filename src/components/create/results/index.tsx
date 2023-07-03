@@ -2,8 +2,8 @@ import React from 'react';
 
 import Button from '../../generals/button';
 import Text from '../../generals/text';
-import { AiOutlineLoading } from 'react-icons/ai';
 import Link from 'next/link';
+import Loader from '@/components/generals/Loader';
 
 interface Result {
   result: 'creating' | 'loading' | 'done' | 'error';
@@ -13,11 +13,7 @@ interface Result {
 const Result: React.FC<Result> = ({ result, handleEmptyAll }) => {
   return (
     <div className="w-10/12 md:w-8/12 mx-auto flex flex-col gap-[20px] md:gap-[40px] my-[50px] md:my-[100px]">
-      {result === 'loading' && (
-        <div className="m-auto">
-          <AiOutlineLoading className="w-10 h-10 animate-spin" />
-        </div>
-      )}
+      {result === 'loading' && <Loader />}
       {result === 'done' && (
         <div className="flex flex-col gap-[20px]">
           <div className="gap-[5px]">

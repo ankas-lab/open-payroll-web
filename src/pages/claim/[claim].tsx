@@ -8,7 +8,6 @@ const archivo = Archivo({ subsets: ['latin'] });
 const podkova = Podkova({ subsets: ['latin'] });
 import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { AiOutlineLoading } from 'react-icons/ai';
 import metadata from '../../contract/open_payroll.json';
 import { useContract, useCall, useTx, useWallet, useApi, useBlockHeader, useTokenSymbol } from 'useink';
 import { stringNumberToBN } from 'useink/utils';

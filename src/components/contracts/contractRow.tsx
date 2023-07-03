@@ -3,8 +3,8 @@ import Link from 'next/link.js';
 
 import Button from '../../components/generals/button';
 
-import { IoIosAlert, IoIosCheckmarkCircle } from 'react-icons/io';
-import { AiOutlineLoading } from 'react-icons/ai';
+import { IoIosAlert } from 'react-icons/io';
+
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
@@ -12,6 +12,7 @@ import { useContract } from 'useink';
 import { usePayrollContract } from '@/hooks';
 import metadata from '@/contract/open_payroll.json';
 import toast from 'react-hot-toast';
+import Loader from '../generals/Loader';
 
 interface ContractRowProps {
   contract: {
@@ -61,60 +62,22 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         <td className="w-[150px]">
           <p>{contract.name}</p>
         </td>
-        <td className="w-[100px]">
-          {amountBeneficiaries ? (
-            <p>{amountBeneficiaries}</p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
-        </td>
-        <td className="w-[80px]">
-          {periodicity ? (
-            <p>{periodicity}</p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
-        </td>
+        <td className="w-[100px]">{amountBeneficiaries ? <p>{amountBeneficiaries}</p> : <Loader />}</td>
+        <td className="w-[80px]">{periodicity ? <p>{periodicity}</p> : <Loader />}</td>
         <td className="w-[80px]">
           {contractBalance !== undefined ? (
             <p className="text-ellipsis overflow-hidden">{contractBalance}</p>
           ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
+            <Loader />
           )}
         </td>
         <td className="w-[80px]">
-          {totalDebts !== null ? (
-            <p className="text-ellipsis overflow-hidden">{totalDebts}</p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
+          {totalDebts !== null ? <p className="text-ellipsis overflow-hidden">{totalDebts}</p> : <Loader />}
         </td>
         <td className="w-[80px]">
-          {nextBlockPeriod !== null ? (
-            <p className="text-ellipsis overflow-hidden">{nextBlockPeriod}</p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
+          {nextBlockPeriod !== null ? <p className="text-ellipsis overflow-hidden">{nextBlockPeriod}</p> : <Loader />}
         </td>
-        <td className="w-[80px]">
-          {_contract ? (
-            <p>{_contract?.chainId}</p>
-          ) : (
-            <div className="flex items-center w-full">
-              <AiOutlineLoading className="animate-spin" />
-            </div>
-          )}
-        </td>
+        <td className="w-[80px]">{_contract ? <p>{_contract?.chainId}</p> : <Loader />}</td>
         <td className="w-[80px]">{contractState ? <p>ON</p> : <p>OFF</p>}</td>
         <td className="w-[100px]">
           <Link href={`/contracts/${contract.address}`}>
@@ -126,9 +89,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
   ) : (
     <tr className="flex items-center w-full">
       <td className="flex w-full">
-        <div className="flex w-full">
-          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
-        </div>
+        <Loader />
       </td>
     </tr>
   );

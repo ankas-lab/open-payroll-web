@@ -3,8 +3,8 @@ import Text from '../../generals/text';
 import Button from '../../generals/button';
 import { useMultipliers } from '@/hooks/useMultipliers';
 import MultiplierInput from './multiplierIntput';
-import { AiOutlineLoading } from 'react-icons/ai';
 import { useAddMultiplier } from '@/hooks/useAddMultiplier';
+import Loader from '@/components/generals/Loader';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -42,18 +42,26 @@ To eliminate a multiplier it is necessary that it be paused for a period."
                 <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={true} />
               ))
             ) : (
-              <div className="flex w-full h-full">
-                <AiOutlineLoading className="animate-spin m-auto" />
-              </div>
+              <Loader />
             )}
             {createNewMultuplier && (
               <form className="flex gap-[10px]">
-                <input
-                  placeholder="Name"
-                  type="text"
-                  className=" bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
-                  onChange={(e) => setNewMultuplier(e.target.value)}
-                />
+                {isAdding ? (
+                  <input
+                    placeholder="Name"
+                    type="text"
+                    disabled
+                    className=" bg-opwhite border-2 border-opgray rounded-[5px] py-1.5 px-1.5 w-full"
+                  />
+                ) : (
+                  <input
+                    placeholder="Name"
+                    type="text"
+                    className=" bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
+                    onChange={(e) => setNewMultuplier(e.target.value)}
+                  />
+                )}
+
                 <div className="flex">
                   {isAdding ? (
                     <Button type="disabled outlined" text="" icon="loading" />
@@ -64,7 +72,7 @@ To eliminate a multiplier it is necessary that it be paused for a period."
                         icon="check"
                         action={() => handleAddBaseMultiplier(newMultuplier!)}
                       />
-                      <Button type="text" text="" icon="cancel" action={() => setCreateNewMultuplier(false)} />
+                      <Button type="text danger" text="" icon="cancel" action={() => setCreateNewMultuplier(false)} />
                     </>
                   )}
                 </div>
@@ -87,9 +95,7 @@ To eliminate a multiplier it is necessary that it be paused for a period."
                   <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={false} />
                 ))
               ) : (
-                <div className="flex w-full h-full">
-                  <AiOutlineLoading className="animate-spin m-auto" />
-                </div>
+                <Loader />
               )}
             </div>
           </div>

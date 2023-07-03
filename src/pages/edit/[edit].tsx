@@ -12,7 +12,6 @@ import metadata from '../../contract/open_payroll.json';
 import Contract from '@/components/edit/baseContract';
 import Multipliers from '@/components/edit/multipliers';
 import Beneficiaries from '@/components/edit/beneficiaries';
-import { AiOutlineLoading } from 'react-icons/ai';
 import toast, { Toaster } from 'react-hot-toast';
 import Loader from '@/components/generals/Loader';
 

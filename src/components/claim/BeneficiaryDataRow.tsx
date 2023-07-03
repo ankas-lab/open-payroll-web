@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 
-import { AiOutlineLoading } from 'react-icons/ai';
-
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
@@ -9,6 +7,7 @@ import { useBeneficiary, usePayrollContract } from '@/hooks';
 
 import MultiplierCell from '@/components/contracts/multiplerCell';
 import { useAmountToClaim } from '@/hooks/useAmountToClaim';
+import Loader from '../generals/Loader';
 
 interface BeneficiarieRowProps {
   contract: any | undefined;
@@ -51,7 +50,7 @@ const BeneficiaryDataRow = ({ beneficiaryAddress, contract }: BeneficiarieRowPro
         </td>
       ) : (
         <td className="w-[100px]">
-          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto" />
+          <Loader />
         </td>
       )}
       {/* Total to claim */}
@@ -61,7 +60,7 @@ const BeneficiaryDataRow = ({ beneficiaryAddress, contract }: BeneficiarieRowPro
         </td>
       ) : (
         <td className="w-[100px]">
-          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto" />
+          <Loader />
         </td>
       )}
       {/* Last claim */}
@@ -71,16 +70,14 @@ const BeneficiaryDataRow = ({ beneficiaryAddress, contract }: BeneficiarieRowPro
         </td>
       ) : (
         <td className="w-[100px]">
-          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto" />
+          <Loader />
         </td>
       )}
     </tr>
   ) : (
     <tr className="flex items-center w-full">
       <td className="flex w-full">
-        <div className="flex w-full">
-          <AiOutlineLoading className="w-5 h-5 animate-spin mx-auto my-2" />
-        </div>
+        <Loader />
       </td>
     </tr>
   );

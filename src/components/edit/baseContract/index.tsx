@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-import { useCall } from 'useink';
-import { pickDecoded } from 'useink/utils';
-
 import Text from '@/components/generals/text';
 import Button from '@/components/generals/button';
 
 import { Podkova } from 'next/font/google';
 const podkova = Podkova({ subsets: ['latin'] });
 
-import { AiOutlineLoading } from 'react-icons/ai';
 import { IoIosAlert } from 'react-icons/io';
 
 import { useLocalStorageData } from '@/hooks/useLocalStorageData';
@@ -19,6 +15,7 @@ import Link from 'next/link';
 import { useUpdateBasePayment } from '@/hooks/useUpdateBasePayment';
 import { useUpdatePeriodicty } from '@/hooks/useUpdatePeriodicity';
 import { usePayrollContract } from '@/hooks';
+import Loader from '@/components/generals/Loader';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -169,9 +166,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                     )}
                   </div>
                 ) : (
-                  <div className="flex w-full h-full">
-                    <AiOutlineLoading className="animate-spin m-auto" />
-                  </div>
+                  <Loader />
                 )}
               </div>
 
@@ -260,9 +255,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                     )}
                   </div>
                 ) : (
-                  <div className="flex w-full min-h-screen">
-                    <AiOutlineLoading className="animate-spin m-auto" />
-                  </div>
+                  <Loader />
                 )}
               </div>
             </div>

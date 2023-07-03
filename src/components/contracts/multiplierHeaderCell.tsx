@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useBlockHeader, useCall } from 'useink';
-import { pickDecoded } from 'useink/utils';
-import { AiOutlineLoading } from 'react-icons/ai';
+import React from 'react';
 import Text from '@/components/generals/text';
 import { useBaseMultiplier } from '@/hooks/useBaseMultiplier';
+import Loader from '../generals/Loader';
 
 interface multiplierHeaderCellProps {
   contract: any;
@@ -21,9 +19,7 @@ const MultiplierHeaderCell = ({ contract, multiplierId }: multiplierHeaderCellPr
       </th>
     )
   ) : (
-    <div className="flex items-center w-full">
-      <AiOutlineLoading className="animate-spin" />
-    </div>
+    <Loader />
   );
 };
 
