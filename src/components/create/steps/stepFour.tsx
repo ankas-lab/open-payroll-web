@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useContext } from 'react';
 
-import Button from "../../../components/generals/button";
-import Text from "../../../components/generals/text";
+import Button from '../../generals/button';
+import Text from '../../generals/text';
+import { CreateContext } from '@/context/create';
 
 //---------------------------------Props---------------------------------
-interface StepFourProps {
-  totalToPay: number;
-}
 
-const StepFour: React.FC<StepFourProps> = ({ totalToPay }) => {
+const StepFour = () => {
+  const createContext = useContext(CreateContext);
+
+  if (!createContext) {
+    return null;
+  }
+
+  const { totalToPay } = createContext;
   return (
     <>
       <div>

@@ -48,7 +48,6 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract, contra
       }
     >
       {/* Beneficiary name */}
-      {/* TODO: show name */}
       <td className="w-[150px]">
         <p>{getBeneficiaryName(contractAddress, beneficiaryAddress) || '-'}</p>
       </td>

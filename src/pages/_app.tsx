@@ -7,7 +7,7 @@ import { RococoContractsTestnet } from 'useink/chains';
 import { NotificationsProvider } from 'useink/notifications';
 import { DappContextProvider } from '@/context';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
+import { CreateContextProvider } from '@/context/create';
 
 const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> = dynamic(
   () => import('useink').then(({ UseInkProvider }) => UseInkProvider),
@@ -29,8 +29,9 @@ function App({ Component, pageProps }: AppProps) {
     >
       <NotificationsProvider>
         <DappContextProvider>
-          <ToastContainer />
-          <Component {...pageProps} />
+          <CreateContextProvider>
+            <Component {...pageProps} />
+          </CreateContextProvider>
         </DappContextProvider>
       </NotificationsProvider>
     </UseInkProvider>

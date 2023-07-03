@@ -56,11 +56,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
             </div>
           </td>
         ) : (
-          <td className="w-[25px] flex" onMouseEnter={() => toast(`${contract.name} is Ok.`)}>
-            <div className="flex w-full">
-              <IoIosCheckmarkCircle className="w-5 h-5 text-opgreen m-auto" />
-            </div>
-          </td>
+          <td className="w-[25px] flex"></td>
         )}
         <td className="w-[150px]">
           <p>{contract.name}</p>
