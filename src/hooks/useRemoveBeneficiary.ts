@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useTx } from 'useink';
 
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isPendingSignature } from 'useink/utils';
 
 export function useRemoveBeneficiary(contract: any, contractAddress: string, beneficiaryAddress: string) {
-  //TODO change notifications
-
   const [isProcessingRemove, setIsProcessingRemove] = useState<boolean>(false);
   const removeBeneficiary = useTx(contract, 'removeBeneficiary');
 
@@ -16,25 +14,22 @@ export function useRemoveBeneficiary(contract: any, contractAddress: string, ben
 
   useEffect(() => {
     if (isPendingSignature(removeBeneficiary)) {
-      toast(`Please sign the transaction in your wallet`);
+      toast(`✍ Please sign the transaction in your wallet`);
     }
 
     if (isBroadcast(removeBeneficiary)) {
       setIsProcessingRemove(true);
-      toast('Flip transaction has been broadcast!');
     }
 
     if (isInBlock(removeBeneficiary)) {
-      toast('Transaction is in the block.');
+      toast('🗑 Beneficiary successfully removed');
     }
 
     if (isErrored(removeBeneficiary)) {
-      toast(`Error`);
+      toast(`❌ Something went wrong, please try again.`);
     }
 
     if (isFinalized(removeBeneficiary)) {
-      toast(`The transaction has been finalized.`);
-
       setIsProcessingRemove(false);
     }
 

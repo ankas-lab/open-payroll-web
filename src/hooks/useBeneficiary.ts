@@ -22,7 +22,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   const blockHeader = useBlockHeader();
   const { rawBasePayment } = usePayrollContract(contract);
 
-  const chainSymbol = useTokenSymbol('rococo-contracts-testnet');
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
 
@@ -45,8 +44,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
       sum += mults[i].value / 100;
     }
     const finalPay = sum * parseInt(rawBasePayment);
-    //TODO ask if final pay is mult + base or mult
-    const plancked = planckToDecimalFormatted(finalPay + parseInt(rawBasePayment), api?.api);
+    const plancked = planckToDecimalFormatted(finalPay, api?.api);
     setFinalPay(plancked);
   };
 

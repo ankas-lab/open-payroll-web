@@ -76,8 +76,8 @@ const BeneficiaryRow = ({
     let sum = 0;
     for (let i = 0; i < multToArray.length; i++) {
       multToArray[i] === '' ? (sum += parseInt(oldMultToArray[i]) / 100) : (sum += parseInt(multToArray[i]) / 100);
-    } //TODO ask if final pay is mult + base or mult
-    const newFinalPay = planckToDecimalFormatted(sum * rawBasePayment + parseInt(rawBasePayment), api?.api);
+    }
+    const newFinalPay = planckToDecimalFormatted(sum * rawBasePayment, api?.api);
     return newFinalPay;
   };
 

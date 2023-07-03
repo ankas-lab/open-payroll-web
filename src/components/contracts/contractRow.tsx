@@ -11,7 +11,7 @@ const archivo = Archivo({ subsets: ['latin'] });
 import { useContract } from 'useink';
 import { usePayrollContract } from '@/hooks';
 import metadata from '@/contract/open_payroll.json';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 
 interface ContractRowProps {
   contract: {
@@ -49,7 +49,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         {totalDebts! > contractBalance! ? (
           <td
             className="w-[25px] flex"
-            onMouseEnter={() => toast(`You do not have sufficient funds in ${contract.name}`)}
+            onMouseEnter={() => toast(`❗ You do not have sufficient funds in ${contract.name}`)}
           >
             <div className="flex w-full">
               <IoIosAlert className="w-5 h-5 text-opdanger m-auto" />

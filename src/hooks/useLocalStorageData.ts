@@ -30,7 +30,7 @@ export function useLocalStorageData(_contractAddress: string | undefined) {
       setNewLocalStorageData(undefined);
       getStoredContracts();
     } else {
-      console.error('Contract to update was not found.');
+      console.error('❌ Contract to update was not found.');
     }
   };
 

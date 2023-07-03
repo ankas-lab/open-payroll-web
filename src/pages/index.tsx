@@ -4,7 +4,7 @@ import Nav from '../components/nav';
 import { Archivo } from 'next/font/google';
 import { useWallet } from 'useink';
 import { useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
 const archivo = Archivo({ subsets: ['latin'] });
 
 export default function Home() {
@@ -18,7 +18,18 @@ export default function Home() {
       <Nav />
 
       <div className="w-8/12 mx-auto flex flex-col gap-[40px] mt-[100px]">
-        <ToastContainer />
+        <Toaster
+          toastOptions={{
+            className: '',
+            style: {
+              border: '2px solid #25064C',
+              padding: '16px',
+              backgroundColor: '#F8F7FF',
+              borderRadius: '5px',
+              color: '#000000',
+            },
+          }}
+        />
         <div className="mx-auto">
           <Text type="h2" text="Please, connect your wallet to continue" />
         </div>

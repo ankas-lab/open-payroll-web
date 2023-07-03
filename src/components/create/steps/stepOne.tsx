@@ -4,13 +4,16 @@ import React, { useEffect, useState, useContext } from 'react';
 import Text from '../../generals/text';
 import Button from '../../generals/button';
 import { CreateContext } from '@/context/create';
+import { DappContext } from '@/context';
 
 const StepOne = () => {
+  const context = useContext(DappContext);
   const createContext = useContext(CreateContext);
 
   if (!createContext) {
     return null;
   }
+  //const {chainSymbol}=context
 
   const {
     canContinue,
@@ -88,7 +91,8 @@ const StepOne = () => {
                 setBasePayment(e.target.value);
               }}
             />
-            <p className="mx-5">DOT</p>
+            {/* TODO: change to reactive chainSimbol*/}
+            <p className="mx-5">ROC</p>
           </div>
         </div>
         <div className="flex flex-col gap-[10px]">

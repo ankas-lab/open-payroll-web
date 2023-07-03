@@ -7,7 +7,7 @@ import Button from '@/components/generals/button';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 import WalletManager from '@/components/walletManager';
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
 
 import { Error404svg } from '@/assets/Error404';
 
@@ -15,7 +15,19 @@ const Error404 = () => {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <ToastContainer />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className: '',
+          style: {
+            border: '2px solid #25064C',
+            padding: '16px',
+            backgroundColor: '#F8F7FF',
+            borderRadius: '5px',
+            color: '#000000',
+          },
+        }}
+      />
       <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />

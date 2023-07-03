@@ -21,7 +21,7 @@ import { IoIosCopy } from 'react-icons/io';
 import { usePayrollContract } from '@/hooks';
 import { useGetOwner } from '@/hooks/useGetOwner';
 
-import { ToastContainer, toast } from 'react-toastify';
+import toast, { Toaster } from 'react-hot-toast';
 import Loader from '@/components/generals/Loader';
 import NotOwner from '@/components/contracts/NotOwner';
 
@@ -80,7 +80,19 @@ export default function Contract() {
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
-      <ToastContainer />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className: '',
+          style: {
+            border: '2px solid #25064C',
+            padding: '16px',
+            backgroundColor: '#F8F7FF',
+            borderRadius: '5px',
+            color: '#000000',
+          },
+        }}
+      />
       <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />

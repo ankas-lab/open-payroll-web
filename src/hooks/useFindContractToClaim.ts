@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useApi } from 'useink';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { DappContext } from '@/context';
 
 export function useFindContractToClaim() {
@@ -24,10 +24,10 @@ export function useFindContractToClaim() {
           if (result.codeHash === codeHash) {
             router.push(`/claim/${contractAddress}`);
           } else {
-            toast('You entered an incorrect address');
+            toast('❌ You entered an incorrect address');
           }
         } else {
-          toast('Something went wrong, try again');
+          toast('😢 Something went wrong, try again');
         }
       } catch (e) {
         console.log(e);

@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useTx } from 'useink';
-import { usePayrollContract } from '../hooks/usePayrollContract';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isPendingSignature } from 'useink/utils';
+import { DappContext } from '@/context';
 
 export function useAddBeneficiary(contract: any) {
+  const context = useContext(DappContext);
+
+  const { addressToShort } = context!;
+
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isAdded, setIsAdded] = useState<boolean>(false);
   const addBeneficiary = useTx(contract, 'addBeneficiary');
@@ -14,16 +18,13 @@ export function useAddBeneficiary(contract: any) {
     addBeneficiary.signAndSend([beneficiaryAddress, multipliersToArray]);
   };
 
-  //TODO: change notifications
-
   useEffect(() => {
     if (isPendingSignature(addBeneficiary)) {
-      toast(`Please sign the transaction in your wallet`);
+      toast(`✍ Please sign the transaction in your wallet`);
     }
 
     if (isBroadcast(addBeneficiary)) {
       setIsProcessing(true);
-      toast('Flip transaction has been broadcast!');
     }
 
     if (isInBlock(addBeneficiary)) {
@@ -32,16 +33,15 @@ export function useAddBeneficiary(contract: any) {
     if (isInBlock(addBeneficiary)) {
       //here I need to unshow the row
       setIsAdded(true);
-      toast('Transaction is in the block.');
+      toast(`👍 Beneficiary successfully added`);
     }
 
     if (isErrored(addBeneficiary)) {
-      toast(`Error`);
+      toast(`❌ Something went wrong, please try again.`);
     }
 
     if (isFinalized(addBeneficiary)) {
       setIsProcessing(false);
-      toast(`The transaction has been finalized.`);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

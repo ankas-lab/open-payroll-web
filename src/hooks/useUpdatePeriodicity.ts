@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { useTx } from 'useink';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isInvalid, isPendingSignature } from 'useink/utils';
 
@@ -12,26 +12,18 @@ export function useUpdatePeriodicty(_contract: any) {
     updatePeriodicity.signAndSend([_newPeriodicity]);
   };
 
-  //TODO:Change notifications
-
   useEffect(() => {
     if (isPendingSignature(updatePeriodicity)) {
-      toast(`Please sign the transaction in your wallet`);
+      toast(`✍ Please sign the transaction in your wallet`);
     }
 
     if (isBroadcast(updatePeriodicity)) {
       setIsUpdatingBasePeriodicity(true);
-      toast('Flip transaction has been broadcast!');
     }
 
     if (isInBlock(updatePeriodicity)) {
       setIsUpdatingBasePeriodicity(false);
-
-      toast('Transaction is in the block.');
-    }
-
-    if (isFinalized(updatePeriodicity)) {
-      toast(`The transaction has been finalized.`);
+      toast('👍 The periodicity was correctly updated');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

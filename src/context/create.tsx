@@ -50,8 +50,10 @@ interface Beneficiary {
 export const CreateContext = createContext<CreateContextData | null>(null);
 
 export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+  //---------------------------------Generals---------------------------------
   const { account } = useWallet();
   const [canContinue, setCanContinue] = useState<boolean>(false);
+
   //---------------------------------Contract base---------------------------------
   const [contractName, setContractName] = useState<string | undefined>(undefined);
   const [ownerEmail, setOwnerEmail] = useState<string | undefined>(undefined);
@@ -233,7 +235,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   };
 
   useEffect(() => {
-    console.log('formatedConstructorParams', formatedConstructorParams);
+    console.log('formatedConstructorParams', Object.entries(formatedConstructorParams));
   }, [formatedConstructorParams]);
 
   /*

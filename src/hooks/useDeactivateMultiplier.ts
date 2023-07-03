@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTx } from 'useink';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isPendingSignature } from 'useink/utils';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 
 export function useDeactivateMultiplier(_contract: any) {
   const [isDeactivated, setIsDeactivated] = useState<boolean>(false);
@@ -9,19 +9,16 @@ export function useDeactivateMultiplier(_contract: any) {
 
   const deactivateMultiplier = useTx(_contract, 'deactivateMultiplier');
 
-  //TODO change notifications
-
   const handleDeactivateMultiplier = (_multiplierToDeactivate: string) => {
     deactivateMultiplier.signAndSend([_multiplierToDeactivate]);
   };
 
   useEffect(() => {
     if (isPendingSignature(deactivateMultiplier)) {
-      toast(`Please sign the transaction in your wallet`);
+      toast(`✍ Please sign the transaction in your wallet`);
     }
 
     if (isBroadcast(deactivateMultiplier)) {
-      toast('Flip transaction has been broadcast!');
       setIsDeactivating(true);
     }
 
@@ -29,16 +26,13 @@ export function useDeactivateMultiplier(_contract: any) {
       setIsDeactivating(false);
       setIsDeactivated(true);
 
-      toast('Transaction is in the block.');
+      toast('👍 Multiplier successfully deactivated');
     }
 
     if (isErrored(deactivateMultiplier)) {
-      toast(`Error`);
+      toast(`❌ Something went wrong, please try again.`);
     }
 
-    if (isFinalized(deactivateMultiplier)) {
-      toast(`The transaction has been finalized.`);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deactivateMultiplier.status]);
 

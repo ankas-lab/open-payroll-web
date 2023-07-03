@@ -3,7 +3,7 @@ import { ChainContract, useChainDecimals, useTx } from 'useink';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isInvalid, isPendingSignature } from 'useink/utils';
 import { usePayrollContract } from '.';
 
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 
 export function useClaim(contract: ChainContract<any> | undefined) {
   const { listBeneficiaries } = usePayrollContract(contract);
@@ -27,33 +27,23 @@ export function useClaim(contract: ChainContract<any> | undefined) {
     claimPaymentTx.signAndSend([account, amountFormated]);
   };
 
-  //TODO change notifications
-
   useEffect(() => {
     if (isPendingSignature(claimPaymentTx)) {
-      toast(`Please sign the transaction in your wallet`);
+      toast(`✍ Please sign the transaction in your wallet`);
     }
 
     if (isBroadcast(claimPaymentTx)) {
       setIsClaiming(true);
-      toast('Transaction has been broadcast!');
     }
 
     if (isInBlock(claimPaymentTx)) {
       setIsClaiming(false);
       setIsClaimed(true);
-      toast('Transaction is in block.');
+      toast('👍 The claim was successful');
     }
 
     if (isErrored(claimPaymentTx)) {
-      toast(`Error`);
-    }
-    if (isInvalid(claimPaymentTx)) {
-      toast(`IsInvalid`);
-    }
-
-    if (isFinalized(claimPaymentTx)) {
-      toast(`The transaction has been finalized.`);
+      toast(`❌ Something went wrong, please try again.`);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

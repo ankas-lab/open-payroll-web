@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChainContract, useTx } from 'useink';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isPendingSignature } from 'useink/utils';
 
 export function useUpdateBeneficiary(address: string, contract: ChainContract<any> | undefined) {
@@ -10,8 +10,6 @@ export function useUpdateBeneficiary(address: string, contract: ChainContract<an
 
   const updateBeneficiary = useTx(contract, 'updateBeneficiary');
 
-  //TODO: change notifications
-
   const handleUpdateBeneficiary = (beneficiaryAddress: string, newMultipliers: any) => {
     const newMultipliersToEntries = Object.entries(newMultipliers);
     updateBeneficiary.signAndSend([beneficiaryAddress, newMultipliersToEntries]);
@@ -19,27 +17,25 @@ export function useUpdateBeneficiary(address: string, contract: ChainContract<an
 
   useEffect(() => {
     if (isPendingSignature(updateBeneficiary)) {
-      toast(`Please sign the transaction in your wallet`);
+      toast(`✍ Please sign the transaction in your wallet`);
     }
 
     if (isBroadcast(updateBeneficiary)) {
       setIsProcessing(true);
-      toast('Flip transaction has been broadcast!');
     }
 
     if (isInBlock(updateBeneficiary)) {
-      toast('Transaction is in the block.');
+      toast('👍 The beneficiary was correctly updated');
     }
 
     if (isErrored(updateBeneficiary)) {
-      toast(`Error`);
+      toast(`❌ Something went wrong, please try again.`);
     }
 
     if (isFinalized(updateBeneficiary)) {
       setIsProcessing(false);
       setFinalized(true);
       setEdit(false);
-      toast(`The transaction has been finalized.`);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { BN } from 'bn.js';
-import { useCall, useCallSubscription, useContract, useWallet } from 'useink';
+import { useCall, useCallSubscription, useContract, useTokenSymbol, useWallet } from 'useink';
 import metadata from '@/contract/open_payroll.json';
 import { pickDecoded } from 'useink/utils';
 
@@ -27,6 +27,7 @@ interface StorageContractCanClaim {
 
 //DappContext
 interface DappContextData {
+  chainSymbol: any;
   getStoredContracts: () => void;
   contracts: StorageContract[];
   findContractInLocalStorage: any;
@@ -47,6 +48,8 @@ export const DappContext = createContext<DappContextData | null>(null);
 
 export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const { account } = useWallet();
+  //---------------------------------Generals---------------------------------
+  const [chainSymbol, setChainSymbol] = useState<any | undefined>(useTokenSymbol('rococo-contracts-testnet'));
 
   const [contracts, setContracts] = useState<StorageContract[]>([]);
   const [ownerContracts, setOwnerContracts] = useState<StorageContract[]>([]);
@@ -215,6 +218,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   }, [account?.address]);
 
   const contextValue: DappContextData = {
+    chainSymbol,
     contracts,
     getStoredContracts,
     findContractInLocalStorage,
