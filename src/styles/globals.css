@@ -2,7 +2,7 @@
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: "#25064C";
+  scrollbar-color: '#25064C';
 }
 
 /* Chrome, Edge, and Safari */
@@ -11,14 +11,14 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: "#25064C";
+  background: '#25064C';
   border-radius: 5px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: "#25064C";
+  background-color: '#25064C';
   border-radius: 14px;
-  border: 3px solid "#25064C";
+  border: 3px solid '#25064C';
 }
 @tailwind components;
 @tailwind utilities;
@@ -31,11 +31,21 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
 .without-ring {
   @apply focus:ring-0 focus:ring-offset-0;
   outline: none;
+}
+
+.oval {
+  border-radius: 110.1% 110% 0% 0%;
+  box-shadow: inset 0 0 10px 5px rgba(0, 0, 0, 0.5);
+}
+
+.links {
+  color: #7f7eff;
+  text-decoration: underline;
 }

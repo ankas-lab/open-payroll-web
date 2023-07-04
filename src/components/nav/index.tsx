@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { OPPurple } from '../../assets/logo/OPPurple.jsx';
+import { OPLogo } from '../../assets/logo/OPLogo.jsx';
 import Button from '../generals/button';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
@@ -24,12 +24,12 @@ const Index = () => {
       <nav className="bg-opwhite flex justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md top-0 left-0 sticky">
         <Link href={'/'}>
           <div className="flex md:hidden">
-            <OPPurple width={40} height={36.6} />
+            <OPLogo width={40} height={36.6} />
           </div>
         </Link>
         <Link href={'/'}>
           <div className="hidden md:flex">
-            <OPPurple width={50} height={46.6} />
+            <OPLogo width={50} height={46.6} />
           </div>
         </Link>
         <div>
@@ -48,12 +48,12 @@ const Index = () => {
         <div className="w-full flex md:flex-col justify-between items-center">
           <div className="flex md:hidden">
             <Link href={'/'}>
-              <OPPurple width={40} height={36.6} />
+              <OPLogo width={40} height={36.6} />
             </Link>
           </div>
           <div className="hidden md:flex">
             <Link href={'/'}>
-              <OPPurple width={50} height={46.6} />
+              <OPLogo width={50} height={46.6} />
             </Link>
           </div>
           {closeLateralNav ? (
@@ -94,7 +94,7 @@ const Index = () => {
           {closeLateralNav ? (
             <div className="hidden md:flex">
               <BsFillArrowRightCircleFill
-                className="w-5 h-5 text-oppurple cursor-pointer"
+                className="w-5 h-5 text-OPLogo cursor-pointer"
                 onClick={() => {
                   setCloseLateralNav(false);
                 }}
@@ -103,7 +103,7 @@ const Index = () => {
           ) : (
             <div className="hidden md:flex">
               <BsFillArrowLeftCircleFill
-                className="w-5 h-5 text-oppurple cursor-pointer"
+                className="w-5 h-5 text-OPLogo cursor-pointer"
                 onClick={() => {
                   setCloseLateralNav(true);
                 }}
