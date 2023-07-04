@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useContext } from 'react';
 
 import Button from '../../generals/button';
@@ -12,11 +13,17 @@ const StepTwo = () => {
   }
 
   const {
+    canContinue,
+    setCanContinue,
     initialBaseMultipliers,
     addInitialBaseMultiplier,
     handleChangeInitialBaseMultiplier,
     handleRemoveInitialBaseMultiplier,
   } = createContext;
+
+  useEffect(() => {
+    setCanContinue(false);
+  }, []);
 
   return (
     <>

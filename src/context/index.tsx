@@ -190,7 +190,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   };
 
   const getOwner = () => {
-    const myContracts = contracts.filter((c) => c.owner === account.address);
+    const myContracts = contracts.filter((c) => c.owner === account?.address);
     setOwnerContracts(myContracts);
     /*
     const _contract = useContract(contractAddress, metadata);

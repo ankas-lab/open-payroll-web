@@ -58,7 +58,7 @@ export default function Claim() {
             />
             <div className="flex">
               {validContractAddress ? (
-                <Button type="active" text="find" icon="" action={() => handleFindContract(contractAddress)} />
+                <Button type="active" text="find" action={() => handleFindContract(contractAddress)} />
               ) : (
                 <Button type="disabled" text="Invalid address" />
               )}

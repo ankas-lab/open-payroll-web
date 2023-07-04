@@ -5,12 +5,16 @@ import Text from '../../generals/text';
 
 import { Podkova } from 'next/font/google';
 import { CreateContext } from '@/context/create';
+import { DappContext } from '@/context';
 const podkova = Podkova({ subsets: ['latin'] });
 
 const StepFive = () => {
   const [periodicityType, setPeriodicityType] = useState<string>('fixed');
+  const context = useContext(DappContext);
   const createContext = useContext(CreateContext);
-
+  if (!context) {
+    return null;
+  }
   if (!createContext) {
     return null;
   }
@@ -37,6 +41,7 @@ const StepFive = () => {
     calculateTotalToPay,
     totalToPay,
   } = createContext;
+  const { chainSymbol } = context;
 
   //---------------------------------UI---------------------------------
   return (
@@ -176,7 +181,7 @@ const StepFive = () => {
                 <Text type="h4" text="Funds" />
                 <div className="flex flex-col gap-[20px]">
                   <Text type="h6" text={`Minimum funds necesaries: ${totalToPay} DOT`} />
-                  <Button type="outlined" text="add funds" icon="+" action />
+                  <Button type="outlined" text="add funds" icon="add" action />
                 </div>
               </div>
             </div>
@@ -184,7 +189,7 @@ const StepFive = () => {
             <div className="flex flex-col gap-[10px]">
               <div className="flex flex-col gap-[10px]">
                 <Text type="h4" text="Beneficiaries" />
-                <Text type="h6" text={`Base payment: ${basePayment} ROC`} />
+                <Text type="h6" text={`Base payment: ${basePayment} ${chainSymbol}`} />
               </div>
               <div className="flex flex-col gap-[10px] overflow-x-auto pb-5">
                 {/* Header table row */}
@@ -259,7 +264,7 @@ const StepFive = () => {
                 <hr className="border rounded my-[10px] w-full"></hr>
                 <div className="flex w-full md:w-9/12 justify-between px-1">
                   <Text type="h4" text="Total pay" />
-                  <Text type="h4" text={`${calculateTotalToPay()} ROC`} />
+                  <Text type="h4" text={`${calculateTotalToPay()} ${chainSymbol}`} />
                 </div>
                 <div className="w-[200px]">
                   <Button type="outlined" text="add other" icon="add" action={() => addInitialBeneficiary()} />

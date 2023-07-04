@@ -9,34 +9,65 @@ const archivo = Archivo({ subsets: ['latin'] });
 const podkova = Podkova({ subsets: ['latin'] });
 
 interface ButtonProps {
-  type?: string;
+  type?:
+    | 'active'
+    | 'disabled'
+    | 'outlined'
+    | 'text'
+    | 'danger'
+    | 'text danger'
+    | 'text disabled'
+    | 'disabled outlined'
+    | undefined;
   text?: string;
-  icon?: string | undefined;
+  icon?:
+    | 'delete'
+    | 'add'
+    | 'menu'
+    | 'copy'
+    | 'alert'
+    | 'kebab'
+    | 'check'
+    | 'edit'
+    | 'pause'
+    | 'cancel'
+    | 'contract'
+    | 'claim'
+    | 'loading'
+    | undefined;
   action?: any | undefined;
 }
+
+interface IconProps {
+  icon?: string | undefined;
+}
+
+const Icon = ({ icon }: { icon: string | undefined }) => {
+  if (icon === 'delete') return <MdDelete className="w-5 h-5" />;
+  if (icon === 'add') return <MdAddCircle className="w-5 h-5" />;
+  if (icon === 'menu') return <MdMenu className="w-5 h-5" />;
+  if (icon === 'copy') return <IoIosCopy className="w-5 h-5" />;
+  if (icon === 'alert') return <IoIosAlert className="w-5 h-5" />;
+  if (icon === 'kebab') return <CiMenuKebab className="w-5 h-5" />;
+  if (icon === 'check') return <AiFillCheckCircle className="w-5 h-5" />;
+  if (icon === 'edit') return <AiFillEdit className="w-5 h-5" />;
+  if (icon === 'pause') return <MdOutlinePauseCircleFilled className="w-5 h-5" />;
+  if (icon === 'cancel') return <MdCancel className="w-5 h-5" />;
+  if (icon === 'contract') return <IoDocument className="w-5 h-5" />;
+  if (icon === 'claim') return <IoMdHand className="w-5 h-5" />;
+  if (icon === 'loading') return <AiOutlineLoading className="w-5 h-5 animate-spin" />;
+  return null;
+};
 
 const index = ({ type, text, icon, action }: ButtonProps) => {
   return type === 'active' ? (
     <button
       type="button"
       onClick={action}
-      className={`items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] bg-oppurple text-[14px] uppercase w-full justify-center text-opwhite font-normal tracking-[1.25px] ${archivo.className}`}
+      className={`items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] bg-oppurple text-[14px] uppercase w-full justify-center text-opwhite font-normal tracking-[1.25px] ${archivo.className} hover:bg-[#39047d] transition duration-200 hover:shadow`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   ) : type === 'disabled' ? (
     <button
@@ -45,20 +76,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       className={`items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] bg-opgray text-[14px] uppercase w-full justify-center text-opwhite font-normal tracking-[1.25px] ${archivo.className}`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   ) : type === 'outlined' ? (
     <button
@@ -67,20 +85,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       className={`items-center text-center border-oppurple border-2 flex gap-[10px] rounded-[5px] py-[10px] px-[13px] bg-opwhite text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className}`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   ) : type === 'text' ? (
     <button
@@ -89,20 +94,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       className={`items-center text-center  flex gap-[10px] rounded-[5px] py-[10px] px-[10px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className}`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   ) : type === 'danger' ? (
     <button
@@ -111,20 +103,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       className={`items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] bg-opdanger text-[14px] uppercase w-full justify-center text-opwhite font-normal tracking-[1.25px] ${archivo.className}`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   ) : type === 'text danger' ? (
     <button
@@ -133,20 +112,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       className={`items-center text-center  flex gap-[10px] rounded-[5px] py-[10px] px-[10px] text-[14px] uppercase w-full justify-center text-opdanger font-normal tracking-[1.25px] ${archivo.className}`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   ) : type === 'text disabled' ? (
     <button
@@ -156,20 +122,7 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       className={`items-center text-center border-2 border-opgray flex gap-[10px] rounded-[5px] py-[10px] px-[10px] text-[14px] uppercase w-full justify-center text-opgray font-normal tracking-[1.25px] ${archivo.className}`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   ) : type === 'disabled outlined' ? (
     <button
@@ -179,42 +132,16 @@ const index = ({ type, text, icon, action }: ButtonProps) => {
       className={`items-center text-center flex gap-[10px] rounded-[5px] py-[10px] px-[10px] text-[14px] uppercase w-full justify-center text-opgray font-normal tracking-[1.25px] ${archivo.className}`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   ) : (
     <button
       type="button"
       onClick={action}
-      className={`items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] bg-oppurple text-[14px] uppercase w-full justify-center text-opwhite font-normal tracking-[1.25px] ${archivo.className}`}
+      className={`items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] bg-oppurple text-[14px] uppercase w-full justify-center text-opwhite font-normal tracking-[1.25px] ${archivo.className} hover:bg-[#39047d] transition duration-200 hover:shadow`}
     >
       {text}
-      {icon === 'delete' && <MdDelete className="w-5 h-5" />}
-      {icon === 'add' && <MdAddCircle className="w-5 h-5" />}
-      {icon === 'menu' && <MdMenu className="w-5 h-5" />}
-      {icon === 'copy' && <IoIosCopy className="w-5 h-5" />}
-      {icon === 'alert' && <IoIosAlert className="w-5 h-5" />}
-      {icon === 'kebab' && <CiMenuKebab className="w-5 h-5" />}
-      {icon === 'check' && <AiFillCheckCircle className="w-5 h-5" />}
-      {icon === 'edit' && <AiFillEdit className="w-5 h-5" />}
-      {icon === 'pause' && <MdOutlinePauseCircleFilled className="w-5 h-5" />}
-      {icon === 'cancel' && <MdCancel className="w-5 h-5" />}
-      {icon === 'contract' && <IoDocument className="w-5 h-5" />}
-
-      {icon === 'claim' && <IoMdHand className="w-5 h-5" />}
-      {icon === 'loading' && <AiOutlineLoading className="w-5 h-5 animate-spin" />}
+      <Icon icon={icon} />
     </button>
   );
 };

@@ -1,15 +1,24 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useContext } from 'react';
 
 import Button from '../../generals/button';
 import Text from '../../generals/text';
 import { CreateContext } from '@/context/create';
+import { DappContext } from '@/context';
 
 const StepThree = () => {
+  const context = useContext(DappContext);
   const createContext = useContext(CreateContext);
+
+  if (!context) {
+    return null;
+  }
 
   if (!createContext) {
     return null;
   }
+
+  const { chainSymbol } = context;
 
   const {
     basePayment,
@@ -22,7 +31,12 @@ const StepThree = () => {
     getTotalMultiplierByBeneficiary,
     getFinalPayByBeneficiary,
     calculateTotalToPay,
+    setCanContinue,
   } = createContext;
+
+  useEffect(() => {
+    setCanContinue(false);
+  }, []);
 
   //---------------------------------UI---------------------------------
   return (
@@ -37,8 +51,7 @@ const StepThree = () => {
         </div>
       </div>
       <div className="flex gap-[20px]">
-        {/*TODO ROC */}
-        <Text type="h6" text={`Base payment: ${basePayment} ROC`} />
+        <Text type="h6" text={`Base payment: ${basePayment} ${chainSymbol}`} />
       </div>
       <div className="flex flex-col gap-[10px] overflow-x-auto pb-5">
         {/* Header table row */}
@@ -113,7 +126,7 @@ const StepThree = () => {
         <hr className="border rounded my-[10px] w-full"></hr>
         <div className="flex w-full md:w-9/12 justify-between px-1">
           <Text type="h4" text="Total pay" />
-          <Text type="h4" text={`${calculateTotalToPay()} ROC`} />
+          <Text type="h4" text={`${calculateTotalToPay()} ${chainSymbol}`} />
         </div>
         <div className="w-[200px]">
           <Button type="outlined" text="add other" icon="add" action={() => addInitialBeneficiary()} />

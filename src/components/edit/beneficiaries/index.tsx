@@ -25,8 +25,8 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
   }, [isAdded]);
 
   return (
-    <div className="w-12/12 flex flex-col gap-[20px]">
-      <div className="flex justify-between items-baseline">
+    <div className="w-full md:w-12/12 flex flex-col gap-[20px]">
+      <div className="flex justify-between items-baseline w-8/12">
         <div className="">
           <Text type="h4" text="Beneficiaries" />
           <Text

@@ -9,6 +9,7 @@ import { useBeneficiary, usePayrollContract } from '@/hooks';
 import { planckToDecimal, planckToDecimalFormatted } from 'useink/utils';
 import Loader from '../generals/Loader';
 import { useAmountToClaim } from '@/hooks/useAmountToClaim';
+import { DappContext } from '@/context';
 
 const ClaimInput = () => {
   //---------------------------------Get ContractAddress---------------------------------
@@ -55,6 +56,12 @@ const ClaimInput = () => {
     }
   }, [rawContractBalance, rawAmountToClaim]);
 
+  const context = useContext(DappContext);
+  if (!context) {
+    return null;
+  }
+  const { chainSymbol } = context;
+
   return (
     <div className="order-1 md:order-3 md:w-4/12 flex flex-col ">
       <Text type="h4" text="Claim" />
@@ -77,7 +84,9 @@ const ClaimInput = () => {
               }
             />
 
-            <p className="w-full">of {max?.toFixed(2)} ROC</p>
+            <p className="w-full">
+              of {max?.toFixed(2)} {chainSymbol}
+            </p>
           </div>
           <div className="flex flex-col gap-2">
             <Button type="outlined" text="max" action={() => setInputValue(max.toFixed(2))} />

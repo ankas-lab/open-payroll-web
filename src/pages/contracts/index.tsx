@@ -48,7 +48,7 @@ export default function Contracts() {
         <div className="flex flex-col-reverse md:flex-row justify-between md:items-center">
           <Text type="h2" text="My contracts" />
           <Link className="w-fit" href="/create">
-            <Button type="active" text="create new contract" icon="" />
+            <Button type="active" text="create new contract" />
           </Link>
         </div>
         <div className="md:w-[600px]">

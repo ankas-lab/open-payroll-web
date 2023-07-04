@@ -81,7 +81,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         <td className="w-[80px]">{contractState ? <p>ON</p> : <p>OFF</p>}</td>
         <td className="w-[100px]">
           <Link href={`/contracts/${contract.address}`}>
-            <Button type="text" text="view" icon="" />
+            <Button type="text" text="view" />
           </Link>
         </td>
       </tr>

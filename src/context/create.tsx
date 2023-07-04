@@ -39,6 +39,7 @@ interface CreateContextData {
   calculateTotalToPay: any;
   totalToPay: any;
   formatConstructorParams: any;
+  hasBeneficiaryWithoutAddress: any;
 }
 
 interface Beneficiary {
@@ -59,11 +60,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const [ownerEmail, setOwnerEmail] = useState<string | undefined>(undefined);
   const [periodicity, setPeriodicity] = useState<string | undefined>('7200');
   const [basePayment, setBasePayment] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    console.log(periodicity);
-    console.log(basePayment);
-  }, [periodicity, basePayment]);
 
   //---------------------------------initialBaseMultipliers---------------------------------
   const [initialBaseMultipliers, setInitialBaseMultipliers] = useState<string[]>(['']);
@@ -86,8 +82,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     setInitialBaseMultipliers(newMultipliers);
   };
 
+  const hasEmptyString = () => {
+    return initialBaseMultipliers.includes('');
+  };
+
   useEffect(() => {
-    console.log(initialBaseMultipliers);
+    hasEmptyString() ? setCanContinue(false) : setCanContinue(true);
   }, [initialBaseMultipliers]);
 
   //---------------------------------initialBeneficiaries---------------------------------
@@ -193,8 +193,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     setTotalToPay(totalToPay.toFixed(2));
   };
 
+  const hasBeneficiaryWithoutAddress = () => {
+    return initialBeneficiaries.some((beneficiary: any) => beneficiary.address === '');
+  };
+
   useEffect(() => {
-    console.log(initialBeneficiaries);
+    hasBeneficiaryWithoutAddress() ? setCanContinue(false) : setCanContinue(true);
   }, [initialBeneficiaries]);
 
   //---------------------------------Create contract---------------------------------
@@ -233,10 +237,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       ['initialBeneficiaries']: beneficiaries,
     });
   };
-
-  useEffect(() => {
-    console.log('formatedConstructorParams', Object.entries(formatedConstructorParams));
-  }, [formatedConstructorParams]);
 
   /*
   useEffect(() => {
@@ -293,6 +293,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     calculateTotalToPay,
     totalToPay,
     formatConstructorParams,
+    hasBeneficiaryWithoutAddress,
   };
 
   return <CreateContext.Provider value={contextValue}>{children}</CreateContext.Provider>;

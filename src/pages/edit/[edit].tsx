@@ -70,19 +70,19 @@ export default function Edit() {
             <Text type="h2" text="Edit contract" />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px]">
               {tab === 'contract' ? (
-                <Button type="active" text="contract" icon="" action={() => setTab('contract')} />
+                <Button type="active" text="contract" action={() => setTab('contract')} />
               ) : (
-                <Button type="outlined" text="contract" icon="" action={() => setTab('contract')} />
+                <Button type="outlined" text="contract" action={() => setTab('contract')} />
               )}
               {tab === 'multipliers' ? (
-                <Button type="active" text="multipliers" icon="" action={() => setTab('multipliers')} />
+                <Button type="active" text="multipliers" action={() => setTab('multipliers')} />
               ) : (
-                <Button type="outlined" text="multipliers" icon="" action={() => setTab('multipliers')} />
+                <Button type="outlined" text="multipliers" action={() => setTab('multipliers')} />
               )}
               {tab === 'beneficiaries' ? (
-                <Button type="active" text="beneficiaries" icon="" action={() => setTab('beneficiaries')} />
+                <Button type="active" text="beneficiaries" action={() => setTab('beneficiaries')} />
               ) : (
-                <Button type="outlined" text="beneficiaries" icon="" action={() => setTab('beneficiaries')} />
+                <Button type="outlined" text="beneficiaries" action={() => setTab('beneficiaries')} />
               )}
             </div>
           </div>

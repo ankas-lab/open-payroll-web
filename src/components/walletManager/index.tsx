@@ -13,9 +13,9 @@ const Index = () => {
   };
 
   return (
-    <div className="flex absolute">
+    <div className="flex absolute w-full md:w-fit">
       <div className="pl-4 pr-2 py-3 border-oppurple border-2 rounded-[5px] flex ml-auto mt-6 w-full md:w-fit h-fit bg-[#FFFFFF] justify-between md:justify-normal z-50">
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           <p className={show ? 'mb-[10px]' : ''}>
             {account?.name} ({account?.address.slice(0, 5)}...
             {account?.address.slice(account?.address.length - 5, account?.address.length)})

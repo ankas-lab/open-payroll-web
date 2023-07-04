@@ -13,7 +13,10 @@ const StepOne = () => {
   if (!createContext) {
     return null;
   }
-  //const {chainSymbol}=context
+  if (!context) {
+    return null;
+  }
+  const { chainSymbol } = context;
 
   const {
     canContinue,
@@ -91,8 +94,7 @@ const StepOne = () => {
                 setBasePayment(e.target.value);
               }}
             />
-            {/* TODO: change to reactive chainSimbol*/}
-            <p className="mx-5">ROC</p>
+            <p className="mx-5">{chainSymbol}</p>
           </div>
         </div>
         <div className="flex flex-col gap-[10px]">

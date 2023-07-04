@@ -77,16 +77,16 @@ const Index = () => {
             <div className="hidden md:flex md:flex-col gap-[10px]">
               <Link href="/contracts">
                 {pathname === '/contracts' ? (
-                  <Button type="active" text="my contracts" icon="" />
+                  <Button type="active" text="my contracts" />
                 ) : (
-                  <Button type="outlined" text="my contracts" icon="" />
+                  <Button type="outlined" text="my contracts" />
                 )}
               </Link>
               <Link href="/claim">
                 {pathname === '/claim' ? (
-                  <Button type="active" text="claim" icon="" />
+                  <Button type="active" text="claim" />
                 ) : (
-                  <Button type="outlined" text="claim" icon="" />
+                  <Button type="outlined" text="claim" />
                 )}
               </Link>
             </div>
@@ -112,28 +112,31 @@ const Index = () => {
           )}
 
           <div className="flex md:hidden">
-            <Button type="active" text="" icon="menu" action={openCloseMenu} />
+            <Button type="text" text="" icon="menu" action={openCloseMenu} />
           </div>
         </div>
         {showMenu && (
-          <div className="w-full h-[91vh] flex flex-col justify-around">
-            <WalletManager />
+          <div className="w-full h-[93vh] flex flex-col justify-around">
+            <div className="relative">
+              <WalletManager />
+            </div>
             <div className="flex flex-col gap-[20px]">
               <Link href="/contracts" onClick={openCloseMenu}>
                 {pathname === '/contracts' ? (
-                  <Button type="active" text="my contracts" icon="" />
+                  <Button type="active" text="my contracts" />
                 ) : (
-                  <Button type="outlined" text="my contracts" icon="" />
+                  <Button type="outlined" text="my contracts" />
                 )}
               </Link>
               <Link href="/claim" onClick={openCloseMenu}>
                 {pathname === '/claim' ? (
-                  <Button type="active" text="claim" icon="" />
+                  <Button type="active" text="claim" />
                 ) : (
-                  <Button type="outlined" text="claim" icon="" />
+                  <Button type="outlined" text="claim" />
                 )}
               </Link>
             </div>
+            <div></div>
           </div>
         )}
       </nav>

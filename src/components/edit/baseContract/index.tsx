@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import Text from '@/components/generals/text';
 import Button from '@/components/generals/button';
@@ -16,6 +16,7 @@ import { useUpdateBasePayment } from '@/hooks/useUpdateBasePayment';
 import { useUpdatePeriodicty } from '@/hooks/useUpdatePeriodicity';
 import { usePayrollContract } from '@/hooks';
 import Loader from '@/components/generals/Loader';
+import { DappContext } from '@/context';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -55,6 +56,12 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
       unclaimBeneficiaries > 0 ? setCanUpdate(false) : setCanUpdate(true);
     }
   }, [unclaimBeneficiaries]);
+
+  const context = useContext(DappContext);
+  if (!context) {
+    return null;
+  }
+  const { chainSymbol } = context;
 
   return (
     <div className="w-full md:w-8/12 flex flex-col gap-[20px]">
@@ -150,7 +157,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                         }
                         onChange={(e) => handleInputNewBasePayment(e)}
                       />
-                      ROC
+                      {chainSymbol}
                     </div>
                     {isUpdatingBasePayment ? (
                       <Button

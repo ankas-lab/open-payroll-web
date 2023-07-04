@@ -98,7 +98,7 @@ export default function Contract() {
           <WalletManager />
         </div>
         {contract && owner !== undefined ? (
-          owner === account.address ? (
+          owner === account?.address ? (
             <div className="flex flex-col gap-[30px]">
               <div className="flex flex-col-reverse md:flex-row justify-between">
                 <div className="flex flex-col">
@@ -110,7 +110,8 @@ export default function Contract() {
                 </div>
                 <div className="flex gap-2 ml-auto mt-0 md:mt-4 relative">
                   <div>
-                    <Button type="active" text="add funds" icon="" />
+                    {/* TODO: Add funds */}
+                    <Button type="active" text="add funds" />
                   </div>
                   <div ref={menuRef} className="cursor-pointer w-12">
                     {showMenu ? (
