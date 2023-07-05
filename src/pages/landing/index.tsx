@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from 'react';
 import { OPLogo } from '@/assets/logo/OPLogo';
+import Logo from '@/assets/logo/LogoHero.png';
 import Link from 'next/link';
 import { Archivo, Podkova } from 'next/font/google';
 import { FaGithub, FaTelegram } from 'react-icons/fa';
@@ -21,27 +22,36 @@ const podkova = Podkova({ subsets: ['latin'] });
 const index = () => {
   return (
     <main className="bg-oppurple items-center flex flex-col overflow-hidden">
-      <div className="h-[120vh] w-full overflow-hidden">
-        <div className="w-fit h-fit -mt-[15vh] absolute z-[-1]">
-          <OPLogo width={'140vh'} height={'136.6vh'} color="oplightpurple" />
-        </div>
+      {/* Hero */}
+      <div className="h-[120vh] w-full overflow-hidden relative arrow">
         <div className="h-[99vh] w-full flex flex-col justify-between p-4 items-end overflow-hidden">
           <div className="w-[280px]">
             <Link
               href={'/'}
-              className={`items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} bg-gradient-to-r from-oplightpurple to-oplightgreen hover:bg-gradient-to-l transition-all duration-200 hover:shadow`}
+              className={` hidden md:flex items-center text-center gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} bg-gradient-to-r from-oplightpurple to-oplightgreen hover:bg-gradient-to-l transition-all duration-200 hover:shadow`}
             >
               LAUNCH DAPP
             </Link>
           </div>
-          <div className="w-full h-fit flex flex-col gap-[100px] items-center">
-            <h1 className={`text-[82px] font-bold ${podkova.className} text-opwhite`}>Pay your employees easily</h1>
-            <Link
-              href={'/'}
-              className={`max-w-[550px] items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} bg-opwhite transition-all duration-200 hover:shadow`}
-            >
-              what is this?
-            </Link>
+          <div className="w-full h-fit flex flex-col gap-[20px] md:gap-[100px] items-center">
+            <h1 className={`text-[36px] md:text-[82px] font-bold ${podkova.className} text-opwhite text-center`}>
+              Pay your employees easily
+            </h1>
+            <div className="w-full flex flex-col gap-2 items-center">
+              {/* Hero */}
+              <Link
+                href={'/'}
+                className={`max-w-[550px] items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} bg-opwhite transition-all duration-200 hover:shadow`}
+              >
+                what is this?
+              </Link>
+              <Link
+                href={'/'}
+                className={`max-w-[550px] items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} bg-gradient-to-r from-oplightpurple to-oplightgreen hover:bg-gradient-to-l transition-all duration-200 hover:shadow`}
+              >
+                LAUNCH DAPP
+              </Link>
+            </div>
           </div>
           <div className="flex gap-[10px]">
             <a>
@@ -53,32 +63,38 @@ const index = () => {
           </div>
         </div>
       </div>
-      <div className=" bg-opwhite w-[110vw] h-[30vh] oval shadow-inner -mt-[10vh]"></div>
-      <div className=" bg-opwhite w-[100vw] -mt-[20vh] pb-[20vh]">
-        <div className="w-8/12 gap-5 flex flex-col mx-auto">
-          <h2 className={`text-[51px] font-regular ${podkova.className}`}>Create contracts in simple steps</h2>
-          <div className="gap-5 flex flex-col md:flex-row">
-            <div className="w-fit h-fit">
-              <div className="p-5 border-2 border-oplightpurple rounded-xl min-w-[450px] max-h-[350px] flex flex-col gap-3">
-                <p className={`text-[29px] font-regular ${podkova.className}`}>1. Basic data</p>
+      {/* Oval */}
+      <div className=" bg-opwhite w-[150vw] md:w-[110vw] h-[30vh] oval shadow-inner -mt-[10vh] z-[2]"></div>
+      {/* Create contracts in simple steps */}
+      <div className=" bg-opwhite w-[100vw] -mt-[20vh] pb-[5vh] md:pb-[10vh] z-[3]">
+        <div className="w-11/12 md:w-8/12 gap-5 flex flex-col mx-auto leading-none">
+          <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className}`}>
+            Create contracts in simple steps
+          </h2>
+          <div className="gap-5 grid grid-cols-1 md:grid-cols-3">
+            <div className="w-full h-fit">
+              <div className="p-5 border-2 border-oplightpurple rounded-xl w-full max-h-[350px] min-h-[350px] flex flex-col gap-3 bg-opwhite">
+                <p className={`text-[24px] md:text-[29px] font-regular ${podkova.className}`}>1. Basic data</p>
                 <p className={`text-[15px] font-regular ${archivo.className}`}>
                   Enter the basic data such as the name of the contract, the basic salary and the periodicity
                 </p>
-                <Image src={Data} alt="data" className="-ml-[7vw] block scale-[.95]" />
+                <Image src={Data} alt="data" className="-ml-[7vw] block md:scale-[.95]" />
               </div>
             </div>
-            <div className="w-fit h-fit">
-              <div className="p-5 border-2 border-oplightpurple rounded-xl min-w-[450px] max-h-[350px] flex flex-col gap-3">
-                <p className={`text-[29px] font-regular ${podkova.className}`}>2. Create multipliers</p>
+            <div className="w-full h-fit">
+              <div className="p-5 border-2 border-oplightpurple rounded-xl w-full max-h-[350px] min-h-[350px] flex flex-col gap-3 bg-opwhite">
+                <p className={`text-[24px] md:text-[29px] font-regular ${podkova.className}`}>2. Create multipliers</p>
                 <p className={`text-[15px] font-regular ${archivo.className}`}>
                   Create the multipliers that will affect the base payment of your beneficiaries
                 </p>
-                <Image src={Mults} alt="mults" className="scale-75 block" />
+                <Image src={Mults} alt="mults" className="-mt-10 md:-mt-0 scale-75 block" />
               </div>
             </div>
-            <div className="w-fit h-fit">
-              <div className="p-5 border-2 border-oplightpurple rounded-xl min-w-[450px] max-h-[350px] flex flex-col gap-3">
-                <p className={`text-[29px] font-regular ${podkova.className}`}>3. Create beneficiaries</p>
+            <div className="w-full h-fit">
+              <div className="p-5 border-2 border-oplightpurple rounded-xl w-full max-h-[350px] min-h-[350px] flex flex-col gap-3 bg-opwhite">
+                <p className={`text-[24px] md:text-[29px] font-regular ${podkova.className}`}>
+                  3. Create beneficiaries
+                </p>
                 <p className={`text-[15px] font-regular ${archivo.className}`}>
                   Add the beneficiaries to whom the contract will pay automatically when appropriate according to the
                   periodicity
@@ -89,23 +105,26 @@ const index = () => {
           </div>
         </div>
       </div>
-      <div className=" bg-opwhite w-[100vw] p-[10vh]">
-        <div className=" w-9/12 mx-auto flex flex-col">
-          <h2 className={`text-[51px] font-regular ${podkova.className} mx-auto`}>Our stack</h2>
-          <div className="flex justify-between">
-            <Image src={Kusama} alt="Kusama" className="scale-75" />
-            <Image src={W3f} alt="W3f" className="scale-75" />
-            <Image src={Polkadot} alt="Polkadot" className="scale-75" />
-            <Image src={Ink} alt="Ink" className="scale-75" />
-            <Image src={Astar} alt="Astar" className="scale-75" />
+      {/* Our stack */}
+      <div className=" bg-opwhite w-[100vw] py-[5vh] md:py-[10vh]">
+        <div className="w-11/12 md:w-9/12 mx-auto flex flex-col">
+          <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className} md:mx-auto`}>Our stack</h2>
+          <div className="grid grid-cols-2 align-middle md:flex md:justify-between">
+            {/* TODO:change imgs */}
+            <Image src={Kusama} alt="Kusama" className="m-auto scale-75" />
+            <Image src={W3f} alt="W3f" className="m-auto scale-75" />
+            <Image src={Polkadot} alt="Polkadot" className="m-auto scale-75" />
+            <Image src={Ink} alt="Ink" className="m-auto scale-75" />
+            <Image src={Astar} alt="Astar" className="m-auto scale-75 col-span-2" />
           </div>
         </div>
       </div>
-      <div className=" bg-opwhite w-[100vw] p-[10vh]">
-        <div className="w-8/12 flex flex-col gap-[40px] mx-auto">
+      {/* About */}
+      <div className=" bg-opwhite w-[100vw] py-[5vh] md:py-[10vh]">
+        <div className="w-11/12 md:w-8/12 flex flex-col gap-10 mx-auto">
           <div className="flex gap-5">
-            <div className="w-6/12 gap-5">
-              <h2 className={`text-[51px] font-regular ${podkova.className}`}>Overview</h2>
+            <div className="w-full md:w-6/12 flex flex-col gap-2">
+              <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className}`}>Overview</h2>
               <p className={`text-[15px] font-regular ${archivo.className}`}>
                 The objective of Open Payroll is to meet the needs of organizations that wish to make transparent
                 payments during a given period, creating a contract that enables anyone to configure and generate their
@@ -122,17 +141,17 @@ const index = () => {
                 as any kind of recurring payments, subscriptions, etc.
               </p>
             </div>
-            <div className="w-6/12 flex">
+            <div className="hidden md:w-6/12 md:flex">
               <Image src={Overview} alt="Overview" className="my-auto" />
             </div>
           </div>
 
           <div className="flex gap-5">
-            <div className="w-6/12 flex">
+            <div className="hidden md:w-6/12 md:flex">
               <Image src={AboutContract} alt="AboutContract" className="my-auto" />
             </div>
-            <div className="w-6/12 gap-5">
-              <h2 className={`text-[51px] font-regular ${podkova.className}`}>About the contract</h2>
+            <div className="w-full md:w-6/12 flex flex-col gap-2">
+              <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className}`}>About the contract</h2>
               <p className={`text-[15px] font-regular ${archivo.className}`}>
                 Build an{' '}
                 <a
@@ -160,8 +179,8 @@ const index = () => {
           </div>
 
           <div className="flex gap-5">
-            <div className="w-6/12 gap-5">
-              <h2 className={`text-[51px] font-regular ${podkova.className}`}>What can you do...</h2>
+            <div className="w-full md:w-6/12 flex flex-col gap-2">
+              <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className}`}>What can you do...</h2>
               <p className={`text-[29px] font-regular ${podkova.className}`}>if you are the owner of the contract</p>
               <ul className={`text-[15px] font-regular ${archivo.className}`}>
                 <li>Change the current parameters in the contract.</li>
@@ -179,15 +198,18 @@ const index = () => {
                 <li>Claim the payments that are already available.</li>
               </ul>
             </div>
-            <div className="w-6/12 flex">
+            <div className="hidden md:w-6/12 md:flex">
               <Image src={WhatCanYouDo} alt="WhatCanYouDo" className="my-auto" />
             </div>
           </div>
         </div>
       </div>
-      <div className=" bg-opwhite w-[100vw] p-[10vh]">
-        <div className=" w-8/12 flex flex-col mx-auto">
-          <h2 className={`text-[51px] font-regular ${podkova.className}`}>Do you want to know more?</h2>
+      {/* Do you want to know more? */}
+      <div className=" bg-opwhite w-[100vw] py-[5vh] md:py-[10vh]">
+        <div className="w-11/12 md:w-8/12 flex flex-col mx-auto gap-5">
+          <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className} leading-none`}>
+            Do you want to know more?
+          </h2>
           <div className={`flex gap-8 ${archivo.className} text-sm`}>
             <div className="flex gap-4">
               <FaGithub className="text-oppurple w-8 h-8" />
@@ -206,14 +228,15 @@ const index = () => {
           </div>
         </div>
       </div>
+      {/* Footer */}
       {/* TODO: add links */}
-      <div className="bg-opurple w-[100vw] px-[5vh] pt-[5vh] pb-[1vh]">
-        <div className="flex gap-[200px]">
-          <div className="flex items-center">
+      <div className="w-[100vw] px-[5vh] pt-[5vh] pb-[1vh]">
+        <div className="flex flex-col md:flex-row gap-12 md:gap-[200px] mb-7 md:mb-0">
+          <div className="flex items-center w-fit mx-auto">
             <OPLogo width={'59.26px'} height={'55.23px'} color="opwhite" />
             <p className={`text-[32px] font-bold text-opwhite ${podkova.className}`}>OpenPayroll</p>
           </div>
-          <div className=" flex gap-7">
+          <div className="flex gap-7 w-fit mx-auto">
             <div className="flex flex-col">
               <h3 className={`text-[20px] font-regular text-opwhite ${podkova.className}`}>The project</h3>
               <a

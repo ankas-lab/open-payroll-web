@@ -49,3 +49,36 @@ input[type='number'] {
   color: #7f7eff;
   text-decoration: underline;
 }
+
+@media (min-width: 320px) and (max-width: 768px) {
+  .arrow {
+    background-image: url('../assets/logo/LogoHero.png');
+    background-size: 200%;
+    background-repeat: no-repeat;
+    background-position: -100vw 10vh, right 3em bottom 2em;
+  }
+}
+@media (min-width: 769px) and (max-width: 1023px) {
+  .arrow {
+    background-image: url('../assets/logo/LogoHero.png');
+    background-size: 150%;
+    background-repeat: no-repeat;
+    background-position: -60vw 10vh, right 3em bottom 2em;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1574px) {
+  .arrow {
+    background-image: url('../assets/logo/LogoHero.png');
+    background-size: 85%;
+    background-position: 0px -10vh, right 3em bottom 2em;
+    background-repeat: no-repeat;
+  }
+}
+@media (min-width: 1575px) {
+  .arrow {
+    background-image: url('../assets/logo/LogoHero.png');
+    background-size: 75%;
+    background-position: 0px -10vh, right 3em bottom 2em;
+    background-repeat: no-repeat;
+  }
+}

@@ -17,7 +17,14 @@ export const OPLogo = ({ width, height, color }: OPLogoProps) => {
   }, [color]);
 
   return (
-    <svg width={width} height={height} viewBox="0 0 147 138" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 147 138"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="z-0"
+    >
       <path
         fillRule="evenodd"
         clipRule="evenodd"

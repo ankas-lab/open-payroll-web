@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { OPLogo } from '../../assets/logo/OPLogo.jsx';
+import { OPLogo } from '@/assets/logo/OPLogo';
 import Button from '../generals/button';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
