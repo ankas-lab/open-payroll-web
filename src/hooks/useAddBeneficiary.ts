@@ -2,13 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useTx } from 'useink';
 import toast from 'react-hot-toast';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isPendingSignature } from 'useink/utils';
-import { DappContext } from '@/context';
 
 export function useAddBeneficiary(contract: any) {
-  const context = useContext(DappContext);
-
-  const { addressToShort } = context!;
-
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isAdded, setIsAdded] = useState<boolean>(false);
   const addBeneficiary = useTx(contract, 'addBeneficiary');
@@ -28,10 +23,6 @@ export function useAddBeneficiary(contract: any) {
     }
 
     if (isInBlock(addBeneficiary)) {
-      setIsAdded(true);
-    }
-    if (isInBlock(addBeneficiary)) {
-      //here I need to unshow the row
       setIsAdded(true);
       toast(`👍 Beneficiary successfully added`);
     }

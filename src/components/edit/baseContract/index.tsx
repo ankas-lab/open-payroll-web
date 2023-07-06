@@ -87,7 +87,10 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                   className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
                 />
               </div>
-              <div className="flex flex-col w-full">
+              {
+                //We dont use this yet
+                /*
+                <div className="flex flex-col w-full">
                 <label className={`text-[17px] font-normal text-black tracking-[0.15px] mb-[5px] ${podkova.className}`}>
                   Email
                 </label>
@@ -98,15 +101,17 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                   name="email"
                   onChange={(e) => handleNewEmailLocalStorageData(e)}
                   className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
+                  />
+              </div>
+              */
+              }
+              <div className="mt-auto">
+                <Button
+                  type={newLocalStorageData !== undefined ? 'outlined' : 'disabled'}
+                  text="Update"
+                  action={() => updateContract(newLocalStorageData)}
                 />
               </div>
-            </div>
-            <div>
-              <Button
-                type={newLocalStorageData !== undefined ? 'outlined' : 'disabled'}
-                text="Update"
-                action={() => updateContract(newLocalStorageData)}
-              />
             </div>
           </div>
           <div className="flex flex-col gap-[10px]">

@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useCall, useApi, ChainContract, useBlockHeader, useCallSubscription, useTokenSymbol } from 'useink';
 import { usePayrollContract } from '../hooks/usePayrollContract';
 
 import { pickDecoded, planckToDecimalFormatted } from 'useink/utils';
+import { BN } from 'bn.js';
 
 interface Beneficiary {
   accountId: any;
@@ -26,7 +28,7 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   const api = useApi('rococo-contracts-testnet');
 
   //---------------------------------Get from contract---------------------------------
-  const getBeneficiary = useCall(contract, 'getBeneficiary');
+  const getBeneficiary = useCallSubscription(contract, 'getBeneficiary', [address]);
 
   const getBeneficiaryMultipliersToArray = (data: any) => {
     if (data !== undefined) {
@@ -43,7 +45,12 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     for (let i = 0; i < mults.length; i++) {
       sum += mults[i].value / 100;
     }
-    const finalPay = sum * parseInt(rawBasePayment);
+    //TODO: see if is ok
+    if (sum === 0) {
+      sum = 1;
+    }
+    const rawBasePaymentBN = new BN(rawBasePayment);
+    const finalPay = rawBasePaymentBN.mul(new BN(sum));
     const plancked = planckToDecimalFormatted(finalPay, api?.api);
     setFinalPay(plancked);
   };
@@ -70,22 +77,26 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   };
 
   useEffect(() => {
-    getBeneficiary.send([address]);
-  }, [address]);
-
-  useEffect(() => {
     if (getBeneficiary.result?.ok) {
       const data = pickDecoded(getBeneficiary.result);
       if (data?.Ok) {
-        getBeneficiaryMultipliersToArray(data?.Ok.multipliers);
         getLastClaim(data?.Ok.lastUpdatedPeriodBlock);
-
         setBeneficiary(data?.Ok);
-        setBeneficiaryMultipliers(data?.Ok.multipliers);
         setBeneficiaryUnclaimedPayments(data?.Ok.unclaimedPayments);
       }
     }
   }, [getBeneficiary.result]);
+
+  useEffect(() => {
+    //FIXME is updated
+    if (beneficiary?.multipliers !== beneficiaryMultipliers) {
+      console.log(beneficiary.multipliers);
+      console.log(beneficiaryMultipliers);
+
+      getBeneficiaryMultipliersToArray(beneficiary.multipliers);
+      setBeneficiaryMultipliers(beneficiary.multipliers);
+    }
+  }, [beneficiary]);
 
   useEffect(() => {
     if (beneficiaryMultipliersToArray !== undefined) {

@@ -13,7 +13,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
 
   const [contractBalance, setContractBalance] = useState<undefined | string>(undefined);
   const [rawContractBalance, setRawContractBalance] = useState<undefined | number>(undefined);
-  const [periodicity, setPeriodicity] = useState<undefined | number>(undefined);
+  const [periodicity, setPeriodicity] = useState<undefined | number | string>(undefined);
   const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
   const [nextBlockPeriod, setNextBlockPeriod] = useState<undefined | string>(undefined);
   const [contractState, setContractState] = useState<undefined | boolean>(undefined);
@@ -59,7 +59,14 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
 
   useEffect(() => {
     if (getPeriodicity.result) {
-      setPeriodicity(Number(pickDecoded(getPeriodicity.result!)));
+      const periodicityToNumber = Number(pickDecoded(getPeriodicity.result!));
+      //setPeriodicity(periodicityToNumber);
+
+      periodicityToNumber > 7200 && setPeriodicity(`${(periodicityToNumber / 7200).toFixed(0)} days`);
+      periodicityToNumber < 7200 &&
+        periodicityToNumber > 300 &&
+        setPeriodicity(`${(periodicityToNumber / 300).toFixed(0)} hours`);
+      periodicityToNumber < 300 && setPeriodicity(`${(periodicityToNumber / 5).toFixed(0)} minutes`);
     }
   }, [getPeriodicity.result]);
 
@@ -83,6 +90,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     if (getBasePayment.result && api?.api) {
       let data = stringNumberToBN(pickDecoded(getBasePayment.result!));
       setRawBasePayment(data);
+
       // TODO: format millions
       setBasePayment(planckToDecimalFormatted(data, api.api, { decimals: 2 }));
     }
@@ -105,7 +113,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   }, [getMultipliersList.result]);
 
   useEffect(() => {
-    if (getNextBlockPeriod.result && periodicity) {
+    if (getNextBlockPeriod.result) {
       let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result);
       let nextBlockPeriod = stringNumberToBN(getNextBlockPeriodValueString).words[0];
 

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { BN } from 'bn.js';
-import { useCall, useCallSubscription, useContract, useTokenSymbol, useWallet } from 'useink';
+import { useCall, useCallSubscription, useChainDecimals, useContract, useTokenSymbol, useWallet } from 'useink';
 import metadata from '@/contract/open_payroll.json';
 import { pickDecoded } from 'useink/utils';
 
@@ -28,6 +28,7 @@ interface StorageContractCanClaim {
 //DappContext
 interface DappContextData {
   chainSymbol: any;
+  chainDecimals: any;
   getStoredContracts: () => void;
   contracts: StorageContract[];
   findContractInLocalStorage: any;
@@ -50,6 +51,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   const { account } = useWallet();
   //---------------------------------Generals---------------------------------
   const [chainSymbol, setChainSymbol] = useState<any | undefined>(useTokenSymbol('rococo-contracts-testnet'));
+  const [chainDecimals, setChainDecimals] = useState<any | undefined>(useChainDecimals('rococo-contracts-testnet'));
 
   const [contracts, setContracts] = useState<StorageContract[]>([]);
   const [ownerContracts, setOwnerContracts] = useState<StorageContract[]>([]);
@@ -70,7 +72,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
         address: '5H3QaazsFy4y9sexX9d3HwFgKjsAkQydirVWj54YWDm7mxjF',
         owner: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25',
         email: '',
-        beneficiaries: [{ name: 'Yo mismo', address: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25' }],
+        beneficiaries: [{ name: 'Yo mismo', address: '5G1WsvjyWoaVZzJKnCpn3iK3sScmXrtuTdU3VSVhZAabREot' }],
       });
       localStorage.setItem('contracts', JSON.stringify(contracts));
     }
@@ -97,12 +99,22 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   const updateBeneficiaryName = (contractAddress: string, beneficiaryAddress: string, beneficiaryNewName: string) => {
     const findedContract = contracts.find((c) => c.address === contractAddress);
     if (findedContract) {
-      const beneficiary = findedContract.beneficiaries.find((b) => b.address === beneficiaryAddress);
-      if (beneficiary) {
-        beneficiary.name = beneficiaryNewName;
-        const contractsJSON = JSON.stringify(contracts);
-        localStorage.setItem('contracts', contractsJSON);
+      const beneficiaryIndex = findedContract.beneficiaries.findIndex((b) => b.address === beneficiaryAddress);
+      if (beneficiaryIndex !== -1) {
+        findedContract.beneficiaries[beneficiaryIndex].name = beneficiaryNewName;
+      } else {
+        const newBeneficiary = { address: beneficiaryAddress, name: beneficiaryNewName };
+        findedContract.beneficiaries.push(newBeneficiary);
       }
+
+      findedContract.beneficiaries = findedContract.beneficiaries.filter(
+        (b, index, self) => self.findIndex((s) => s.address === b.address) === index,
+      );
+
+      const allOtherContracts = contracts.filter((c) => c.address !== contractAddress);
+      const allContractsUpdate = [...allOtherContracts, { ...findedContract }];
+      const contractsJSON = JSON.stringify(allContractsUpdate);
+      localStorage.setItem('contracts', contractsJSON);
     }
   };
 
@@ -117,6 +129,10 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   };
 
   const removeBeneficiaryFromLocalStorage = (contractAddress: string, beneficiaryAddress: string) => {
+    console.log('BORRANDO');
+    console.log('contractAddress', contractAddress);
+    console.log('beneficiaryAddress', beneficiaryAddress);
+
     const findedContract = contracts.find((c) => c.address === contractAddress);
     if (findedContract) {
       const beneficiariesUpdated = findedContract.beneficiaries.filter((b) => b.address !== beneficiaryAddress);
@@ -219,6 +235,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
 
   const contextValue: DappContextData = {
     chainSymbol,
+    chainDecimals,
     contracts,
     getStoredContracts,
     findContractInLocalStorage,

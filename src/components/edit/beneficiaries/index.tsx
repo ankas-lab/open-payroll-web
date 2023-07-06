@@ -6,7 +6,6 @@ import { usePayrollContract } from '@/hooks/usePayrollContract';
 import BeneficiaryRow from '@/components/edit/beneficiaries/beneficiaryRow';
 import MultiplierHeaderCell from '@/components/contracts/multiplierHeaderCell';
 import AddBeneficiaryRow from './AddBeneficiaryRow';
-import { useAddBeneficiary } from '@/hooks/useAddBeneficiary';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -16,17 +15,11 @@ interface ContractProps {
 const Index = ({ _contract, _contractAddress }: ContractProps) => {
   const [showAddBeneficiary, setShowAddBeneficiary] = useState<boolean>(false);
 
-  const { isAdded, handleAddBeneficiary, isProcessing } = useAddBeneficiary(_contract);
-
   const { amountBeneficiaries, listBeneficiaries, multipliersIdList, basePayment } = usePayrollContract(_contract);
-
-  useEffect(() => {
-    isAdded === true && setShowAddBeneficiary(false);
-  }, [isAdded]);
 
   return (
     <div className="w-full md:w-12/12 flex flex-col gap-[20px]">
-      <div className="flex justify-between items-baseline w-8/12">
+      <div className="flex justify-between items-baseline">
         <div className="">
           <Text type="h4" text="Beneficiaries" />
           <Text
@@ -77,8 +70,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                 multipliersIdList={multipliersIdList}
                 contractAddress={_contractAddress!}
                 show={setShowAddBeneficiary}
-                handleAddBeneficiary={handleAddBeneficiary}
-                isProcessing={isProcessing}
               />
             )}
           </tbody>
@@ -88,7 +79,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
       <div>
         <Button
           type={showAddBeneficiary ? 'disabled' : 'outlined'}
-          text="add other"
+          text="add a new beneficiary"
           icon="add"
           action={() => setShowAddBeneficiary(true)}
         />

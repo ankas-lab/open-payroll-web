@@ -82,7 +82,7 @@ To eliminate a multiplier it is necessary that it be paused for a period."
           <div>
             <Button
               type={createNewMultuplier ? 'disabled' : 'outlined'}
-              text="add other"
+              text="add a new multiplier"
               icon="add"
               action={() => setCreateNewMultuplier(true)}
             />

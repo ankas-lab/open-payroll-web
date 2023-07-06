@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext } from 'react';
 import Button from '@/components/generals/button';
 import { Archivo } from 'next/font/google';
@@ -6,27 +7,25 @@ import { usePayrollContract } from '@/hooks';
 import { useAddBeneficiary } from '@/hooks/useAddBeneficiary';
 const archivo = Archivo({ subsets: ['latin'] });
 import { planckToDecimalFormatted } from 'useink/utils';
-import { useApi } from 'useink/core';
+
 import { DappContext } from '@/context';
+import { useApi } from 'useink';
+import { BN } from 'bn.js';
 
 interface ContractProps {
   contract: any | undefined;
   multipliersIdList: string[] | undefined;
   contractAddress: string;
   show: any;
-  isProcessing: boolean;
-  handleAddBeneficiary: any;
 }
 
-const AddBeneficiaryRow = ({
-  contract,
-  multipliersIdList,
-  contractAddress,
-  show,
-  handleAddBeneficiary,
-  isProcessing,
-}: ContractProps) => {
+const AddBeneficiaryRow = ({ contract, multipliersIdList, contractAddress, show }: ContractProps) => {
+  //---------------------------------Api---------------------------------
+  const api = useApi('rococo-contracts-testnet');
+
   const { rawBasePayment } = usePayrollContract(contract);
+
+  const { isAdded, handleAddBeneficiary, isProcessing } = useAddBeneficiary(contract);
 
   const { handleAddBeneficiaryName } = useContext(DappContext)!;
 
@@ -35,9 +34,6 @@ const AddBeneficiaryRow = ({
   const [validAddress, setValidAddress] = useState<boolean>(false);
 
   const [newMultipliers, setNewMultipliers] = useState<any | undefined>(undefined);
-
-  //---------------------------------Api---------------------------------
-  const api = useApi('rococo-contracts-testnet');
 
   const handleInputChange = (event: any) => {
     const { id, value } = event.target;
@@ -55,11 +51,12 @@ const AddBeneficiaryRow = ({
       for (let i = 0; i < multToArray.length; i++) {
         sum += parseInt(multToArray[i]);
       }
-      const newFinalPay = planckToDecimalFormatted((sum / 100) * rawBasePayment, api?.api);
-      return newFinalPay;
+      const rawBasePaymentBN = new BN(rawBasePayment);
+      const result = rawBasePaymentBN.mul(new BN(sum / 100));
+      return planckToDecimalFormatted(result, api?.api);
     } else {
-      const basePayment = planckToDecimalFormatted(rawBasePayment, api?.api);
-      return basePayment;
+      const rawBasePaymentBN = new BN(rawBasePayment);
+      return planckToDecimalFormatted(rawBasePaymentBN, api?.api);
     }
   };
 
@@ -72,11 +69,15 @@ const AddBeneficiaryRow = ({
     beneficiaryAddress !== undefined && beneficiaryAddress!.length >= 48 && setValidAddress(true);
   }, [beneficiaryAddress]);
 
+  useEffect(() => {
+    isAdded === true && show(false);
+  }, [isAdded]);
+
   return (
     <tr
       className={`flex gap-[50px] text-[14px] items-center h-11 px-2 font-normal text-black tracking-[0.25px] ${archivo.className} hover:bg-opwhite transition duration-150`}
     >
-      <td className="w-[50px] flex">
+      <td className="w-[100px] flex">
         {isProcessing ? (
           <Button type="disabled outlined" icon="loading" />
         ) : (

@@ -113,7 +113,10 @@ export default function Contract() {
                     {/* TODO: Add funds */}
                     <Button type="active" text="add funds" />
                   </div>
-                  <div ref={menuRef} className="cursor-pointer w-12">
+                  <Link href={`/edit/${contractAddress}`}>
+                    <Button type="active" text="edit" />
+                  </Link>
+                  {/*<div ref={menuRef} className="cursor-pointer w-12">
                     {showMenu ? (
                       <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] border-2 border-oppurple rounded-[5px] bg-[#FFFFFF] flex flex-col gap-[16px] w-[300px] z-[100]">
                         <Link
@@ -131,7 +134,7 @@ export default function Contract() {
                         <GoKebabHorizontal className="leading-none p-0 m-0 text-base rotate-90" />
                       </div>
                     )}
-                  </div>
+                    </div>*/}
                 </div>
               </div>
               {/* CONTRACT INFO */}

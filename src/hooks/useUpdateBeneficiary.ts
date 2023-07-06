@@ -26,6 +26,9 @@ export function useUpdateBeneficiary(address: string, contract: ChainContract<an
 
     if (isInBlock(updateBeneficiary)) {
       toast('👍 The beneficiary was correctly updated');
+      setIsProcessing(false);
+      setFinalized(true);
+      setEdit(false);
     }
 
     if (isErrored(updateBeneficiary)) {
@@ -33,9 +36,6 @@ export function useUpdateBeneficiary(address: string, contract: ChainContract<an
     }
 
     if (isFinalized(updateBeneficiary)) {
-      setIsProcessing(false);
-      setFinalized(true);
-      setEdit(false);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

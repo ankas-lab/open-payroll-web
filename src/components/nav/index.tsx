@@ -94,7 +94,7 @@ const Index = () => {
           {closeLateralNav ? (
             <div className="hidden md:flex">
               <BsFillArrowRightCircleFill
-                className="w-5 h-5 text-OPLogo cursor-pointer"
+                className="w-5 h-5 text-oppurple cursor-pointer"
                 onClick={() => {
                   setCloseLateralNav(false);
                 }}
@@ -103,7 +103,7 @@ const Index = () => {
           ) : (
             <div className="hidden md:flex">
               <BsFillArrowLeftCircleFill
-                className="w-5 h-5 text-OPLogo cursor-pointer"
+                className="w-5 h-5 text-oppurple cursor-pointer"
                 onClick={() => {
                   setCloseLateralNav(true);
                 }}

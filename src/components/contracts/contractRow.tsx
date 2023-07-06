@@ -72,13 +72,17 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
           )}
         </td>
         <td className="w-[80px]">
-          {totalDebts !== null ? <p className="text-ellipsis overflow-hidden">{totalDebts}</p> : <Loader />}
+          {totalDebts !== undefined ? <p className="text-ellipsis overflow-hidden">{totalDebts}</p> : <Loader />}
         </td>
         <td className="w-[80px]">
-          {nextBlockPeriod !== null ? <p className="text-ellipsis overflow-hidden">{nextBlockPeriod}</p> : <Loader />}
+          {nextBlockPeriod !== undefined ? (
+            <p className="text-ellipsis overflow-hidden">{nextBlockPeriod}</p>
+          ) : (
+            <Loader />
+          )}
         </td>
-        <td className="w-[80px]">{_contract ? <p>{_contract?.chainId}</p> : <Loader />}</td>
-        <td className="w-[80px]">{contractState ? <p>ON</p> : <p>OFF</p>}</td>
+        <td className="w-[80px] truncate">{_contract ? <p>{_contract?.chainId}</p> : <Loader />}</td>
+        <td className="w-[80px]">{contractState ? contractState ? <p>ON</p> : <p>OFF</p> : <Loader />}</td>
         <td className="w-[100px]">
           <Link href={`/contracts/${contract.address}`}>
             <Button type="text" text="view" />

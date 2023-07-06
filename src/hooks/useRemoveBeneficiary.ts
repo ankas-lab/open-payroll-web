@@ -1,16 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useTx } from 'useink';
 
 import toast from 'react-hot-toast';
 import { isBroadcast, isErrored, isFinalized, isInBlock, isPendingSignature } from 'useink/utils';
+import { DappContext } from '@/context';
 
 export function useRemoveBeneficiary(contract: any, contractAddress: string, beneficiaryAddress: string) {
+  const context = useContext(DappContext);
+
+  const { contracts } = context!;
   const [isProcessingRemove, setIsProcessingRemove] = useState<boolean>(false);
+  const [deleteFromLS, setDeleteFromLS] = useState<boolean | undefined>(false);
+
   const removeBeneficiary = useTx(contract, 'removeBeneficiary');
 
   const handleRemoveBeneficiary = (beneficiaryAddress: string) => {
     removeBeneficiary.signAndSend([beneficiaryAddress]);
   };
+
+  useEffect(() => {
+    deleteFromLS && console.log('deleteFromLS', deleteFromLS);
+  }, [deleteFromLS]);
 
   useEffect(() => {
     if (isPendingSignature(removeBeneficiary)) {
@@ -19,9 +29,19 @@ export function useRemoveBeneficiary(contract: any, contractAddress: string, ben
 
     if (isBroadcast(removeBeneficiary)) {
       setIsProcessingRemove(true);
+      const findedContract = contracts.find((c) => c.address === contractAddress);
+      if (findedContract) {
+        const beneficiariesUpdated = findedContract.beneficiaries.filter((b) => b.address !== beneficiaryAddress);
+        if (beneficiariesUpdated) {
+          findedContract.beneficiaries = beneficiariesUpdated;
+          const contractsJSON = JSON.stringify(contracts);
+          localStorage.setItem('contracts', contractsJSON);
+        }
+      }
     }
 
     if (isInBlock(removeBeneficiary)) {
+      setDeleteFromLS(true);
       toast('🗑 Beneficiary successfully removed');
     }
 
@@ -31,6 +51,7 @@ export function useRemoveBeneficiary(contract: any, contractAddress: string, ben
 
     if (isFinalized(removeBeneficiary)) {
       setIsProcessingRemove(false);
+      toast('🗑 Beneficiary successfully removed');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

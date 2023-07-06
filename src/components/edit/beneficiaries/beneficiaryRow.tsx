@@ -10,6 +10,8 @@ import { useBeneficiary, usePayrollContract } from '@/hooks';
 
 import { planckToDecimalFormatted } from 'useink/utils';
 
+import { BN } from 'bn.js';
+
 import MultiplierCell from '../beneficiaries/multiplierCell';
 
 import { DappContext } from '@/context';
@@ -32,10 +34,12 @@ const BeneficiaryRow = ({
   contractAddress,
   multipliersIdList,
 }: BeneficiarieRowProps) => {
-  //TODO error when set a XXXX mult
   const { rawBasePayment } = usePayrollContract(contract);
 
-  const { beneficiaryMultipliersToArray, finalPay, beneficiary } = useBeneficiary(beneficiaryAddress, contract);
+  const { beneficiaryMultipliersToArray, finalPay, beneficiary, beneficiaryMultipliers } = useBeneficiary(
+    beneficiaryAddress,
+    contract,
+  );
   const { handleUpdateBeneficiary, isProcessing, finalized, edit, setEdit } = useUpdateBeneficiary(
     beneficiaryAddress,
     contract,
@@ -65,19 +69,22 @@ const BeneficiaryRow = ({
     const decimalValue = parseFloat(roundedValue) * 100;
 
     const newValues =
-      value === '' ? { ...newMultipliers, [id]: initialMultipliers?.[id] } : { ...newMultipliers, [id]: decimalValue };
+      value === ''
+        ? { ...newMultipliers, [id]: beneficiaryMultipliers?.[id] }
+        : { ...newMultipliers, [id]: decimalValue };
     setNewMultipliers(newValues);
   };
 
   const calculateNewFinalPayment = () => {
-    const oldMultToArray = Object.values(beneficiary.multipliers);
+    const oldMultToArray = Object.values(beneficiaryMultipliers);
     const multToArray = Object.values(newMultipliers);
     let sum = 0;
     for (let i = 0; i < multToArray.length; i++) {
       multToArray[i] === '' ? (sum += parseInt(oldMultToArray[i]) / 100) : (sum += parseInt(multToArray[i]) / 100);
     }
-    const newFinalPay = planckToDecimalFormatted(sum * rawBasePayment, api?.api);
-    return newFinalPay;
+    const rawBasePaymentBN = new BN(rawBasePayment);
+    const result = rawBasePaymentBN.mul(new BN(sum));
+    return planckToDecimalFormatted(result, api?.api);
   };
 
   const handleUpdate = () => {
@@ -86,15 +93,15 @@ const BeneficiaryRow = ({
     }
     if (newBeneficiaryName !== undefined) {
       updateBeneficiaryName(contractAddress, beneficiaryAddress, newBeneficiaryName);
+      setEdit(false);
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    handleRemoveBeneficiary(beneficiaryAddress);
     //FIXME: This works but the localStorage is updated before sending the Tx,
     // if the user would like to cancel the Tx, the beneficiary has already
     // been deleted from the localStorage.
-    handleRemoveBeneficiary(beneficiaryAddress);
-    removeBeneficiaryFromLocalStorage(contractAddress, beneficiaryAddress);
   };
 
   //---------------------------------Initialize functions---------------------------------
@@ -121,8 +128,8 @@ const BeneficiaryRow = ({
     >
       <td className="w-[100px]">
         {!edit && <Button type="text" icon="edit" action={() => setEdit(true)} />}
-        {isProcessingRemove && <Button type="disabled outlined" icon="loading" />}
-        {isProcessing && <Button type="disabled outlined" icon="loading" />}
+        {edit && isProcessing && <Button type="disabled outlined" icon="loading" />}
+        {edit && isProcessingRemove && <Button type="disabled outlined" icon="loading" />}
         {edit && !isProcessing && !isProcessingRemove && (
           <div className="flex">
             <Button type={'text'} icon={'check'} action={() => handleUpdate()} />
@@ -168,10 +175,13 @@ const BeneficiaryRow = ({
         />
       ))}
       {/* Final pay */}
+
       {finalPay !== undefined ? (
         <td className="w-[100px]">{edit ? <p>{calculateNewFinalPayment()}</p> : <p>{finalPay}</p>}</td>
       ) : (
-        <Loader />
+        <td className="w-[100px]">
+          <Loader />
+        </td>
       )}
     </tr>
   ) : (
