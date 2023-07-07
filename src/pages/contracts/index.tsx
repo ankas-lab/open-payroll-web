@@ -13,7 +13,7 @@ const archivo = Archivo({ subsets: ['latin'] });
 import { DappContext } from '@/context';
 import WalletManager from '@/components/walletManager';
 
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 export default function Contracts() {
   //---------------------------------Get contracts from context---------------------------------
@@ -41,17 +41,17 @@ export default function Contracts() {
           },
         }}
       />
-      <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+      <div className="w-10/12 md:w-8/12 overflow-x-auto min-h-screen mx-auto flex flex-col gap-[40px] py-[10vh] md:py-0 md:pb-[20vh]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
-        <div className="flex flex-col-reverse md:flex-row justify-between md:items-center">
-          <Text type="h2" text="My contracts" />
-          <Link className="w-fit" href="/create">
-            <Button type="active" text="create new contract" />
-          </Link>
-        </div>
-        <div className="md:w-[600px]">
+        <div className="flex flex-col gap-[40px]">
+          <div className="flex flex-col-reverse gap-[40px] md:flex-row md:justify-between">
+            <Text type="h2" text="My contracts" />
+            <Link className="w-fit" href="/create">
+              <Button type="active" text="create new contract" />
+            </Link>
+          </div>
           <Text
             type=""
             text="These are your contracts, you can select one to inspect what's inside, edit them or add funds to them. If you don't have any contract, create one!"
@@ -59,7 +59,7 @@ export default function Contracts() {
         </div>
         <div className="overflow-x-auto">
           {ownerContracts.length > 0 ? (
-            <table className="mt-[30px] md:mt-[50px]">
+            <table className="">
               <tbody>
                 <tr className="flex gap-[50px] text-left px-2">
                   <th className="w-[25px]"></th>
@@ -95,7 +95,10 @@ export default function Contracts() {
               </tbody>
             </table>
           ) : (
-            <Text type="" text="It seems like there are no contracts here." />
+            <div className="flex flex-col gap-[10px]">
+              <Text type="h4" text="It seems that there is no contract yet!" />
+              <Text type="" text="Start creating one right now" />
+            </div>
           )}
         </div>
       </div>

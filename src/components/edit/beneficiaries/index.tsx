@@ -18,8 +18,8 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
   const { amountBeneficiaries, listBeneficiaries, multipliersIdList, basePayment } = usePayrollContract(_contract);
 
   return (
-    <div className="w-full md:w-12/12 flex flex-col gap-[20px]">
-      <div className="flex justify-between items-baseline">
+    <div className="w-full flex flex-col gap-[40px]">
+      <div className="flex justify-between items-baseline gap-[20px]">
         <div className="">
           <Text type="h4" text="Beneficiaries" />
           <Text
@@ -32,8 +32,9 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
           <Text type="" text={basePayment} />
         </div>
       </div>
+
       <div className="overflow-x-auto">
-        <table className="mt-5">
+        <table className="">
           <tbody>
             <tr className="flex gap-[50px] text-left px-2">
               <th className="w-[100px]"></th>
@@ -76,14 +77,12 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
         </table>
       </div>
 
-      <div>
-        <Button
-          type={showAddBeneficiary ? 'disabled' : 'outlined'}
-          text="add a new beneficiary"
-          icon="add"
-          action={() => setShowAddBeneficiary(true)}
-        />
-      </div>
+      <Button
+        type={showAddBeneficiary ? 'disabled' : 'outlined'}
+        text="add a new beneficiary"
+        icon="add"
+        action={() => setShowAddBeneficiary(true)}
+      />
     </div>
   );
 };

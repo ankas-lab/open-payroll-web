@@ -23,7 +23,7 @@ const Index = ({ _contract }: ContractProps) => {
   }, [isAdded]);
 
   return (
-    <div className="w-full md:w-8/12">
+    <div className="w-full flex flex-col gap-[40px]">
       <div className="">
         <Text type="h4" text="Multipliers" />
         <Text
@@ -33,10 +33,10 @@ To eliminate a multiplier it is necessary that it be paused for a period."
         />
       </div>
 
-      <div className="flex flex-col gap-[10px] mt-[10px]">
-        <div className="flex flex-col gap-[10px]">
+      <div className="flex flex-col gap-[40px]">
+        <div className="flex flex-col gap-[20px]">
           <Text type="h5" text="Active" />
-          <div className="grid grid-cols-1 w-full md:w-6/12 gap-[10px]">
+          <div className="grid grid-cols-1 w-full gap-[10px]">
             {multipliersIdList !== undefined ? (
               multipliersIdList?.map((m: any) => (
                 <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={true} />
@@ -79,25 +79,25 @@ To eliminate a multiplier it is necessary that it be paused for a period."
               </form>
             )}
           </div>
-          <div>
-            <Button
-              type={createNewMultuplier ? 'disabled' : 'outlined'}
-              text="add a new multiplier"
-              icon="add"
-              action={() => setCreateNewMultuplier(true)}
-            />
-          </div>
-          <div className="mt-[10px]">
-            <Text type="h5" text="Paused" />
-            <div className="grid grid-cols-1 gap-[10px]">
-              {multipliersIdList !== undefined ? (
-                multipliersIdList?.map((m) => (
-                  <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={false} />
-                ))
-              ) : (
-                <Loader />
-              )}
-            </div>
+        </div>
+        <div className="flex flex-col gap-[20px]">
+          <Button
+            type={createNewMultuplier ? 'disabled' : 'outlined'}
+            text="add a new multiplier"
+            icon="add"
+            action={() => setCreateNewMultuplier(true)}
+          />
+        </div>
+        <div className="flex flex-col gap-[20px]">
+          <Text type="h5" text="Paused" />
+          <div className="grid grid-cols-1 gap-[10px]">
+            {multipliersIdList !== undefined ? (
+              multipliersIdList?.map((m) => (
+                <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={false} />
+              ))
+            ) : (
+              <Loader />
+            )}
           </div>
         </div>
       </div>

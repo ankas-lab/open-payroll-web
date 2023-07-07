@@ -43,7 +43,7 @@ const ContractsTable = () => {
 
   return (
     myContracts?.length > 0 && (
-      <div className="flex flex-col gap-[10px]">
+      <div className="flex flex-col gap-[20px]">
         <Text type="h4" text="The last contracts you claimed" />
         <table className="flex flex-col gap-[10px]">
           <tr className="flex">

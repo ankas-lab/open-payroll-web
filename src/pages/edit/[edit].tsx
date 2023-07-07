@@ -62,13 +62,13 @@ export default function Edit() {
       {loading === 'loading' ? (
         <Loader />
       ) : (
-        <div className="w-10/12 md:w-8/12 overflow-x-scroll min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+        <div className="w-10/12 md:w-8/12 overflow-x-auto min-h-screen mx-auto flex flex-col gap-[40px] py-[10vh] md:py-0 md:pb-[20vh]">
           <div className="hidden md:flex h-[100px] justify-end">
             <WalletManager />
           </div>
-          <div className="flex flex-col gap-[20px] justify-between md:w-10/12 lg:w-7/12">
+          <div className="flex flex-col gap-[40px]">
             <Text type="h2" text="Edit contract" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-[10px]">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
               {tab === 'contract' ? (
                 <Button type="active" text="contract" action={() => setTab('contract')} />
               ) : (

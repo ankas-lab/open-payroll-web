@@ -34,8 +34,6 @@ const ClaimInput = () => {
   };
 
   const calculateMax = () => {
-    console.log('calcula max');
-
     if (rawContractBalance! <= 33333333) {
       setMax(0);
     }
@@ -52,14 +50,10 @@ const ClaimInput = () => {
   }, [isClaimed]);
 
   useEffect(() => {
-    if (rawContractBalance !== undefined && rawContractBalance !== undefined) {
+    if (rawContractBalance !== undefined && rawAmountToClaim !== undefined) {
       calculateMax();
     }
   }, [rawContractBalance, rawAmountToClaim]);
-
-  useEffect(() => {
-    console.log('nextBlockPeriod', nextBlockPeriod);
-  }, [nextBlockPeriod]);
 
   const context = useContext(DappContext);
 
@@ -70,12 +64,12 @@ const ClaimInput = () => {
   const { chainSymbol } = context;
 
   return (
-    <div className="order-1 md:order-3 md:w-4/12 flex flex-col ">
+    <div className="order-1 md:order-3 md:w-4/12 flex flex-col gap-[20px]">
       <Text type="h4" text="Claim" />
 
       {max !== undefined ? (
         <form className="flex flex-col gap-[20px]">
-          <div className="flex gap-[20px] items-center">
+          <div className="flex gap-[10px] items-center">
             <input
               type="number"
               min={0}
@@ -115,7 +109,10 @@ const ClaimInput = () => {
               <IoIosAlert className="h-12 w-12 m-0 " />
               <div className="flex flex-col gap-3">
                 <div>
-                  <Text type="" text={`You still can't claim your payment, try again in ${nextBlockPeriod}`} />
+                  <Text
+                    type=""
+                    text={`You cannot claim your payment now, possibly the contract has no funds, contact the owner of the contract or try again in ${nextBlockPeriod}`}
+                  />
                 </div>
               </div>
             </div>

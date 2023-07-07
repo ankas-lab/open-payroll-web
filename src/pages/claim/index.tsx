@@ -38,34 +38,38 @@ export default function Claim() {
           },
         }}
       />
-      <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+      <div className="w-10/12 md:w-8/12 overflow-x-auto min-h-screen mx-auto flex flex-col gap-[40px] py-[10vh] md:py-0 md:pb-[20vh]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
-        <Text type="h2" text="Contracts you can claim" />
-        <div className="max-w-[400px] flex flex-col gap-[10px]">
-          <Text type="h4" text="Find new contract" />
-          <Text type="" text="Enter the contractAddress of the contract to claim your payment" />
-          <form className="flex flex-col gap-[10px]">
-            <input
-              id="contractAddress"
-              type="text"
-              name="contractAddress"
-              placeholder="Contract Address"
-              className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
-              value={contractAddress}
-              onChange={(e) => handleContractAddressChange(e.target.value)}
-            />
-            <div className="flex">
-              {validContractAddress ? (
-                <Button type="active" text="find" action={() => handleFindContract(contractAddress)} />
-              ) : (
-                <Button type="disabled" text="Invalid address" />
-              )}
+        <div className="flex flex-col gap-[40px]">
+          <Text type="h2" text="Contracts you can claim" />
+          <div className="flex flex-col gap-[20px] md:w-8/12">
+            <div className="">
+              <Text type="h4" text="Find new contract" />
+              <Text type="" text="Enter the contractAddress of the contract to claim your payment" />
             </div>
-          </form>
+            <form className="flex flex-col gap-[10px]">
+              <input
+                id="contractAddress"
+                type="text"
+                name="contractAddress"
+                placeholder="Contract Address"
+                className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
+                value={contractAddress}
+                onChange={(e) => handleContractAddressChange(e.target.value)}
+              />
+              <div className="flex">
+                {validContractAddress ? (
+                  <Button type="active" text="find" action={() => handleFindContract(contractAddress)} />
+                ) : (
+                  <Button type="disabled" text="Invalid address" />
+                )}
+              </div>
+            </form>
+          </div>
+          <ContractsTable />
         </div>
-        <ContractsTable />
       </div>
     </main>
   );

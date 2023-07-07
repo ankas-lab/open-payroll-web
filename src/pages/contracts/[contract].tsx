@@ -13,7 +13,6 @@ import { useRouter } from 'next/router';
 import BeneficiaryRow from '@/components/contracts/beneficiaryRow';
 import WalletManager from '@/components/walletManager';
 import Link from 'next/link';
-import { GoKebabHorizontal } from 'react-icons/go';
 import MultiplierHeaderCell from '@/components/contracts/multiplierHeaderCell';
 import { DappContext } from '@/context';
 import { IoIosCopy } from 'react-icons/io';
@@ -93,22 +92,22 @@ export default function Contract() {
           },
         }}
       />
-      <div className="w-10/12 md:w-8/12 min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+      <div className="w-10/12 md:w-8/12 overflow-x-auto min-h-screen mx-auto flex flex-col gap-[40px] py-[10vh] md:py-0 md:pb-[20vh]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
         {contract && owner !== undefined ? (
           owner === account?.address ? (
-            <div className="flex flex-col gap-[30px]">
-              <div className="flex flex-col-reverse md:flex-row justify-between">
+            <div className="flex flex-col gap-[40px]">
+              <div className="flex flex-col-reverse gap-[40px] md:flex-row md:justify-between">
                 <div className="flex flex-col">
                   {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress).name}`} />}
-                  <div className="flex items-center mt-2">
+                  <div className="flex items-center">
                     <Text type="overline" text={`${contractAddress}`} />
                     <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
                   </div>
                 </div>
-                <div className="flex gap-2 ml-auto mt-0 md:mt-4 relative">
+                <div className="flex gap-[20px] ml-auto md:ml-0">
                   <div>
                     {/* TODO: Add funds */}
                     <Button type="active" text="add funds" />
@@ -139,48 +138,41 @@ export default function Contract() {
               </div>
               {/* CONTRACT INFO */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-[20px] text-[14px] font-normal text-black tracking-[0.25px]">
-                <div className=" ">
-                  <div className="h-[30px]">
-                    <Text type="overline" text="periodicity" />
-                  </div>
+                <div className="flex flex-col gap-[10px] ">
+                  <Text type="overline" text="periodicity" />
+
                   {periodicity ? <p>{periodicity}</p> : <Loader />}
                 </div>
 
-                <div className=" ">
-                  <div className="h-[30px]">
-                    <Text type="overline" text="next pay in" />
-                  </div>
+                <div className="flex flex-col gap-[10px] ">
+                  <Text type="overline" text="next pay in" />
+
                   {nextBlockPeriod ? <p className="text-ellipsis  ">{nextBlockPeriod}</p> : <Loader />}
                 </div>
 
-                <div className=" ">
-                  <div className="h-[30px]">
-                    <Text type="overline" text="beneficiaries" />
-                  </div>
+                <div className="flex flex-col gap-[10px] ">
+                  <Text type="overline" text="beneficiaries" />
+
                   {amountBeneficiaries ? <p>{amountBeneficiaries}</p> : <Loader />}
                 </div>
-                <div className=" ">
-                  <div className="h-[30px]">
-                    <Text type="overline" text="base payment" />
-                  </div>
+                <div className="flex flex-col gap-[10px] ">
+                  <Text type="overline" text="base payment" />
+
                   {basePayment ? <p>{basePayment}</p> : <Loader />}
                 </div>
-                <div className=" ">
-                  <div className="h-[30px]">
-                    <Text type="overline" text="funds in contract" />
-                  </div>
+                <div className="flex flex-col gap-[10px] ">
+                  <Text type="overline" text="funds in contract" />
 
                   {contractBalance ? <p className="text-ellipsis  ">{contractBalance}</p> : <Loader />}
                 </div>
-                <div className=" ">
-                  <div className="h-[30px]">
-                    <Text type="overline" text="total funds needed" />
-                  </div>
+                <div className="flex flex-col gap-[10px] ">
+                  <Text type="overline" text="total funds needed" />
+
                   {totalDebts ? <p className="text-ellipsis  ">{totalDebts}</p> : <Loader />}
                 </div>
               </div>
               {/* BENEFICIARIES TABLE */}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-[20px]">
                 <Text type="h4" text="Beneficiaries" />
                 <div className="overflow-x-auto">
                   <table>
