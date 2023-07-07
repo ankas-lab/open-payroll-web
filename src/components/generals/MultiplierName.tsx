@@ -7,9 +7,11 @@ const MultiplierName = (multiplierId: any, _contract: any) => {
   const { baseMultiplier } = useBaseMultiplier(multiplierId._contract, multiplierId.multiplierId);
 
   return baseMultiplier !== undefined ? (
-    <div className="capitalize">
-      <Text type="" text={baseMultiplier.name || 'multiplier ' + multiplierId.multiplierId} />
-    </div>
+    baseMultiplier.validUntilBlock === null && (
+      <div className="capitalize">
+        <Text type="" text={baseMultiplier.name || 'multiplier ' + multiplierId.multiplierId} />
+      </div>
+    )
   ) : (
     <Loader />
   );

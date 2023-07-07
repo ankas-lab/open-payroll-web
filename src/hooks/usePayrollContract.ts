@@ -48,7 +48,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   }, [getCountOfUnclaimBeneficiaries.result]);
 
   useEffect(() => {
-    if (getContractBalance.result) {
+    if (getContractBalance.result?.ok) {
       const data = pickDecoded(getContractBalance.result!);
       const dataToNumber = parseInt(data?.replace(/,/g, ''));
       setRawContractBalance(dataToNumber);
@@ -58,7 +58,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   }, [getContractBalance.result]);
 
   useEffect(() => {
-    if (getPeriodicity.result) {
+    if (getPeriodicity.result?.ok) {
       const periodicityToNumber = Number(pickDecoded(getPeriodicity.result!));
       //setPeriodicity(periodicityToNumber);
 
@@ -71,7 +71,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   }, [getPeriodicity.result]);
 
   useEffect(() => {
-    if (getListBeneficiaries.result) {
+    if (getListBeneficiaries.result?.ok) {
       let data = pickDecoded(getListBeneficiaries.result!);
       setAmountBeneficiaries(data?.length);
       setListBeneficiaries(data);

@@ -10,6 +10,7 @@ import { planckToDecimal, planckToDecimalFormatted } from 'useink/utils';
 import Loader from '../generals/Loader';
 import { useAmountToClaim } from '@/hooks/useAmountToClaim';
 import { DappContext } from '@/context';
+import { IoIosAlert } from 'react-icons/io';
 
 const ClaimInput = () => {
   //---------------------------------Get ContractAddress---------------------------------
@@ -23,10 +24,8 @@ const ClaimInput = () => {
   const _contract = useContract(contractAddress!, metadata);
   const { handleClaimPayment, isClaiming, isClaimed } = useClaim(_contract);
   const { rawAmountToClaim } = useAmountToClaim(_contract, account?.address);
-  const { rawContractBalance } = usePayrollContract(_contract);
+  const { rawContractBalance, nextBlockPeriod } = usePayrollContract(_contract);
 
-  //TODO: handle Time
-  const [timeToClaim, setTimeToClaim] = useState<string>('');
   const [inputValue, setInputValue] = useState<number | string | undefined>();
   const [max, setMax] = useState<number | undefined>();
 
@@ -35,10 +34,12 @@ const ClaimInput = () => {
   };
 
   const calculateMax = () => {
-    if (rawContractBalance! < 33333333) {
+    console.log('calcula max');
+
+    if (rawContractBalance! <= 33333333) {
       setMax(0);
     }
-    if (rawContractBalance! > rawAmountToClaim!) {
+    if (rawContractBalance! >= rawAmountToClaim!) {
       setMax(planckToDecimal(rawAmountToClaim, api?.api));
     }
     if (rawContractBalance! < rawAmountToClaim! && rawContractBalance! > 33333333) {
@@ -56,17 +57,23 @@ const ClaimInput = () => {
     }
   }, [rawContractBalance, rawAmountToClaim]);
 
+  useEffect(() => {
+    console.log('nextBlockPeriod', nextBlockPeriod);
+  }, [nextBlockPeriod]);
+
   const context = useContext(DappContext);
+
   if (!context) {
     return null;
   }
+
   const { chainSymbol } = context;
 
   return (
     <div className="order-1 md:order-3 md:w-4/12 flex flex-col ">
       <Text type="h4" text="Claim" />
 
-      {max ? (
+      {max !== undefined ? (
         <form className="flex flex-col gap-[20px]">
           <div className="flex gap-[20px] items-center">
             <input
@@ -89,7 +96,7 @@ const ClaimInput = () => {
             </p>
           </div>
           <div className="flex flex-col gap-2">
-            <Button type="outlined" text="max" action={() => setInputValue(max.toFixed(2))} />
+            <Button type={max! > 0 ? 'outlined' : 'disabled'} text="max" action={() => setInputValue(max.toFixed(2))} />
 
             {isClaiming ? (
               <Button type={'disabled'} icon={'loading'} />
@@ -103,7 +110,16 @@ const ClaimInput = () => {
               />
             )}
           </div>
-          {/*<Text type="" text={`You still can't claim your payment, try again in ${timeToClaim}`} />*/}
+          {nextBlockPeriod! && (
+            <div className="bg-opdanger rounded p-[10px] pr-[20px] flex gap-3 text-[#FFFFFF]">
+              <IoIosAlert className="h-12 w-12 m-0 " />
+              <div className="flex flex-col gap-3">
+                <div>
+                  <Text type="" text={`You still can't claim your payment, try again in ${nextBlockPeriod}`} />
+                </div>
+              </div>
+            </div>
+          )}
         </form>
       ) : (
         <Loader />

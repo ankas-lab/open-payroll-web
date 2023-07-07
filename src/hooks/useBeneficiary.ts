@@ -90,9 +90,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   useEffect(() => {
     //FIXME is updated
     if (beneficiary?.multipliers !== beneficiaryMultipliers) {
-      console.log(beneficiary.multipliers);
-      console.log(beneficiaryMultipliers);
-
       getBeneficiaryMultipliersToArray(beneficiary.multipliers);
       setBeneficiaryMultipliers(beneficiary.multipliers);
     }

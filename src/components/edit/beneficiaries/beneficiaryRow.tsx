@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useContext } from 'react';
 import Button from '@/components/generals/button';
 
@@ -97,11 +98,8 @@ const BeneficiaryRow = ({
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     handleRemoveBeneficiary(beneficiaryAddress);
-    //FIXME: This works but the localStorage is updated before sending the Tx,
-    // if the user would like to cancel the Tx, the beneficiary has already
-    // been deleted from the localStorage.
   };
 
   //---------------------------------Initialize functions---------------------------------
