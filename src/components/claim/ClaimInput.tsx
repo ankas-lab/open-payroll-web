@@ -27,7 +27,7 @@ const ClaimInput = () => {
   const { rawContractBalance, nextBlockPeriod } = usePayrollContract(_contract);
 
   const [inputValue, setInputValue] = useState<number | string | undefined>();
-  const [max, setMax] = useState<number | undefined>();
+  const [max, setMax] = useState<number | undefined>(0);
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -51,8 +51,10 @@ const ClaimInput = () => {
 
   useEffect(() => {
     if (rawContractBalance !== undefined && rawAmountToClaim !== undefined) {
-      calculateMax();
+      //calculateMax();
     }
+    console.log(rawContractBalance);
+    console.log(rawAmountToClaim);
   }, [rawContractBalance, rawAmountToClaim]);
 
   const context = useContext(DappContext);
@@ -67,7 +69,7 @@ const ClaimInput = () => {
     <div className="order-1 md:order-3 md:w-4/12 flex flex-col gap-[20px]">
       <Text type="h4" text="Claim" />
 
-      {max !== undefined ? (
+      {
         <form className="flex flex-col gap-[20px]">
           <div className="flex gap-[10px] items-center">
             <input
@@ -90,7 +92,11 @@ const ClaimInput = () => {
             </p>
           </div>
           <div className="flex flex-col gap-2">
-            <Button type={max! > 0 ? 'outlined' : 'disabled'} text="max" action={() => setInputValue(max.toFixed(2))} />
+            <Button
+              type={max! > 0 ? 'outlined' : 'disabled'}
+              text="max"
+              action={() => setInputValue(max!.toFixed(2))}
+            />
 
             {isClaiming ? (
               <Button type={'disabled'} icon={'loading'} />
@@ -118,9 +124,7 @@ const ClaimInput = () => {
             </div>
           )}
         </form>
-      ) : (
-        <Loader />
-      )}
+      }
     </div>
   );
 };

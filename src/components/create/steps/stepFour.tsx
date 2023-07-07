@@ -15,9 +15,9 @@ const StepFour = () => {
 
   const { totalToPay } = createContext;
   return (
-    <>
-      <div>
-        <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-[40px]">
+      <div className="flex flex-col gap-[20px]">
+        <div className="flex justify-between items-baseline">
           <Text type="h2" text="Add funds (optional)" />
           <Text type="h6" text="4/4" />
         </div>
@@ -28,6 +28,7 @@ const StepFour = () => {
           />
         </div>
       </div>
+      {/* TODO: add contract clipboard */}
       <div className="flex gap-[10px]">
         <Text type="h4" text="My contract" />
         <div>
@@ -44,10 +45,8 @@ const StepFour = () => {
           <Text type="" text={`${totalToPay} DOT`} />
         </div>
       </div>
-      <div className="w-[200px]">
-        <Button type="active" text="add funds" icon="add" />
-      </div>
-    </>
+      <Button type="active" text="add funds" icon="add" />
+    </div>
   );
 };
 

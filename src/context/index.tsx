@@ -50,8 +50,8 @@ export const DappContext = createContext<DappContextData | null>(null);
 export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const { account } = useWallet();
   //---------------------------------Generals---------------------------------
-  const [chainSymbol, setChainSymbol] = useState<any | undefined>(useTokenSymbol('rococo-contracts-testnet'));
-  const [chainDecimals, setChainDecimals] = useState<any | undefined>(useChainDecimals('rococo-contracts-testnet'));
+  const [chainSymbol, setChainSymbol] = useState<any | undefined>(undefined);
+  const [chainDecimals, setChainDecimals] = useState<any | undefined>(undefined);
 
   const [contracts, setContracts] = useState<StorageContract[]>([]);
   const [ownerContracts, setOwnerContracts] = useState<StorageContract[]>([]);
@@ -208,16 +208,6 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   const getOwner = () => {
     const myContracts = contracts.filter((c) => c.owner === account?.address);
     setOwnerContracts(myContracts);
-    /*
-    const _contract = useContract(contractAddress, metadata);
-    const getOwner = useCallSubscription(_contract, 'getOwner');
-    if (getOwner.result) {
-      const ownerDecoded = pickDecoded(getOwner.result);
-      if (ownerDecoded === account.address) {
-        contracts.find((c) => c.address === contractAddress);
-      }
-    }
-    */
   };
 
   //--------------------------------------Const----------------------------------
@@ -232,6 +222,13 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   useEffect(() => {
     getOwner();
   }, [account?.address]);
+
+  const decimals = useChainDecimals('rococo-contracts-testnet');
+  const token = useTokenSymbol('rococo-contracts-testnet');
+  useEffect(() => {
+    setChainSymbol(token);
+    setChainDecimals(decimals);
+  }, [decimals, token]);
 
   const contextValue: DappContextData = {
     chainSymbol,

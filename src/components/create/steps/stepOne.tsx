@@ -41,9 +41,9 @@ const StepOne = () => {
 
   //---------------------------------UI---------------------------------
   return (
-    <>
-      <div>
-        <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-[40px]">
+      <div className="flex flex-col gap-[20px]">
+        <div className="flex justify-between items-baseline">
           <Text type="h2" text="Create contract" />
           <Text type="h6" text="1/4" />
         </div>
@@ -51,8 +51,8 @@ const StepOne = () => {
           <Text type="" text="We are going to create the contract with which you will pay your beneficiaries." />
         </div>
       </div>
-      <form className="w-12/12 md:w-6/12 lg:w-4/12 flex flex-col gap-[10px] md:gap-[20px]">
-        <div className="flex flex-col">
+      <form className="md:w-6/12 lg:w-4/12 flex flex-col gap-[20px]">
+        <div className="flex flex-col gap-[10px]">
           <Text type="h6" text="Contract name*" />
           <input
             type="text"
@@ -65,7 +65,7 @@ const StepOne = () => {
             }}
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-[10px]">
           <Text type="h6" text="Email*" />
 
           <input
@@ -79,7 +79,7 @@ const StepOne = () => {
             }}
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-[10px]">
           <Text type="h6" text="Base payment**" />
           <div className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 flex">
             <input
@@ -142,7 +142,7 @@ const StepOne = () => {
           </div>
         </div>
       </form>
-      <div>
+      <div className="flex flex-col gap-[10px]">
         <Text
           type=""
           text="* These data are stored in your browser, not in the blockchain, the emails will be used to send notifications to you or your beneficiaries and the names to more easily identify the data in the interface, surely it is easier to remember a name than a code, or no?"
@@ -156,7 +156,7 @@ const StepOne = () => {
           text="*** If you select the 'custom' option, please note that you must enter the number of blocks, and that 5 blocks are generated per minute."
         />
       </div>
-    </>
+    </div>
   );
 };
 

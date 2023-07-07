@@ -40,6 +40,7 @@ interface CreateContextData {
   totalToPay: any;
   formatConstructorParams: any;
   hasBeneficiaryWithoutAddress: any;
+  getTotalMultipliers: any;
 }
 
 interface Beneficiary {
@@ -176,29 +177,30 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   };
 
   const calculateTotalToPay = () => {
-    let totalToPay = 0;
+    const total = getTotalMultipliers() * parseInt(basePayment!);
 
-    initialBeneficiaries.forEach((beneficiary: any) => {
-      let totalMultiplier = 0;
-
-      if (beneficiary && beneficiary.multipliers) {
-        beneficiary.multipliers.forEach((multiplier: any) => {
-          totalMultiplier += parseFloat(multiplier[1]);
-        });
-      }
-      const beneficiaryPayment = totalMultiplier * parseInt(basePayment!);
-      totalToPay += beneficiaryPayment;
-    });
-
-    setTotalToPay(totalToPay.toFixed(2));
+    setTotalToPay(total);
   };
 
   const hasBeneficiaryWithoutAddress = () => {
     return initialBeneficiaries.some((beneficiary: any) => beneficiary.address === '');
   };
 
+  const getTotalMultipliers = () => {
+    let totalMultipliers = 0;
+    initialBeneficiaries.forEach((beneficiary: any) =>
+      beneficiary.multipliers.forEach((multiplier: any) => {
+        totalMultipliers += parseFloat(multiplier[1]);
+      }),
+    );
+
+    return totalMultipliers;
+  };
+
   useEffect(() => {
     hasBeneficiaryWithoutAddress() ? setCanContinue(false) : setCanContinue(true);
+    console.log(initialBeneficiaries);
+    calculateTotalToPay();
   }, [initialBeneficiaries]);
 
   //---------------------------------Create contract---------------------------------
@@ -294,6 +296,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     totalToPay,
     formatConstructorParams,
     hasBeneficiaryWithoutAddress,
+    getTotalMultipliers,
   };
 
   return <CreateContext.Provider value={contextValue}>{children}</CreateContext.Provider>;

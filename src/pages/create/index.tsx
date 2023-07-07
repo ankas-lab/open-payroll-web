@@ -46,7 +46,7 @@ const Index = () => {
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
       <Nav />
 
-      <div className="w-10/12 md:w-8/12 overflow-x-auto min-h-screen mx-auto flex flex-col gap-[20px] md:gap-[40px] mt-[50px] md:mt-[0px]">
+      <div className="w-10/12 md:w-8/12 overflow-x-auto min-h-screen mx-auto flex flex-col gap-[40px] py-[10vh] md:py-0 md:pb-[20vh]">
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
@@ -58,7 +58,7 @@ const Index = () => {
         {steps === 3 && <StepFour />}
         {steps === 4 && <StepFive />}
 
-        <div className="flex w-6/12 md:w-2/12 gap-5">
+        <div className="flex justify-between">
           {steps === 0 ? (
             <Link href={'/'}>
               <Button type="outlined" text="cancel" />
@@ -68,11 +68,21 @@ const Index = () => {
               <Button type="outlined" text="back" action={() => setSteps(steps - 1)} />
             </div>
           )}
-          <div>
-            {canContinue && steps < 4 && <Button type="active" text="next" action={() => setSteps(steps + 1)} />}
-            {!canContinue && steps < 4 && <Button type="disabled" text="next" />}
-            {steps === 4 && <Button type="active" text="done" action={() => formatConstructorParams()} />}
-          </div>
+          {canContinue && steps < 4 && (
+            <div>
+              <Button type="active" text="next" action={() => setSteps(steps + 1)} />
+            </div>
+          )}
+          {!canContinue && steps < 4 && (
+            <div>
+              <Button type="disabled" text="next" />
+            </div>
+          )}
+          {steps === 4 && (
+            <div>
+              <Button type="active" text="done" action={() => formatConstructorParams()} />
+            </div>
+          )}
         </div>
       </div>
 

@@ -32,6 +32,8 @@ const StepThree = () => {
     getFinalPayByBeneficiary,
     calculateTotalToPay,
     setCanContinue,
+    totalToPay,
+    getTotalMultipliers,
   } = createContext;
 
   useEffect(() => {
@@ -40,9 +42,9 @@ const StepThree = () => {
 
   //---------------------------------UI---------------------------------
   return (
-    <>
-      <div>
-        <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-[40px]">
+      <div className="flex flex-col gap-[20px]">
+        <div className="flex justify-between items-baseline">
           <Text type="h2" text="Create beneficiaries" />
           <Text type="h6" text="3/4" />
         </div>
@@ -50,33 +52,31 @@ const StepThree = () => {
           <Text type="" text="Now it's time for the beneficiaries, add their wallets and corresponding multipliers." />
         </div>
       </div>
-      <div className="flex gap-[20px]">
-        <Text type="h6" text={`Base payment: ${basePayment} ${chainSymbol}`} />
-      </div>
-      <div className="flex flex-col gap-[10px] overflow-x-auto pb-5">
-        {/* Header table row */}
-        <div className="flex gap-[20px] text-left w-fit md:w-12/12">
-          <div className="w-[150px]">
-            <Text type="overline" text="name" />
-          </div>
-          <div className="w-[150px]">
-            <Text type="overline" text="address" />
-          </div>
-          {initialBaseMultipliers.map((m: any, i: number) => (
-            <div key={'mh' + i} className="w-[150px]">
-              <Text type="overline" text={m} />
+      <div className="flex flex-col gap-[20px]">
+        <Text type="h4" text={`Beneficiaries`} />
+        <div className="flex flex-col gap-[10px] overflow-x-auto pb-2">
+          {/* Header table row */}
+          <div className="flex gap-[20px] text-left w-fit">
+            <div className="w-[150px]">
+              <Text type="overline" text="name" />
             </div>
-          ))}
-          <div className="w-[150px]">
-            <Text type="overline" text="total multipliers" />
+            <div className="w-[150px]">
+              <Text type="overline" text="address" />
+            </div>
+            {initialBaseMultipliers.map((m: any, i: number) => (
+              <div key={'mh' + i} className="w-[150px]">
+                <Text type="overline" text={m} />
+              </div>
+            ))}
+            <div className="w-[150px]">
+              <Text type="overline" text="total multipliers" />
+            </div>
+            <div className="w-[150px]">
+              <Text type="overline" text="final pay" />
+            </div>
+            <div className="w-[150px]"></div>
           </div>
-          <div className="w-[150px]">
-            <Text type="overline" text="final pay" />
-          </div>
-          <div className="w-[150px]"></div>
-        </div>
-        {/* Beneficiarie row */}
-        <form className="flex flex-col gap-[5px]">
+          {/* Beneficiarie row */}
           {initialBeneficiaries.map((b: any, bIndex: any) => (
             <div key={'b' + bIndex} className="flex gap-[20px] text-left w-fit items-center">
               <div className="w-[150px]">
@@ -104,7 +104,6 @@ const StepThree = () => {
                   <input
                     className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
                     type="number"
-                    value={initialBeneficiaries[bIndex].multipliers[mIndex]?.[1]}
                     name={mIndex}
                     onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, mIndex, e)}
                   />
@@ -121,18 +120,16 @@ const StepThree = () => {
               </div>
             </div>
           ))}
-        </form>
-
-        <hr className="border rounded my-[10px] w-full"></hr>
-        <div className="flex w-full md:w-9/12 justify-between px-1">
-          <Text type="h4" text="Total pay" />
-          <Text type="h4" text={`${calculateTotalToPay()} ${chainSymbol}`} />
         </div>
-        <div className="w-[200px]">
-          <Button type="outlined" text="add other" icon="add" action={() => addInitialBeneficiary()} />
+        <Button type="outlined" text="add other" icon="add" action={() => addInitialBeneficiary()} />
+        <hr className="border rounded w-full"></hr>
+        <div className="flex w-full justify-between">
+          <Text type="h4" text="Total to pay" />
+          <Text type="h4" text={`${parseInt(totalToPay).toFixed(2)} ${chainSymbol}`} />
         </div>
+        <div className="w-[200px]"></div>
       </div>
-    </>
+    </div>
   );
 };
 
