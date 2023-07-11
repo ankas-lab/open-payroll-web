@@ -19,6 +19,8 @@ import { DappContext } from '@/context';
 import { useRemoveBeneficiary } from '@/hooks/useRemoveBeneficiary';
 import { useUpdateBeneficiary } from '@/hooks/useUpdateBeneficiary';
 import Loader from '@/components/generals/Loader';
+import { IoIosCopy } from 'react-icons/io';
+import { AiFillCheckCircle } from 'react-icons/ai';
 
 interface BeneficiarieRowProps {
   indexBeneficiary: number;
@@ -62,6 +64,7 @@ const BeneficiaryRow = ({
   const [newMultipliers, setNewMultipliers] = useState<any | undefined>(undefined);
   const [initialMultipliers, setInitialMultipliers] = useState<any | undefined>(undefined);
   const [newBeneficiaryName, setNewBeneficiaryName] = useState<string | undefined>(undefined);
+  const [copied, setCopied] = useState<boolean>(false);
 
   const handleInputChange = (event: any) => {
     const { id, value } = event.target;
@@ -100,6 +103,15 @@ const BeneficiaryRow = ({
 
   const handleDelete = () => {
     handleRemoveBeneficiary(beneficiaryAddress);
+  };
+  //---------------------------------Copy to Clipboard---------------------------------
+  const copyToClipboard = () => {
+    const textToCopy = beneficiaryAddress;
+    textToCopy !== undefined && navigator.clipboard.writeText(textToCopy.toString());
+    setCopied(true);
+    setTimeout(function () {
+      setCopied(false);
+    }, 5000);
   };
 
   //---------------------------------Initialize functions---------------------------------
@@ -157,8 +169,13 @@ const BeneficiaryRow = ({
         )}
       </td>
       {/* Beneficiary address */}
-      <td className="w-[150px]">
+      <td className="w-[150px] flex items-baseline gap-2 ">
         <p>{addressToShort(beneficiaryAddress)}</p>
+        {copied ? (
+          <AiFillCheckCircle className="w-3.5 h-3.5 text-opgreen cursor-pointer" onClick={() => copyToClipboard()} />
+        ) : (
+          <IoIosCopy className="w-3.5 h-3.5 text-oppurple cursor-pointer" onClick={() => copyToClipboard()} />
+        )}
       </td>
       {/* Multipliers */}
       {multipliersIdList?.map((m: any) => (
