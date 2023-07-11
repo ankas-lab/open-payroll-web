@@ -45,13 +45,9 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
     for (let i = 0; i < mults.length; i++) {
       sum += mults[i].value / 100;
     }
-    //TODO: see if is ok
-    if (sum === 0) {
-      sum = 1;
-    }
     const rawBasePaymentBN = new BN(rawBasePayment);
     const finalPay = rawBasePaymentBN.mul(new BN(sum));
-    const plancked = planckToDecimalFormatted(finalPay, api?.api);
+    const plancked = planckToDecimalFormatted(finalPay, { api: api?.api });
     setFinalPay(plancked);
   };
 

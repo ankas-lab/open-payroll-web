@@ -53,7 +53,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       const dataToNumber = parseInt(data?.replace(/,/g, ''));
       setRawContractBalance(dataToNumber);
       let stringToBN = stringNumberToBN(data);
-      setContractBalance(planckToDecimalFormatted(stringToBN, api?.api, { decimals: 2 }));
+      setContractBalance(planckToDecimalFormatted(stringToBN, { api: api?.api }));
     }
   }, [getContractBalance.result]);
 
@@ -82,7 +82,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     if (getTotalDebts.result && api?.api) {
       let data = stringNumberToBN(pickDecoded(getTotalDebts.result!));
       // TODO: format millions
-      setTotalDebts(planckToDecimalFormatted(data, api.api, { decimals: 2 }));
+      setTotalDebts(planckToDecimalFormatted(data, { api: api?.api }));
     }
   }, [getTotalDebts.result, api?.api]);
 
@@ -92,7 +92,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       setRawBasePayment(data);
 
       // TODO: format millions
-      setBasePayment(planckToDecimalFormatted(data, api.api, { decimals: 2 }));
+      setBasePayment(planckToDecimalFormatted(data, { api: api?.api }));
     }
   }, [getBasePayment.result, api?.api]);
 
