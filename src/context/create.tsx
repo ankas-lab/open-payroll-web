@@ -240,18 +240,17 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   useTxNotifications(D);
 
   const formatConstructorParams = () => {
-    /*
     let beneficiaries: any[][] = [];
 
     initialBeneficiaries.forEach((b: any) => {
       beneficiaries.push([b.address, b.multipliers]);
     });
-*/
+
     setFormatedConstructorParams({
       periodicity: periodicity,
       basePayment: basePayment,
       initialBaseMultipliers: initialBaseMultipliers,
-      initialBeneficiaries: initialBeneficiaries,
+      initialBeneficiaries: beneficiaries,
     });
   };
 
@@ -263,12 +262,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     D.dryRun(
       M.abi,
       'new',
-      { periodicity: periodicity, basePayment: basePayment },
+      { ...formatedConstructorParams },
       {
         salt: S.salt,
         codeHash: C.codeHash,
-        periodicity: periodicity,
-        basePayment: basePayment,
+        periodicity: formatedConstructorParams.periodicity,
+        basePayment: formatedConstructorParams.basePayment,
+        initialBaseMultipliers: formatedConstructorParams.initialBaseMultipliers,
+        initialBeneficiaries: formatedConstructorParams.initialBeneficiaries,
       },
     );
   };
@@ -278,11 +279,16 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     if (!M.abi) return;
 
     const constructor = M.abi?.findConstructor(M.abi.constructors[0].identifier);
-    D.signAndSend(M.abi, constructor?.method, formatedConstructorParams, {
-      salt: S.salt,
-      codeHash: C.codeHash,
-      formatedConstructorParams,
-    });
+    D.signAndSend(
+      M.abi,
+      //constructor?.method,
+      'new',
+      { ...formatedConstructorParams },
+      {
+        salt: S.salt,
+        codeHash: C.codeHash,
+      },
+    );
   };
 
   const setM = useMemo(() => {
@@ -299,6 +305,10 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   useEffect(() => {
     console.log('M.abi', M.abi);
   }, [M.abi]);
+
+  useEffect(() => {
+    console.log('formatedConstructorParams', formatedConstructorParams);
+  }, [formatedConstructorParams]);
 
   useEffect(() => {
     console.log('aaaa');
