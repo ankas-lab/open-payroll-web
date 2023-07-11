@@ -6,6 +6,12 @@ import Text from '../../generals/text';
 import { Podkova } from 'next/font/google';
 import { CreateContext } from '@/context/create';
 import { DappContext } from '@/context';
+import {
+  asContractInstantiatedEvent,
+  formatEventName,
+  isContractInstantiatedEvent,
+  isExtrinsicFailedEvent,
+} from 'useink/utils';
 const podkova = Podkova({ subsets: ['latin'] });
 
 const StepFive = () => {
@@ -40,6 +46,12 @@ const StepFive = () => {
     getFinalPayByBeneficiary,
     calculateTotalToPay,
     totalToPay,
+    check,
+    deploy,
+    C,
+    D,
+    S,
+    M,
   } = createContext;
   const { chainSymbol } = context;
 
@@ -199,7 +211,7 @@ const StepFive = () => {
               </div>
               {/* Beneficiarie row */}
               <div className="flex flex-col gap-[5px] pb-1">
-                {initialBeneficiaries.map((b: any, bIndex: any) => (
+                {initialBeneficiaries.map((b: any, bIndex: number) => (
                   <div key={'b' + bIndex} className="flex gap-[20px] text-left w-fit items-center">
                     <div className="w-[150px]">
                       <input
@@ -221,13 +233,13 @@ const StepFive = () => {
                         onChange={(e) => handleChangeInitialBeneficiary(bIndex, e)}
                       />
                     </div>
-                    {initialBaseMultipliers.map((bm: any, mIndex: any) => (
+                    {initialBaseMultipliers.map((bm: any, mIndex: number) => (
                       <div key={'bm' + mIndex} className="w-[150px]">
                         <input
                           className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
                           type="number"
                           value={initialBeneficiaries[bIndex]?.multipliers[mIndex][1]!}
-                          name={mIndex}
+                          name={'mIndex' + mIndex}
                           onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, mIndex, e)}
                         />
                       </div>
@@ -248,6 +260,80 @@ const StepFive = () => {
               <Text type="h4" text={`${totalToPay} ${chainSymbol}`} />
             </div>
           </div>
+        </div>
+      </div>
+      <div className="w-full flex flex-col">
+        <div className="flex flex-col items-center justify-center">
+          <div className="rounded-lg bg-white/5 p-4 mt-6 w-full">
+            <h3 className="uppercase font-semibold font-xs">Dry Run Results</h3>
+
+            {D.contractAddress && (
+              <hgroup>
+                <h4 className="test-xs">Contract Address</h4>
+                <h3 className="test-sm">{D.contractAddress}</h3>
+              </hgroup>
+            )}
+            <div className="mt-6">
+              <div>M.error: {M.error}</div>
+            </div>
+            {D.gasConsumed && (
+              <div className="mt-6">
+                <h3 className="test-xs uppercase font-semibold">Gas Consumed</h3>
+                <ul className="p-0 list-none">
+                  <li>refTime: {D.gasConsumed.refTime.toString()}</li>
+                  <li>proof size: {D.gasConsumed.proofSize.toString()}</li>
+                </ul>
+              </div>
+            )}
+
+            {D.gasRequired && (
+              <div className="mt-6">
+                <h3 className="test-xs uppercase font-semibold">Gas Required</h3>
+                <ul className="p-0 list-none">
+                  <li>refTime: {D.gasRequired.refTime.toString()}</li>
+                  <li>proof size: {D.gasRequired.proofSize.toString()}</li>
+                </ul>
+              </div>
+            )}
+
+            {D.storageDeposit && (
+              <div className="mt-6">
+                <ul className="p-0 list-none">
+                  <li>Storage Deposit: {D.storageDeposit.toString()}</li>
+                </ul>
+              </div>
+            )}
+
+            {D.error && <p className="text-md text-error-500 text-center mx-auto mt-6">{D.error}</p>}
+
+            {D.events?.length > 0 && (
+              <div className="mt-6 w-full">
+                <h3 className="text-sm">Events</h3>
+                <ul>
+                  {D.events.map((event: any) => (
+                    <li key={event.toString()} className="bg-oplightpurple">
+                      {isContractInstantiatedEvent(event) ? (
+                        <div>
+                          <h4 className="font-bold">{formatEventName(event)}</h4>
+                          <h4>Deployer: {asContractInstantiatedEvent(event)?.deployer}</h4>
+
+                          <h4>Contract Address: {asContractInstantiatedEvent(event)?.contractAddress}</h4>
+                        </div>
+                      ) : (
+                        formatEventName(event)
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+          <button type="button" onClick={() => check()} className="flex items-center w-full ">
+            Check
+          </button>
+          <button type="button" onClick={() => deploy()} className="flex items-center w-full ">
+            Deploy
+          </button>
         </div>
       </div>
     </div>

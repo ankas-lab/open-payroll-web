@@ -33,6 +33,7 @@ const Index = () => {
 
   //---------------------------------Steps
   // steps to advance in the creation of the contract
+  //FIXME
   const [steps, setSteps] = useState(0);
   const step = (step: string) => {
     if (step === 'next') {

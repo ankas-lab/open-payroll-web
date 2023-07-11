@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { BN } from 'bn.js';
 import {
   useCall,
@@ -41,6 +41,12 @@ interface CreateContextData {
   formatConstructorParams: any;
   hasBeneficiaryWithoutAddress: any;
   getTotalMultipliers: any;
+  C: any;
+  M: any;
+  S: any;
+  D: any;
+  check: any;
+  deploy: any;
 }
 
 interface Beneficiary {
@@ -199,24 +205,32 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   useEffect(() => {
     hasBeneficiaryWithoutAddress() ? setCanContinue(false) : setCanContinue(true);
-    console.log(initialBeneficiaries);
     calculateTotalToPay();
   }, [initialBeneficiaries]);
 
   //---------------------------------Create contract---------------------------------
+
+  /*
+    ["periodicity"]: 10,
+    ["basePayment"]: 3,
+    ["initialBaseMultipliers"]: ["Mul1", "Mul2"],
+    ["initialBeneficiaries"]: [["5Dsykc2KUHcziwcTgZkHxyDDTotBJbGNh3BakfZ5PdDGMzfm", [[0, 1]]]],
+  */
+
   const metadataToFile = () => {
-    const blob = new Blob([JSON.stringify(metadata)], {
+    const metadataToString = JSON.stringify(metadata);
+    const blob = new Blob([metadataToString], {
       type: 'application/json',
     });
-    return new File([blob], 'data.json', { type: 'application/json' });
+    const file = new File([blob], 'metadata.json', { type: 'application/json' });
+    return file;
   };
-  //TODO here, create and use useCreate hook
-  const [value, setValue] = useState('0');
-  const [formatedConstructorParams, setFormatedConstructorParams] = useState<Record<string, unknown>>({
-    ['periodicity']: 0,
-    ['basePayment']: 0,
-    ['initialBaseMultipliers']: [],
-    ['initialBeneficiaries']: [],
+
+  const [formatedConstructorParams, setFormatedConstructorParams] = useState<Record<string, any>>({
+    periodicity: 0,
+    basePayment: 0,
+    initialBaseMultipliers: [],
+    initialBeneficiaries: [],
   });
 
   const C = useCodeHash();
@@ -226,50 +240,77 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   useTxNotifications(D);
 
   const formatConstructorParams = () => {
+    /*
     let beneficiaries: any[][] = [];
 
     initialBeneficiaries.forEach((b: any) => {
       beneficiaries.push([b.address, b.multipliers]);
     });
-
+*/
     setFormatedConstructorParams({
-      ['periodicity']: periodicity,
-      ['basePayment']: basePayment,
-      ['initialBaseMultipliers']: initialBaseMultipliers,
-      ['initialBeneficiaries']: beneficiaries,
+      periodicity: periodicity,
+      basePayment: basePayment,
+      initialBaseMultipliers: initialBaseMultipliers,
+      initialBeneficiaries: initialBeneficiaries,
     });
   };
 
-  /*
+  const check = () => {
+    formatConstructorParams();
+    if (!M.abi) return;
+    console.log('check');
+
+    D.dryRun(
+      M.abi,
+      'new',
+      { periodicity: periodicity, basePayment: basePayment },
+      {
+        salt: S.salt,
+        codeHash: C.codeHash,
+        periodicity: periodicity,
+        basePayment: basePayment,
+      },
+    );
+  };
+
+  const deploy = () => {
+    formatConstructorParams();
+    if (!M.abi) return;
+
+    const constructor = M.abi?.findConstructor(M.abi.constructors[0].identifier);
+    D.signAndSend(M.abi, constructor?.method, formatedConstructorParams, {
+      salt: S.salt,
+      codeHash: C.codeHash,
+      formatedConstructorParams,
+    });
+  };
+
+  const setM = useMemo(() => {
+    if (!M.abi) {
+      M.set(metadataToFile());
+    }
+  }, [M.abi]);
+
   useEffect(() => {
-      C.set(metadata.source.hash);
-      let file = metadataToFile();
-      M.set(file);
+    C.set(metadata.source.hash);
+    setM;
   }, []);
 
   useEffect(() => {
-      console.log("aaaa");
-      console.log(M.abi?.constructors);
-      const params = M.abi?.constructors[0].args;
-      if (!params) return;
-      const newParams: Record<string, unknown> = {};
-      params.forEach((param: any) => {
-          console.log(param);
-      });
-      setConstructorParams({
-          ["periodicity"]: 10,
-          ["basePayment"]: 3,
-          ["initialBaseMultipliers"]: ["Mul1", "Mul2"],
-          ["initialBeneficiaries"]: [["5Dsykc2KUHcziwcTgZkHxyDDTotBJbGNh3BakfZ5PdDGMzfm", [[0, 1]]]],
-      });
-  }, [M.abi?.constructors]);
+    console.log('M.abi', M.abi);
+  }, [M.abi]);
 
   useEffect(() => {
-      console.log("constructorParams");
-      console.log(constructorParams);
-      console.log(JSON.stringify(constructorParams));
-  }, [constructorParams]);
-*/
+    console.log('aaaa');
+    console.log(M.abi?.constructors);
+    const params = M.abi?.constructors[0].args;
+    if (!params) return;
+    const newParams: Record<string, unknown> = {};
+    params.forEach((param: any) => {
+      console.log(param);
+    });
+  }, [M.abi?.constructors]);
+
   const contextValue: CreateContextData = {
     canContinue,
     setCanContinue,
@@ -297,6 +338,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     formatConstructorParams,
     hasBeneficiaryWithoutAddress,
     getTotalMultipliers,
+    C,
+    M,
+    S,
+    D,
+    check,
+    deploy,
   };
 
   return <CreateContext.Provider value={contextValue}>{children}</CreateContext.Provider>;
