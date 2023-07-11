@@ -211,7 +211,7 @@ const StepFive = () => {
               </div>
               {/* Beneficiarie row */}
               <div className="flex flex-col gap-[5px] pb-1">
-                {initialBeneficiaries.map((b: any, bIndex: any) => (
+                {initialBeneficiaries.map((b: any, bIndex: number) => (
                   <div key={'b' + bIndex} className="flex gap-[20px] text-left w-fit items-center">
                     <div className="w-[150px]">
                       <input
@@ -233,13 +233,13 @@ const StepFive = () => {
                         onChange={(e) => handleChangeInitialBeneficiary(bIndex, e)}
                       />
                     </div>
-                    {initialBaseMultipliers.map((bm: any, mIndex: any) => (
+                    {initialBaseMultipliers.map((bm: any, mIndex: number) => (
                       <div key={'bm' + mIndex} className="w-[150px]">
                         <input
                           className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
                           type="number"
                           value={initialBeneficiaries[bIndex]?.multipliers[mIndex][1]!}
-                          name={mIndex}
+                          name={'mIndex' + mIndex}
                           onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, mIndex, e)}
                         />
                       </div>
