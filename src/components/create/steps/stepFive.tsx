@@ -6,18 +6,28 @@ import Text from '../../generals/text';
 import { Podkova } from 'next/font/google';
 import { CreateContext } from '@/context/create';
 import { DappContext } from '@/context';
-import {
-  asContractInstantiatedEvent,
-  formatEventName,
-  isContractInstantiatedEvent,
-  isExtrinsicFailedEvent,
-} from 'useink/utils';
+
+import { useWallet, useBalance, useApi } from 'useink';
+import { planckToDecimalFormatted, planckToDecimal } from 'useink/utils';
 const podkova = Podkova({ subsets: ['latin'] });
 
 const StepFive = () => {
   const [periodicityType, setPeriodicityType] = useState<string>('fixed');
   const context = useContext(DappContext);
   const createContext = useContext(CreateContext);
+
+  const api = useApi('rococo-contracts-testnet');
+  const { account } = useWallet();
+  const balance = useBalance(account,'rococo-contracts-testnet') 
+
+  useEffect(() => {
+    if(!balance) return
+    console.log('balance', balance.freeBalance.toString());
+    console.log('balance', planckToDecimalFormatted(balance.freeBalance.toString(),{decimals: 12}));//TODO use chain decimals
+    console.log('balance', planckToDecimal(balance.freeBalance.toString(),{decimals: 12}));//TODO use chain decimals
+  }
+  , [balance])
+
   if (!context) {
     return null;
   }
@@ -38,6 +48,7 @@ const StepFive = () => {
     handleChangeInitialBaseMultiplier,
     handleRemoveInitialBaseMultiplier,
     fundsToTransfer,
+    handleChangeFundsToTransfer,
     initialBeneficiaries,
     addInitialBeneficiary,
     removeInitialBeneficiary,
@@ -188,7 +199,18 @@ const StepFive = () => {
             <Text type="h4" text="Funds" />
             <div className="flex flex-col gap-[20px]">
               <Text type="h6" text={`Minimum funds to pay for one period: ${totalToPay} DOT`} />
-              <Text type="h6" text={`Current funds: ${fundsToTransfer} DOT`} />
+              <Text type="h6" text={`You are going to send: ${fundsToTransfer} DOT`} />
+              <li>Default Chain Balance: {balance ? planckToDecimalFormatted(balance.freeBalance, api?.api) : '--'}</li>
+              <div className="w-[150px]">
+                <input
+                  className="w-full bg-opwhite border-2 rounded-[5px] p-1"
+                  type="number"
+                  value={fundsToTransfer}
+                  placeholder="Funds to transfer"
+                  name="fundsToTransfer"
+                  onChange={(e) => handleChangeFundsToTransfer(e)}
+                />
+              </div>
               <Button type="active" text="add funds" icon="add" action />
             </div>
           </div>

@@ -273,7 +273,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       {
         salt: S.salt,
         codeHash: C.codeHash,
-        value: fundsToTransfer,
+        value: fundsToTransfer,//TODO convert to BN and multiply by 10**decimals
       },
     );
   };
@@ -288,7 +288,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       {
         salt: S.salt,
         codeHash: C.codeHash,
-        value: fundsToTransfer,
+        value: fundsToTransfer, //TODO convert to BN and multiply by 10**decimals
       },
     );
   }
