@@ -35,7 +35,7 @@ To eliminate a multiplier it is necessary that it be paused for a period."
 
       <div className="flex flex-col gap-[40px]">
         <div className="flex flex-col gap-[20px]">
-          <Text type="h5" text="Active" />
+          <Text type="h5" text="My multipliers" />
           <div className="grid grid-cols-1 w-full gap-[10px]">
             {multipliersIdList !== undefined ? (
               multipliersIdList?.map((m: any) => (
@@ -88,6 +88,7 @@ To eliminate a multiplier it is necessary that it be paused for a period."
             action={() => setCreateNewMultuplier(true)}
           />
         </div>
+        {/*
         <div className="flex flex-col gap-[20px]">
           <Text type="h5" text="Paused" />
           <div className="grid grid-cols-1 gap-[10px]">
@@ -100,6 +101,7 @@ To eliminate a multiplier it is necessary that it be paused for a period."
             )}
           </div>
         </div>
+            */}
       </div>
     </div>
   );

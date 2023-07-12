@@ -31,7 +31,7 @@ const MultiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) =>
               {isDeactivating ? (
                 <Button type="disabled outlined" text="" icon="loading" />
               ) : (
-                <Button type="text" text="" icon="pause" action={() => handleDeactivateMultiplier(_multiplier)} />
+                <Button type="text" text="" icon="delete" action={() => handleDeactivateMultiplier(_multiplier)} />
               )}
             </div>
             <p className="my-auto">{baseMultiplier?.name}</p>
