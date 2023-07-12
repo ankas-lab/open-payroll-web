@@ -211,13 +211,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   //---------------------------------Create contract---------------------------------
 
-  /*
-    ["periodicity"]: 10,
-    ["basePayment"]: 3,
-    ["initialBaseMultipliers"]: ["Mul1", "Mul2"],
-    ["initialBeneficiaries"]: [["5Dsykc2KUHcziwcTgZkHxyDDTotBJbGNh3BakfZ5PdDGMzfm", [[0, 1]]]],
-  */
-
   const metadataToFile = () => {
     const metadataToString = JSON.stringify(metadata);
     const blob = new Blob([metadataToString], {
@@ -258,7 +251,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const check = () => {
     formatConstructorParams();
     if (!M.abi) return;
-    console.log('check');
 
     D.dryRun(
       M.abi,
@@ -280,7 +272,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     if (!M.abi) return;
     D.signAndSend(
       M.abi,
-      //constructor?.method,
       'new',
       { ...formatedConstructorParams },
       {
@@ -361,18 +352,20 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     console.log(D);
   }, [D]);
 
-  //---------------------------------Create contract---------------------------------
+  //---------------------------------Clear data---------------------------------
   const clearAllInfo = () => {
     setContractName(undefined);
     setOwnerEmail(undefined);
     setBasePayment(undefined);
     setPeriodicity(undefined);
     setInitialBaseMultipliers(['']);
-    setInitialBeneficiaries({
-      name: '',
-      address: '',
-      multipliers: [],
-    });
+    setInitialBeneficiaries([
+      {
+        name: '',
+        address: '',
+        multipliers: [],
+      },
+    ]);
     setFormatedConstructorParams({
       periodicity: 0,
       basePayment: 0,

@@ -110,7 +110,7 @@ const StepFive = () => {
                       setBasePayment(e.target.value);
                     }}
                   />
-                  <p className="mx-5">DOT</p>
+                  <p className="mx-5">{chainSymbol}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-[10px] w-full">
