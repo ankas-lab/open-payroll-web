@@ -215,7 +215,7 @@ const StepFive = () => {
                 </div>
                 <div className="w-[150px]"></div>
               </div>
-              {/* Beneficiarie row 
+              {/* Beneficiarie row */}
               <div className="flex flex-col gap-[5px] pb-1">
                 {initialBeneficiaries.map((b: any, bIndex: number) => (
                   <div key={'b' + bIndex} className="flex gap-[20px] text-left w-fit items-center">
@@ -239,18 +239,20 @@ const StepFive = () => {
                         onChange={(e) => handleChangeInitialBeneficiary(bIndex, e)}
                       />
                     </div>
-                    {initialBaseMultipliers.map(
-                      (bm: any, mIndex: number) =>
-                          <div key={'bm' + mIndex} className="w-[150px]">
-                            <input
-                              className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
-                              type="number"
-                              value={initialBeneficiaries[bIndex]?.multipliers[mIndex][1]!}
-                              name={'mIndex' + mIndex}
-                              onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, mIndex, e)}
-                            />
-                          </div>
-                    )}
+                    {initialBaseMultipliers.map((bm: any, mIndex: number) => (
+                      <div key={'bm' + mIndex} className="w-[150px]">
+                        <input
+                          className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
+                          type="number"
+                          value={
+                            initialBeneficiaries[bIndex]?.multipliers &&
+                            initialBeneficiaries[bIndex]?.multipliers[mIndex]?.[1]
+                          }
+                          name={'mIndex' + mIndex}
+                          onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, mIndex, e)}
+                        />
+                      </div>
+                    ))}
                     <div className="w-[150px]">
                       <p>{getTotalMultiplierByBeneficiary(bIndex)}</p>
                     </div>
@@ -260,7 +262,6 @@ const StepFive = () => {
                   </div>
                 ))}
               </div>
-              */}
             </div>
             <hr className="border rounded my-[10px] w-full"></hr>
             <div className="flex justify-between">

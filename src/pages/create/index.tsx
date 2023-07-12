@@ -18,6 +18,7 @@ import Result from '../../components/create/results';
 import { useWallet } from 'useink';
 import WalletManager from '@/components/walletManager';
 import { useCreate } from '@/hooks/useCreate';
+
 import { CreateContext } from '@/context/create';
 
 //---------------------------------Interfaces---------------------------------
@@ -29,11 +30,9 @@ const Index = () => {
     return null;
   }
 
-  const { canContinue, formatConstructorParams } = createContext;
+  const { canContinue, createContract } = createContext;
 
   //---------------------------------Steps
-  // steps to advance in the creation of the contract
-  //FIXME
   const [steps, setSteps] = useState(0);
   const step = (step: string) => {
     if (step === 'next') {
@@ -81,7 +80,7 @@ const Index = () => {
           )}
           {steps === 4 && (
             <div>
-              <Button type="active" text="done" action={() => formatConstructorParams()} />
+              <Button type="active" text="done" action={() => createContract()} />
             </div>
           )}
         </div>

@@ -47,6 +47,7 @@ interface CreateContextData {
   D: any;
   check: any;
   deploy: any;
+  createContract: any;
 }
 
 interface Beneficiary {
@@ -274,11 +275,9 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     );
   };
 
-  const deploy = () => {
+  function deploy() {
     formatConstructorParams();
     if (!M.abi) return;
-
-    const constructor = M.abi?.findConstructor(M.abi.constructors[0].identifier);
     D.signAndSend(
       M.abi,
       //constructor?.method,
@@ -289,6 +288,11 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         codeHash: C.codeHash,
       },
     );
+  }
+
+  const createContract = () => {
+    check();
+    deploy();
   };
 
   const setM = useMemo(() => {
@@ -354,6 +358,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     D,
     check,
     deploy,
+    createContract,
   };
 
   return <CreateContext.Provider value={contextValue}>{children}</CreateContext.Provider>;

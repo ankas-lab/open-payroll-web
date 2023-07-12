@@ -106,6 +106,9 @@ export default function Contract() {
                     <Text type="overline" text={`${contractAddress}`} />
                     <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
                   </div>
+                  {contractAddress && (
+                    <Text type="overline" text={`${findContractInLocalStorage(contractAddress).email}`} />
+                  )}
                 </div>
                 <div className="flex gap-[20px] ml-auto md:ml-0">
                   <div>
