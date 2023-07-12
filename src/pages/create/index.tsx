@@ -14,12 +14,15 @@ import StepThree from '../../components/create/steps/stepThree';
 import StepFour from '../../components/create/steps/stepFour';
 import StepFive from '../../components/create/steps/stepFive';
 import Result from '../../components/create/results';
+import Text from '@/components/generals/text';
 
 import { useWallet } from 'useink';
 import WalletManager from '@/components/walletManager';
 import { useCreate } from '@/hooks/useCreate';
 
 import { CreateContext } from '@/context/create';
+import StepSix from '@/components/create/steps/stepSix';
+import Loader from '@/components/generals/Loader';
 
 //---------------------------------Interfaces---------------------------------
 
@@ -30,7 +33,7 @@ const Index = () => {
     return null;
   }
 
-  const { canContinue, createContract } = createContext;
+  const { canContinue, check, deploy, D, clearAllInfo } = createContext;
 
   //---------------------------------Steps
   const [steps, setSteps] = useState(0);
@@ -55,38 +58,88 @@ const Index = () => {
         {steps === 0 && <StepOne />}
         {steps === 1 && <StepTwo />}
         {steps === 2 && <StepThree />}
-        {steps === 3 && <StepFour />}
-        {steps === 4 && <StepFive />}
+        {steps === 3 && <StepFive />}
+        {steps === 4 && <StepSix />}
 
-        <div className="flex justify-between">
+        <div className="flex flex-col gap-2 md:flex-row md:gap-0 md:justify-between">
           {steps === 0 ? (
             <Link href={'/'}>
               <Button type="outlined" text="cancel" />
             </Link>
+          ) : steps === 4 && D.status === 'Finalized' && D.wasDeployed ? (
+            <div>
+              {/* TODO clear data */}
+              <Button
+                type="outlined"
+                text="create other contract"
+                action={() => {
+                  setSteps(0), clearAllInfo();
+                }}
+              />
+            </div>
+          ) : steps === 4 && D.status === 'Finalized' && !D.wasDeployed ? (
+            <Link href={'/'}>
+              <Button type="outlined" text="go home" action={() => setSteps(4)} />
+              {/*TODO  Cant go back while deploy */}
+            </Link>
+          ) : steps === 4 && D.status !== 'Finalized' && D.status !== 'None' && !D.wasDeployed ? (
+            <div>
+              <Button type="disabled" text="back" action={() => setSteps(steps - 1)} />
+            </div>
           ) : (
             <div>
               <Button type="outlined" text="back" action={() => setSteps(steps - 1)} />
             </div>
           )}
-          {canContinue && steps < 4 && (
+
+          {canContinue && steps < 3 && (
             <div>
               <Button type="active" text="next" action={() => setSteps(steps + 1)} />
             </div>
           )}
-          {!canContinue && steps < 4 && (
+
+          {!canContinue && steps < 3 && (
             <div>
               <Button type="disabled" text="next" />
             </div>
           )}
-          {steps === 4 && (
+
+          {steps === 3 && (
             <div>
-              <Button type="active" text="done" action={() => createContract()} />
+              <Button
+                type="active"
+                text="confirm"
+                action={() => {
+                  check(), setSteps(steps + 1);
+                }}
+              />
+            </div>
+          )}
+
+          {steps === 4 && !D.wasDeployed && D.status !== 'Finalized' && (
+            <div>
+              <Button
+                type={D.status !== 'Finalized' && D.status !== 'None' ? 'disabled' : 'active'}
+                text={D.status !== 'Finalized' && D.status !== 'None' ? '' : 'deploy contract'}
+                icon={D.status !== 'Finalized' && D.status !== 'None' ? 'loading' : undefined}
+                action={() => deploy()}
+              />
+            </div>
+          )}
+
+          {steps === 4 && D.status === 'Finalized' && D.wasDeployed && (
+            <Link href={'/'}>
+              <Button type="active" text="go home" />
+            </Link>
+          )}
+
+          {steps === 4 && D.status === 'Finalized' && !D.wasDeployed && (
+            <div>
+              <Button type="active" text="try again" action={() => setSteps(3)} />
             </div>
           )}
         </div>
       </div>
-
-      {/*result !== 'creating' && <Result result={result} handleEmptyAll={handleEmptyAll} />*/}
     </main>
   );
 };

@@ -11,7 +11,7 @@ import {
   useWallet,
 } from 'useink';
 import metadata from '@/contract/open_payroll.json';
-import { pickDecoded } from 'useink/utils';
+import { pickDecoded, stringNumberToBN } from 'useink/utils';
 import { useTxNotifications } from 'useink/notifications';
 
 interface CreateContextData {
@@ -47,7 +47,7 @@ interface CreateContextData {
   D: any;
   check: any;
   deploy: any;
-  createContract: any;
+  clearAllInfo: any;
 }
 
 interface Beneficiary {
@@ -249,7 +249,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
     setFormatedConstructorParams({
       periodicity: periodicity,
-      basePayment: basePayment,
+      basePayment: stringNumberToBN(basePayment!),
       initialBaseMultipliers: initialBaseMultipliers,
       initialBeneficiaries: beneficiaries,
     });
@@ -290,10 +290,61 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     );
   }
 
-  const createContract = () => {
-    check();
-    deploy();
+  const saveNewContractInLocalStorage = (contractAddress: string) => {
+    const storedContracts = localStorage.getItem('contracts');
+    let contracts = [];
+    let beneficiaries: { name: any; address: any }[] = [];
+
+    if (storedContracts) {
+      contracts = JSON.parse(storedContracts);
+
+      const existingContractIndex = contracts.findIndex((contract: any) => contract.address === contractAddress);
+
+      if (existingContractIndex !== -1) {
+        initialBeneficiaries.forEach((b: any) => {
+          beneficiaries.push({ name: b.name!, address: b.address! });
+        });
+
+        contracts[existingContractIndex] = {
+          name: contractName,
+          address: contractAddress,
+          owner: account.address,
+          email: ownerEmail,
+          beneficiaries: beneficiaries,
+        };
+      } else {
+        initialBeneficiaries.forEach((b: any) => {
+          beneficiaries.push({ name: b.name!, address: b.address! });
+        });
+
+        contracts.push({
+          name: contractName,
+          address: contractAddress,
+          owner: account.address,
+          email: ownerEmail,
+          beneficiaries: beneficiaries,
+        });
+      }
+    } else {
+      initialBeneficiaries.forEach((b: any) => {
+        beneficiaries.push({ name: b.name!, address: b.address! });
+      });
+
+      contracts.push({
+        name: contractName,
+        address: contractAddress,
+        owner: account.address,
+        email: ownerEmail,
+        beneficiaries: beneficiaries,
+      });
+    }
+
+    localStorage.setItem('contracts', JSON.stringify(contracts));
   };
+
+  useMemo(() => {
+    D.wasDeployed && D.contractAddress !== undefined && saveNewContractInLocalStorage(D.contractAddress);
+  }, [D.wasDeployed]);
 
   const setM = useMemo(() => {
     if (!M.abi) {
@@ -307,23 +358,28 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   }, []);
 
   useEffect(() => {
-    console.log('M.abi', M.abi);
-  }, [M.abi]);
+    console.log(D);
+  }, [D]);
 
-  useEffect(() => {
-    console.log('formatedConstructorParams', formatedConstructorParams);
-  }, [formatedConstructorParams]);
-
-  useEffect(() => {
-    console.log('aaaa');
-    console.log(M.abi?.constructors);
-    const params = M.abi?.constructors[0].args;
-    if (!params) return;
-    const newParams: Record<string, unknown> = {};
-    params.forEach((param: any) => {
-      console.log(param);
+  //---------------------------------Create contract---------------------------------
+  const clearAllInfo = () => {
+    setContractName(undefined);
+    setOwnerEmail(undefined);
+    setBasePayment(undefined);
+    setPeriodicity(undefined);
+    setInitialBaseMultipliers(['']);
+    setInitialBeneficiaries({
+      name: '',
+      address: '',
+      multipliers: [],
     });
-  }, [M.abi?.constructors]);
+    setFormatedConstructorParams({
+      periodicity: 0,
+      basePayment: 0,
+      initialBaseMultipliers: [],
+      initialBeneficiaries: [],
+    });
+  };
 
   const contextValue: CreateContextData = {
     canContinue,
@@ -358,7 +414,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     D,
     check,
     deploy,
-    createContract,
+    clearAllInfo,
   };
 
   return <CreateContext.Provider value={contextValue}>{children}</CreateContext.Provider>;
