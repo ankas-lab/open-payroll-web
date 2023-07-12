@@ -1,6 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useCall, useApi, ChainContract, useCallSubscription, useBlockHeader } from 'useink';
-import { pickDecoded, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
+import {
+  useCall,
+  useApi,
+  ChainContract,
+  useCallSubscription,
+  useBlockHeader,
+  useChainDecimals,
+  useTokenSymbol,
+} from 'useink';
+import {
+  decimalToPlanck,
+  pickDecoded,
+  planckToDecimal,
+  planckToDecimalFormatted,
+  stringNumberToBN,
+} from 'useink/utils';
 
 interface BaseMultipliers {
   Id: string;
@@ -9,12 +23,16 @@ interface BaseMultipliers {
 
 export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const blockHeader = useBlockHeader();
+  const decimals = useChainDecimals('rococo-contracts-testnet');
+  const token = useTokenSymbol('rococo-contracts-testnet');
   // TODO: ChainContract<ContractPromise> | undefined
 
-  const [contractBalance, setContractBalance] = useState<undefined | string>(undefined);
+  const [contractBalance, setContractBalance] = useState<undefined | string | any>(undefined);
   const [rawContractBalance, setRawContractBalance] = useState<undefined | number>(undefined);
   const [periodicity, setPeriodicity] = useState<undefined | number | string>(undefined);
   const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
+  const [rawTotalDebts, setRawTotalDebts] = useState<undefined | string>(undefined);
+
   const [nextBlockPeriod, setNextBlockPeriod] = useState<undefined | string>(undefined);
   const [contractState, setContractState] = useState<undefined | boolean>(undefined);
   const [amountBeneficiaries, setAmountBeneficiaries] = useState<undefined | number>(undefined);
@@ -52,8 +70,9 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       const data = pickDecoded(getContractBalance.result!);
       const dataToNumber = parseInt(data?.replace(/,/g, ''));
       setRawContractBalance(dataToNumber);
-      let stringToBN = stringNumberToBN(data);
-      setContractBalance(planckToDecimalFormatted(stringToBN, { api: api?.api }));
+      setContractBalance(
+        planckToDecimal(dataToNumber, { api: api?.api, decimals: decimals })?.toFixed(2) + ' ' + token!,
+      );
     }
   }, [getContractBalance.result]);
 
@@ -92,7 +111,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       setRawBasePayment(data);
 
       // TODO: format millions
-      setBasePayment(planckToDecimalFormatted(data, { api: api?.api }));
+      setBasePayment(planckToDecimal(data, { api: api?.api, decimals: decimals })?.toFixed(2) + ' ' + token!);
     }
   }, [getBasePayment.result, api?.api]);
 

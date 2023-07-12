@@ -18,7 +18,6 @@ import Text from '@/components/generals/text';
 
 import { useWallet } from 'useink';
 import WalletManager from '@/components/walletManager';
-import { useCreate } from '@/hooks/useCreate';
 
 import { CreateContext } from '@/context/create';
 import StepSix from '@/components/create/steps/stepSix';
@@ -66,9 +65,8 @@ const Index = () => {
             <Link href={'/'}>
               <Button type="outlined" text="cancel" />
             </Link>
-          ) : steps === 4 && D.status === 'Finalized' && D.wasDeployed ? (
+          ) : steps === 4 && D.wasDeployed ? (
             <div>
-              {/* TODO clear data */}
               <Button
                 type="outlined"
                 text="create other contract"
@@ -82,7 +80,7 @@ const Index = () => {
               <Button type="outlined" text="go home" action={() => setSteps(4)} />
               {/*TODO  Cant go back while deploy */}
             </Link>
-          ) : steps === 4 && D.status !== 'Finalized' && D.status !== 'None' && !D.wasDeployed ? (
+          ) : steps === 4 && D.status !== 'Finalized' && D.status !== 'None' ? (
             <div>
               <Button type="disabled" text="back" action={() => setSteps(steps - 1)} />
             </div>
@@ -127,7 +125,7 @@ const Index = () => {
             </div>
           )}
 
-          {steps === 4 && D.status === 'Finalized' && D.wasDeployed && (
+          {steps === 4 && D.wasDeployed && (
             <Link href={'/'}>
               <Button type="active" text="go home" />
             </Link>

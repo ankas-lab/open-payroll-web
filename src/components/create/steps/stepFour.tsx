@@ -28,7 +28,6 @@ const StepFour = () => {
           />
         </div>
       </div>
-      {/* TODO: add contract clipboard */}
       <div className="flex gap-[10px]">
         <Text type="h4" text="My contract" />
         <div>

@@ -1,8 +1,10 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { BN } from 'bn.js';
 import {
+  useApi,
   useCall,
   useCallSubscription,
+  useChainDecimals,
   useCodeHash,
   useContract,
   useDeployer,
@@ -61,6 +63,8 @@ export const CreateContext = createContext<CreateContextData | null>(null);
 export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   //---------------------------------Generals---------------------------------
   const { account } = useWallet();
+  const api = useApi('rococo-contracts-testnet');
+  const decimals = useChainDecimals('rococo-contracts-testnet');
   const [canContinue, setCanContinue] = useState<boolean>(false);
 
   //---------------------------------Contract base---------------------------------
@@ -242,7 +246,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
     setFormatedConstructorParams({
       periodicity: periodicity,
-      basePayment: stringNumberToBN(basePayment!),
+      basePayment: parseInt(basePayment!) * 10 ** decimals!,
       initialBaseMultipliers: initialBaseMultipliers,
       initialBeneficiaries: beneficiaries,
     });
@@ -372,6 +376,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       initialBaseMultipliers: [],
       initialBeneficiaries: [],
     });
+    D.resetState;
   };
 
   const contextValue: CreateContextData = {

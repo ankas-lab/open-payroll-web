@@ -125,11 +125,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                   />
                 </div>
                 {/* TODO Link to permaClaim */}
-                {/*
-                  <Link href={''}>
-                    <Button type="outlined" text="claim for them" />
-                  </Link>
-                  */}
               </div>
             </div>
           )}
