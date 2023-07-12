@@ -31,6 +31,8 @@ interface CreateContextData {
   addInitialBaseMultiplier: any;
   handleChangeInitialBaseMultiplier: any;
   handleRemoveInitialBaseMultiplier: any;
+  fundsToTransfer: any;
+  handleChangeFundsToTransfer: any;
   initialBeneficiaries: any;
   addInitialBeneficiary: any;
   removeInitialBeneficiary: any;
@@ -213,6 +215,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     calculateTotalToPay();
   }, [initialBeneficiaries]);
 
+  //---------------------------------Fund to Transfer---------------------------------
+  const [fundsToTransfer, setFundsToTransfer] = useState<number>(0);
+
+  const handleChangeFundsToTransfer = (e: any) => {
+    const { value } = e.target;
+    setFundsToTransfer(value);
+  };
+
   //---------------------------------Create contract---------------------------------
 
   const metadataToFile = () => {
@@ -263,10 +273,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       {
         salt: S.salt,
         codeHash: C.codeHash,
-        periodicity: formatedConstructorParams.periodicity,
-        basePayment: formatedConstructorParams.basePayment,
-        initialBaseMultipliers: formatedConstructorParams.initialBaseMultipliers,
-        initialBeneficiaries: formatedConstructorParams.initialBeneficiaries,
+        value: fundsToTransfer,
       },
     );
   };
@@ -281,6 +288,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       {
         salt: S.salt,
         codeHash: C.codeHash,
+        value: fundsToTransfer,
       },
     );
   }
@@ -394,6 +402,8 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     addInitialBaseMultiplier,
     handleChangeInitialBaseMultiplier,
     handleRemoveInitialBaseMultiplier,
+    fundsToTransfer,
+    handleChangeFundsToTransfer,
     initialBeneficiaries,
     addInitialBeneficiary,
     removeInitialBeneficiary,

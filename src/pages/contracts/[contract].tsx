@@ -101,7 +101,7 @@ export default function Contract() {
             <div className="flex flex-col gap-[40px]">
               <div className="flex flex-col-reverse gap-[40px] md:flex-row md:justify-between">
                 <div className="flex flex-col">
-                  {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress).name}`} />}
+                  {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress)?.name}`} />}
                   <div className="flex items-center">
                     <Text type="overline" text={`${contractAddress}`} />
                     <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />

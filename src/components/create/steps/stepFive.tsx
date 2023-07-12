@@ -37,6 +37,7 @@ const StepFive = () => {
     initialBaseMultipliers,
     handleChangeInitialBaseMultiplier,
     handleRemoveInitialBaseMultiplier,
+    fundsToTransfer,
     initialBeneficiaries,
     addInitialBeneficiary,
     removeInitialBeneficiary,
@@ -182,6 +183,15 @@ const StepFive = () => {
             ))}
           </div>
 
+          {/* ---------------------------------Funds--------------------------------- */}
+          <div className="flex flex-col gap-[20px] md:border-l-2 md:border-oppurple md:pl-[40px] md:order-2">
+            <Text type="h4" text="Funds" />
+            <div className="flex flex-col gap-[20px]">
+              <Text type="h6" text={`Minimum funds to pay for one period: ${totalToPay} DOT`} />
+              <Text type="h6" text={`Current funds: ${fundsToTransfer} DOT`} />
+              <Button type="active" text="add funds" icon="add" action />
+            </div>
+          </div>
           {/* ---------------------------------Beneficiaries--------------------------------- */}
           <div className="flex flex-col gap-[20px] md:order-4 col-span-2">
             <Text type="h4" text="Beneficiaries" />
