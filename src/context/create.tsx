@@ -16,6 +16,7 @@ import {
 import metadata from '@/contract/open_payroll.json';
 import { pickDecoded, planckToDecimal, stringNumberToBN } from 'useink/utils';
 import { useTxNotifications } from 'useink/notifications';
+import toast from 'react-hot-toast';
 
 interface CreateContextData {
   canContinue: any;
@@ -189,7 +190,29 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   };
 
   const hasBeneficiaryWithoutAddress = () => {
-    return initialBeneficiaries.some((beneficiary: any) => beneficiary.address === '');
+    const addresses = new Set();
+    const minLength = 48;
+
+    for (let i = 0; i < initialBeneficiaries.length; i++) {
+      const beneficiary = initialBeneficiaries[i];
+
+      if (beneficiary.address.trim() === '') {
+        return false;
+      }
+
+      if (beneficiary.address.length < minLength) {
+        return false;
+      }
+
+      if (addresses.has(beneficiary.address)) {
+        toast('❗ There cannot be two beneficiaries with the same addres ');
+        return false;
+      }
+
+      addresses.add(beneficiary.address);
+    }
+
+    return true;
   };
 
   const getTotalMultipliers = () => {
@@ -208,7 +231,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   };
 
   useEffect(() => {
-    hasBeneficiaryWithoutAddress() ? setCanContinue(false) : setCanContinue(true);
+    hasBeneficiaryWithoutAddress() ? setCanContinue(true) : setCanContinue(false);
   }, [initialBeneficiaries]);
 
   useEffect(() => {
