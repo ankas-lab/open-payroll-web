@@ -6,7 +6,6 @@ import { InkConfig } from 'useink';
 import { RococoContractsTestnet } from 'useink/chains';
 import { NotificationsProvider } from 'useink/notifications';
 import { DappContextProvider } from '@/context';
-import 'react-toastify/dist/ReactToastify.css';
 import { CreateContextProvider } from '@/context/create';
 
 const UseInkProvider: React.ComponentType<React.PropsWithChildren<InkConfig>> = dynamic(

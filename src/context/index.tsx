@@ -74,15 +74,6 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
 
     if (storedContracts) {
       contracts = JSON.parse(storedContracts);
-    } else {
-      contracts.push({
-        name: 'Best contract ever',
-        address: '5H3QaazsFy4y9sexX9d3HwFgKjsAkQydirVWj54YWDm7mxjF',
-        owner: '5H3ik1BKrBMcPXZQYnNHsZ12qUntsDfEVbfi5PFHEUofNg25',
-        email: 'aa@gmail.com',
-        beneficiaries: [{ name: 'Ben', address: '5G1WsvjyWoaVZzJKnCpn3iK3sScmXrtuTdU3VSVhZAabREot' }],
-      });
-      localStorage.setItem('contracts', JSON.stringify(contracts));
     }
 
     setContracts(contracts);
