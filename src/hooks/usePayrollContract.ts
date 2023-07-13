@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import {
   useCall,
@@ -78,14 +79,14 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
 
   useEffect(() => {
     if (getPeriodicity.result?.ok) {
-      const periodicityToNumber = Number(pickDecoded(getPeriodicity.result!));
-      //setPeriodicity(periodicityToNumber);
+      const data = pickDecoded(getPeriodicity.result)!;
+      const periodicityToNumber = parseInt(data.replace(/,/g, ''));
 
-      periodicityToNumber > 7200 && setPeriodicity(`${(periodicityToNumber / 7200).toFixed(0)} days`);
+      periodicityToNumber >= 7200 && setPeriodicity(`${(periodicityToNumber / 7200).toFixed(0)} days`);
       periodicityToNumber < 7200 &&
-        periodicityToNumber > 300 &&
+        periodicityToNumber >= 300 &&
         setPeriodicity(`${(periodicityToNumber / 300).toFixed(0)} hours`);
-      periodicityToNumber < 300 && setPeriodicity(`${(periodicityToNumber / 5).toFixed(0)} minutes`);
+      periodicityToNumber <= 300 && setPeriodicity(`${(periodicityToNumber / 5).toFixed(0)} minutes`);
     }
   }, [getPeriodicity.result]);
 
@@ -101,7 +102,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     if (getTotalDebts.result && api?.api) {
       let data = stringNumberToBN(pickDecoded(getTotalDebts.result!));
       // TODO: format millions
-      setTotalDebts(planckToDecimalFormatted(data, { api: api?.api }));
+      setTotalDebts(planckToDecimal(data, { api: api?.api, decimals: decimals })?.toFixed(2) + ' ' + token!);
     }
   }, [getTotalDebts.result, api?.api]);
 

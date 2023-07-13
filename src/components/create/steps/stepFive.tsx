@@ -1,21 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useContext } from 'react';
 
 import Button from '../../generals/button';
 import Text from '../../generals/text';
 
-import { Podkova } from 'next/font/google';
 import { CreateContext } from '@/context/create';
 import { DappContext } from '@/context';
-import {
-  asContractInstantiatedEvent,
-  formatEventName,
-  isContractInstantiatedEvent,
-  isExtrinsicFailedEvent,
-} from 'useink/utils';
-const podkova = Podkova({ subsets: ['latin'] });
+
+import { useApi, useBalance, useWallet } from 'useink';
+import { planckToDecimal } from 'useink/utils';
+import toast from 'react-hot-toast';
 
 const StepFive = () => {
-  const [periodicityType, setPeriodicityType] = useState<string>('fixed');
+  const { account } = useWallet();
+  const balance = useBalance(account);
+  const api = useApi('rococo-contracts-testnet');
+  const [periodicityType, setPeriodicityType] = useState<'fixed' | 'custom'>('fixed');
   const context = useContext(DappContext);
   const createContext = useContext(CreateContext);
   if (!context) {
@@ -38,22 +39,30 @@ const StepFive = () => {
     handleChangeInitialBaseMultiplier,
     handleRemoveInitialBaseMultiplier,
     initialBeneficiaries,
-    addInitialBeneficiary,
-    removeInitialBeneficiary,
     handleChangeInitialBeneficiary,
     handleChangeMultiplierInitialBeneficiary,
     getTotalMultiplierByBeneficiary,
     getFinalPayByBeneficiary,
-    calculateTotalToPay,
+    handleChangeFundsToTransfer,
+    rawOwnerBalance,
+    rawFundsToTransfer,
+    setCanContinue,
+    fundsToTransfer,
     totalToPay,
-    check,
-    deploy,
-    C,
-    D,
-    S,
-    M,
   } = createContext;
   const { chainSymbol } = context;
+
+  useEffect(() => {
+    rawFundsToTransfer > parseInt(rawOwnerBalance) ? setCanContinue(false) : setCanContinue(true);
+    rawFundsToTransfer > parseInt(rawOwnerBalance) &&
+      toast('❌ you cannot send more funds to the contract than the amount in your wallet ');
+  }, [rawOwnerBalance, rawFundsToTransfer]);
+
+  useEffect(() => {
+    if (periodicity !== '7200' || periodicity !== '36000' || periodicity !== '216000') {
+      setPeriodicityType('custom');
+    }
+  }, [periodicity]);
 
   //---------------------------------UI---------------------------------
   return (
@@ -181,6 +190,42 @@ const StepFive = () => {
               </div>
             ))}
           </div>
+          {/* ---------------------------------Funds--------------------------------- */}
+          <div className="flex flex-col gap-[20px] md:order-2 md:border-l-2 md:border-oppurple md:pl-[40px]">
+            <Text type="h4" text="Add funds" />
+            <div className="flex flex-col gap-[10px]">
+              <Text type="h6" text="Total required" />
+              <Text type="" text={`${totalToPay + ' ' + chainSymbol} `} />
+            </div>
+            <div className="flex flex-col gap-[10px]">
+              <Text type="h6" text={`Total funds in ${account.name} `} />
+              <Text
+                type=""
+                text={`${
+                  balance && planckToDecimal(balance.freeBalance, { api: api?.api })?.toFixed(2) + ' ' + chainSymbol
+                } `}
+              />
+            </div>
+            <div className="flex flex-col gap-[10px]">
+              <Text type="h6" text="To add" />
+              <div className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 flex">
+                <input
+                  type="number"
+                  name="fundsToTransfer"
+                  min={0}
+                  max={parseInt(rawOwnerBalance).toFixed(2)}
+                  step={0.01}
+                  value={fundsToTransfer}
+                  id="fundsToTransfer"
+                  className="bg-opwhite without-ring w-full"
+                  onChange={(e) => {
+                    handleChangeFundsToTransfer(e);
+                  }}
+                />
+                <p className="mx-5">{chainSymbol}</p>
+              </div>
+            </div>
+          </div>
 
           {/* ---------------------------------Beneficiaries--------------------------------- */}
           <div className="flex flex-col gap-[20px] md:order-4 col-span-2">
@@ -238,7 +283,7 @@ const StepFive = () => {
                           type="number"
                           value={
                             initialBeneficiaries[bIndex]?.multipliers &&
-                            initialBeneficiaries[bIndex]?.multipliers[mIndex]?.[1]
+                            initialBeneficiaries[bIndex]?.multipliers[mIndex]?.[1] / 100
                           }
                           name={'mIndex' + mIndex}
                           onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, mIndex, e)}

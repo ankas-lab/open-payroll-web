@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useContext, useEffect } from 'react';
 import Link from 'next/link.js';
 
@@ -23,7 +24,11 @@ export default function Contracts() {
     return null;
   }
 
-  const { ownerContracts } = context;
+  const { ownerContracts, getStoredContracts } = context;
+
+  useEffect(() => {
+    getStoredContracts();
+  }, []);
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -72,10 +77,10 @@ export default function Contracts() {
                   <th className="w-[80px]">
                     <Text type="overline" text="periodicity" />
                   </th>
-                  <th className="w-[80px]">
+                  <th className="w-[100px]">
                     <Text type="overline" text="funds in contract" />
                   </th>
-                  <th className="w-[80px]">
+                  <th className="w-[100px]">
                     <Text type="overline" text="funds needed" />
                   </th>
                   <th className="w-[80px]">

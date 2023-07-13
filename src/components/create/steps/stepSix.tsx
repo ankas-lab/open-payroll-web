@@ -1,24 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext } from 'react';
 
-import Button from '../../generals/button';
 import Text from '../../generals/text';
 
-import { Podkova } from 'next/font/google';
 import { CreateContext } from '@/context/create';
 import { DappContext } from '@/context';
-import {
-  asContractInstantiatedEvent,
-  formatEventName,
-  isContractInstantiatedEvent,
-  isExtrinsicFailedEvent,
-} from 'useink/utils';
-import Loader from '@/components/generals/Loader';
+
 import { IoIosCopy } from 'react-icons/io';
-const podkova = Podkova({ subsets: ['latin'] });
+import Loader from '@/components/generals/Loader';
 
 const StepSix = () => {
-  const [periodicityType, setPeriodicityType] = useState<string>('fixed');
   const context = useContext(DappContext);
   const createContext = useContext(CreateContext);
   if (!context) {
@@ -28,35 +19,7 @@ const StepSix = () => {
     return null;
   }
 
-  const {
-    contractName,
-    setContractName,
-    ownerEmail,
-    setOwnerEmail,
-    basePayment,
-    setBasePayment,
-    setPeriodicity,
-    periodicity,
-    initialBaseMultipliers,
-    handleChangeInitialBaseMultiplier,
-    handleRemoveInitialBaseMultiplier,
-    initialBeneficiaries,
-    addInitialBeneficiary,
-    removeInitialBeneficiary,
-    handleChangeInitialBeneficiary,
-    handleChangeMultiplierInitialBeneficiary,
-    getTotalMultiplierByBeneficiary,
-    getFinalPayByBeneficiary,
-    calculateTotalToPay,
-    totalToPay,
-    check,
-    deploy,
-    C,
-    D,
-    S,
-    M,
-  } = createContext;
-  const { chainSymbol } = context;
+  const { D } = createContext;
 
   const copyToClipboard = () => {
     const textToCopy = D.contractAddress;
@@ -88,6 +51,11 @@ const StepSix = () => {
             <Text type="" text="All is ready to deploy your contract!" />
           </div>
         )}
+        {!D.wasDeployed && D.status !== 'Finalized' && D.status !== 'None' && (
+          <div className="">
+            <Loader />
+          </div>
+        )}
         {D.status === 'Finalized' && !D.wasDeployed && (
           <div className="flex justify-between items-baseline">
             <Text
@@ -104,19 +72,17 @@ const StepSix = () => {
               <Text type="" text={`${D.contractAddress}`} />
               <IoIosCopy onClick={() => copyToClipboard()} className="w-4 h-4 text-oppurple cursor-pointer" />
             </div>
-            {/* ---------------------------------Funds--------------------------------- */}
-            <div className="flex flex-col gap-[20px] md:border-l-2 md:border-oppurple md:pl-[40px] md:order-2">
-              <Text type="h4" text="Add funds (optional)" />
-              <div className="flex flex-col gap-[20px]">
-                {/* TODO add funds */}
-                <Text type="h6" text={`Minimum funds necesaries: ${totalToPay} ${chainSymbol}`} />
-                <Button type="active" text="add funds" icon="add" action />
-              </div>
-            </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+};
+export default StepSix;
 
-        {D.contractAddress && (
+/*
+
+      {D.contractAddress && (
           <div className="rounded p-2 border-oppurple border-2">
             <h4 className="test-xs">Contract Address</h4>
             <h3 className="test-sm">{D.contractAddress}</h3>
@@ -178,13 +144,6 @@ const StepSix = () => {
             </ul>
           </div>
         )}
-      </div>
-    </div>
-  );
-};
-export default StepSix;
-
-/*
 
 {D.contractAddress && (
               <div className="rounded p-2 border-oppurple border-2">

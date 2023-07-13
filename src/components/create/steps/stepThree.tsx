@@ -38,6 +38,8 @@ const StepThree = () => {
 
   useEffect(() => {
     setCanContinue(false);
+    getTotalMultipliers();
+    calculateTotalToPay();
   }, []);
 
   //---------------------------------UI---------------------------------

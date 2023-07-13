@@ -54,22 +54,6 @@ export default function Contract() {
     multipliersIdList,
   } = usePayrollContract(_contract);
 
-  //---------------------------------Show menu---------------------------------
-  const [showMenu, setShowMenu] = useState<boolean>(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowMenu(false);
-      }
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
-
   //---------------------------------Copy to Clipboard---------------------------------
   const copyToClipboard = () => {
     const textToCopy = contractAddress;
@@ -107,7 +91,14 @@ export default function Contract() {
                     <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
                   </div>
                   {contractAddress && (
-                    <Text type="overline" text={`${findContractInLocalStorage(contractAddress).email}`} />
+                    <Text
+                      type="overline"
+                      text={`${
+                        findContractInLocalStorage(contractAddress).email !== undefined
+                          ? findContractInLocalStorage(contractAddress).email
+                          : ''
+                      }`}
+                    />
                   )}
                 </div>
                 <div className="flex gap-[20px] ml-auto md:ml-0">

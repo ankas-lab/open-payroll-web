@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { BN } from 'bn.js';
 import {
   useApi,
+  useBalance,
   useCall,
   useCallSubscription,
   useChainDecimals,
@@ -13,7 +14,7 @@ import {
   useWallet,
 } from 'useink';
 import metadata from '@/contract/open_payroll.json';
-import { pickDecoded, stringNumberToBN } from 'useink/utils';
+import { pickDecoded, planckToDecimal, stringNumberToBN } from 'useink/utils';
 import { useTxNotifications } from 'useink/notifications';
 
 interface CreateContextData {
@@ -38,6 +39,10 @@ interface CreateContextData {
   handleChangeMultiplierInitialBeneficiary: any;
   getTotalMultiplierByBeneficiary: any;
   getFinalPayByBeneficiary: any;
+  handleChangeFundsToTransfer: any;
+  fundsToTransfer: any;
+  rawFundsToTransfer: any;
+  rawOwnerBalance: any;
   calculateTotalToPay: any;
   totalToPay: any;
   formatConstructorParams: any;
@@ -111,7 +116,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     },
   ]);
 
-  const [totalToPay, setTotalToPay] = useState<any | undefined>(undefined);
+  const [totalToPay, setTotalToPay] = useState<any | undefined>(0);
 
   const addInitialBeneficiary = () => {
     const newBeneficiaries = [...initialBeneficiaries];
@@ -147,14 +152,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         if (value === '') {
           beneficiary.multipliers.splice(index, 1);
         } else {
-          multiplier[1] = value;
+          multiplier[1] = parseInt(value) * 100;
         }
         found = true;
       }
     });
 
     if (!found && value !== '') {
-      const newMultiplier = [multiplierIndex, value];
+      const newMultiplier = [multiplierIndex, parseInt(value) * 100];
       beneficiary.multipliers.push(newMultiplier);
     }
 
@@ -169,7 +174,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         totalMultiplier += parseFloat(multiplier[1]);
       });
     }
-    return totalMultiplier.toFixed(2);
+    return (totalMultiplier / 100).toFixed(2);
   };
 
   const getFinalPayByBeneficiary = (beneficiaryIndex: number) => {
@@ -180,17 +185,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         totalMultiplier += parseFloat(multiplier[1]);
       });
     }
-    return (
-      totalMultiplier === 0
-        ? parseInt(basePayment!.replace(/,/g, ''))
-        : totalMultiplier * parseInt(basePayment!.replace(/,/g, ''))
-    ).toFixed(2);
-  };
-
-  const calculateTotalToPay = () => {
-    const total = getTotalMultipliers() * parseInt(basePayment!);
-
-    setTotalToPay(total);
+    return (totalMultiplier === 0 ? 0 : (totalMultiplier * parseInt(basePayment!.replace(/,/g, ''))) / 100).toFixed(2);
   };
 
   const hasBeneficiaryWithoutAddress = () => {
@@ -204,14 +199,48 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         totalMultipliers += parseFloat(multiplier[1]);
       }),
     );
+    console.log('totalMultipliers', totalMultipliers);
+    return totalMultipliers / 100;
+  };
 
-    return totalMultipliers;
+  const calculateTotalToPay = () => {
+    const total = getTotalMultipliers() * parseInt(basePayment!);
+    setTotalToPay(total);
   };
 
   useEffect(() => {
     hasBeneficiaryWithoutAddress() ? setCanContinue(false) : setCanContinue(true);
-    calculateTotalToPay();
   }, [initialBeneficiaries]);
+
+  useEffect(() => {
+    calculateTotalToPay();
+  }, [initialBeneficiaries, basePayment]);
+
+  //---------------------------------Fund to Transfer---------------------------------
+  const balance = useBalance(account);
+  const [fundsToTransfer, setFundsToTransfer] = useState<number>(0);
+  const [rawFundsToTransfer, setRawFundsToTransfer] = useState<number>(0);
+  const [rawOwnerBalance, setRawOwnerBalance] = useState<any | undefined>(undefined);
+
+  const handleChangeFundsToTransfer = (e: any) => {
+    const { value } = e.target;
+    setFundsToTransfer(value);
+    const raw = value * 10 ** decimals!;
+    setRawFundsToTransfer(raw);
+  };
+
+  useEffect(() => {
+    balance &&
+      setRawOwnerBalance(planckToDecimal(balance?.freeBalance, { api: api?.api })!.toString().replace('.', ''));
+  }, [account, balance]);
+
+  useEffect(() => {
+    console.log(rawOwnerBalance);
+  }, [rawOwnerBalance]);
+
+  useEffect(() => {
+    console.log('rawFundsToTransfer', rawFundsToTransfer);
+  }, [rawFundsToTransfer]);
 
   //---------------------------------Create contract---------------------------------
 
@@ -263,10 +292,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       {
         salt: S.salt,
         codeHash: C.codeHash,
-        periodicity: formatedConstructorParams.periodicity,
-        basePayment: formatedConstructorParams.basePayment,
-        initialBaseMultipliers: formatedConstructorParams.initialBaseMultipliers,
-        initialBeneficiaries: formatedConstructorParams.initialBeneficiaries,
+        value: rawFundsToTransfer,
       },
     );
   };
@@ -281,6 +307,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       {
         salt: S.salt,
         codeHash: C.codeHash,
+        value: rawFundsToTransfer,
       },
     );
   }
@@ -353,8 +380,8 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   }, []);
 
   useEffect(() => {
-    console.log(D);
-  }, [D]);
+    console.log(formatedConstructorParams);
+  }, [formatedConstructorParams]);
 
   //---------------------------------Clear data---------------------------------
   const clearAllInfo = () => {
@@ -403,6 +430,10 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     getFinalPayByBeneficiary,
     calculateTotalToPay,
     totalToPay,
+    handleChangeFundsToTransfer,
+    fundsToTransfer,
+    rawFundsToTransfer,
+    rawOwnerBalance,
     formatConstructorParams,
     hasBeneficiaryWithoutAddress,
     getTotalMultipliers,

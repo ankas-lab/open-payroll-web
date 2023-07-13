@@ -64,14 +64,14 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         </td>
         <td className="w-[100px]">{amountBeneficiaries ? <p>{amountBeneficiaries}</p> : <Loader />}</td>
         <td className="w-[80px]">{periodicity ? <p>{periodicity}</p> : <Loader />}</td>
-        <td className="w-[80px]">
+        <td className="w-[100px]">
           {contractBalance !== undefined ? (
             <p className="text-ellipsis overflow-hidden">{contractBalance}</p>
           ) : (
             <Loader />
           )}
         </td>
-        <td className="w-[80px]">
+        <td className="w-[100px]">
           {totalDebts !== undefined ? <p className="text-ellipsis overflow-hidden">{totalDebts}</p> : <Loader />}
         </td>
         <td className="w-[80px]">
