@@ -59,14 +59,14 @@ const Index = () => {
           {closeLateralNav ? (
             <div className="hidden md:flex md:flex-col gap-[10px]">
               <Link href="/contracts">
-                {pathname === '/contracts' ? (
+                {pathname === '/contracts' || pathname.includes('/contracts') ? (
                   <Button type="active" text="" icon="contract" />
                 ) : (
                   <Button type="text" text="" icon="contract" />
                 )}
               </Link>
               <Link href="/claim">
-                {pathname === '/claim' ? (
+                {pathname === '/claim' || pathname.includes('/claim') ? (
                   <Button type="active" text="" icon="claim" />
                 ) : (
                   <Button type="text" text="" icon="claim" />
@@ -76,14 +76,14 @@ const Index = () => {
           ) : (
             <div className="hidden md:flex md:flex-col gap-[10px]">
               <Link href="/contracts">
-                {pathname === '/contracts' ? (
+                {pathname === '/contracts' || pathname.includes('/contracts') ? (
                   <Button type="active" text="my contracts" />
                 ) : (
                   <Button type="outlined" text="my contracts" />
                 )}
               </Link>
               <Link href="/claim">
-                {pathname === '/claim' ? (
+                {pathname === '/claim' || pathname.includes('/claim') ? (
                   <Button type="active" text="claim" />
                 ) : (
                   <Button type="outlined" text="claim" />
@@ -122,14 +122,14 @@ const Index = () => {
             </div>
             <div className="flex flex-col gap-[20px]">
               <Link href="/contracts" onClick={openCloseMenu}>
-                {pathname === '/contracts' ? (
+                {pathname === '/contracts' || pathname.includes('/contracts') ? (
                   <Button type="active" text="my contracts" />
                 ) : (
                   <Button type="outlined" text="my contracts" />
                 )}
               </Link>
               <Link href="/claim" onClick={openCloseMenu}>
-                {pathname === '/claim' ? (
+                {pathname === '/claim' || pathname.includes('/claim') ? (
                   <Button type="active" text="claim" />
                 ) : (
                   <Button type="outlined" text="claim" />
