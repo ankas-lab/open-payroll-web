@@ -21,43 +21,47 @@ const MultiplierIntput = ({ _contract, _multiplier, _active }: ContractProps) =>
 
   const block = useBlockHeader();
 
-  return _active === true
-    ? baseMultiplier?.validUntilBlock === null && (
-        <div>
-          <div className="flex gap-1">
-            <div className="flex">
-              {isDeactivating ? (
-                <Button type="disabled outlined" text="" icon="loading" />
-              ) : (
-                <Button type="text" text="" icon="delete" action={() => handleDeactivateMultiplier(_multiplier)} />
-              )}
+  return (
+    <>
+      {_active === true
+        ? baseMultiplier?.validUntilBlock === null && (
+            <div>
+              <div className="flex gap-1">
+                <div className="flex">
+                  {isDeactivating ? (
+                    <Button type="disabled outlined" text="" icon="loading" />
+                  ) : (
+                    <Button type="text" text="" icon="delete" action={() => handleDeactivateMultiplier(_multiplier)} />
+                  )}
+                </div>
+                <p className="my-auto">{baseMultiplier?.name}</p>
+              </div>
             </div>
-            <p className="my-auto">{baseMultiplier?.name}</p>
-          </div>
-        </div>
-      )
-    : baseMultiplier?.validUntilBlock !== null && (
-        <div>
-          <div className="flex gap-1">
-            <div className="flex">
-              {block?.blockNumber! > parseInt(baseMultiplier?.validUntilBlock.replace(/,/g, '')) ? (
-                isDeleting ? (
-                  <Button type="disabled outlined" text="" icon="loading" />
-                ) : (
-                  <Button type="text" icon="delete" action={() => handleDeleteUnusedMultipliers(_multiplier)} />
-                )
-              ) : (
-                <Button
-                  type="disabled outlined"
-                  icon="delete"
-                  action={() => handleDeleteUnusedMultipliers(_multiplier)}
-                />
-              )}
+          )
+        : baseMultiplier?.validUntilBlock !== null && (
+            <div>
+              <div className="flex gap-1">
+                <div className="flex">
+                  {block?.blockNumber! > parseInt(baseMultiplier?.validUntilBlock.replace(/,/g, '')) ? (
+                    isDeleting ? (
+                      <Button type="disabled outlined" text="" icon="loading" />
+                    ) : (
+                      <Button type="text" icon="delete" action={() => handleDeleteUnusedMultipliers(_multiplier)} />
+                    )
+                  ) : (
+                    <Button
+                      type="disabled outlined"
+                      icon="delete"
+                      action={() => handleDeleteUnusedMultipliers(_multiplier)}
+                    />
+                  )}
+                </div>
+                <p className="my-auto">{baseMultiplier?.name}</p>
+              </div>
             </div>
-            <p className="my-auto">{baseMultiplier?.name}</p>
-          </div>
-        </div>
-      );
+          )}
+    </>
+  );
 };
 
 export default MultiplierIntput;

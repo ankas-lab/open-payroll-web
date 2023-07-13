@@ -10,7 +10,7 @@ export function useGetOwner(_contract: any) {
   useEffect(() => {
     if (getOwner.result?.ok) {
       const data = pickDecoded(getOwner.result);
-      setOwner(data);
+      setOwner(data as string);
     }
   }, [getOwner.result]);
 

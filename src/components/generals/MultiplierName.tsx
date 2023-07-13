@@ -6,14 +6,18 @@ import Loader from './Loader';
 const MultiplierName = (multiplierId: any, _contract: any) => {
   const { baseMultiplier } = useBaseMultiplier(multiplierId._contract, multiplierId.multiplierId);
 
-  return baseMultiplier !== undefined ? (
-    baseMultiplier.validUntilBlock === null && (
-      <div className="capitalize">
-        <Text type="" text={baseMultiplier.name || 'multiplier ' + multiplierId.multiplierId} />
-      </div>
-    )
-  ) : (
-    <Loader />
+  return (
+    <>
+      {baseMultiplier !== undefined ? (
+        baseMultiplier.validUntilBlock === null && (
+          <div className="capitalize">
+            <Text type="" text={baseMultiplier.name || 'multiplier ' + multiplierId.multiplierId} />
+          </div>
+        )
+      ) : (
+        <Loader />
+      )}
+    </>
   );
 };
 

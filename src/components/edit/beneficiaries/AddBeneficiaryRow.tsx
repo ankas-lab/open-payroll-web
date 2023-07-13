@@ -49,7 +49,7 @@ const AddBeneficiaryRow = ({ contract, multipliersIdList, contractAddress, show 
       const multToArray = Object.values(newMultipliers);
       let sum = 0;
       for (let i = 0; i < multToArray.length; i++) {
-        sum += parseInt(multToArray[i]);
+        sum += parseInt(String(multToArray[i]));
       }
       const rawBasePaymentBN = new BN(rawBasePayment);
       const result = rawBasePaymentBN.mul(new BN(sum / 100));

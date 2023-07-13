@@ -74,11 +74,12 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
 
   useEffect(() => {
     if (getBeneficiary.result?.ok) {
-      const data = pickDecoded(getBeneficiary.result);
-      if (data?.Ok) {
-        getLastClaim(data?.Ok.lastUpdatedPeriodBlock);
-        setBeneficiary(data?.Ok);
-        setBeneficiaryUnclaimedPayments(data?.Ok.unclaimedPayments);
+      const data = pickDecoded<any | null>(getBeneficiary.result);
+
+      if (data) {
+        getLastClaim(data.lastUpdatedPeriodBlock);
+        setBeneficiary(data);
+        setBeneficiaryUnclaimedPayments(data?.unclaimedPayments);
       }
     }
   }, [getBeneficiary.result]);

@@ -79,7 +79,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getPeriodicity.result?.ok) {
       const data = pickDecoded(getPeriodicity.result)!;
-      const periodicityToNumber = parseInt(data.replace(/,/g, ''));
+      const periodicityToNumber = parseInt(String(data).replace(/,/g, ''));
 
       periodicityToNumber >= 7200 && setPeriodicity(`${(periodicityToNumber / 7200).toFixed(0)} days`);
       periodicityToNumber < 7200 &&

@@ -26,10 +26,14 @@ const MultiplerCell = ({ contract, mult, beneficiaryMultipliersToArray }: multip
     beneficiaryMultipliersToArray !== undefined && findMultiplierValue();
   }, [beneficiaryMultipliersToArray]);
 
-  return baseMultiplier !== null ? (
-    baseMultiplier?.validUntilBlock === null && <td className="w-[100px]">{multiplierValue / 100 || '-'}</td>
-  ) : (
-    <Loader />
+  return (
+    <>
+      {baseMultiplier !== null ? (
+        baseMultiplier?.validUntilBlock === null && <td className="w-[100px]">{multiplierValue / 100 || '-'}</td>
+      ) : (
+        <Loader />
+      )}
+    </>
   );
 };
 

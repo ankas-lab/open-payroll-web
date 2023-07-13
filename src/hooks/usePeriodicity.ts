@@ -11,7 +11,7 @@ export function usePeriodicty(_contract: any) {
   useEffect(() => {
     if (getPeriodicity.result?.ok) {
       const decoded = pickDecoded(getPeriodicity.result);
-      setPeriodicity(decoded);
+      setPeriodicity(decoded as string);
 
       decoded === '7200' || decoded === '36000' || decoded === '216000'
         ? setPeriodicityType('fixed')

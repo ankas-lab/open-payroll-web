@@ -12,14 +12,18 @@ const MultiplierHeaderCell = ({ contract, multiplierId }: multiplierHeaderCellPr
   //---------------------------------Connect to contract---------------------------------
   const { baseMultiplier } = useBaseMultiplier(contract, multiplierId);
 
-  return baseMultiplier !== null ? (
-    baseMultiplier?.validUntilBlock === null && (
-      <th className="w-[100px]">
-        <Text type="overline" text={`${baseMultiplier?.name || `multiplier ${multiplierId}`}`} />
-      </th>
-    )
-  ) : (
-    <Loader />
+  return (
+    <>
+      {baseMultiplier !== null ? (
+        baseMultiplier?.validUntilBlock === null && (
+          <th className="w-[100px]">
+            <Text type="overline" text={`${baseMultiplier?.name || `multiplier ${multiplierId}`}`} />
+          </th>
+        )
+      ) : (
+        <Loader />
+      )}
+    </>
   );
 };
 

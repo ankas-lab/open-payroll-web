@@ -10,7 +10,7 @@ export function useMultipliers(_contract: any) {
   useEffect(() => {
     if (getMultipliersList.result?.ok) {
       const data = pickDecoded(getMultipliersList.result);
-      setMultipliersIdList(data);
+      setMultipliersIdList(data as string[]);
     }
   }, [getMultipliersList.result]);
 

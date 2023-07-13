@@ -1,6 +1,14 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { BN } from 'bn.js';
-import { useCall, useCallSubscription, useChainDecimals, useContract, useTokenSymbol, useWallet } from 'useink';
+import {
+  useCall,
+  useCallSubscription,
+  useChainDecimals,
+  useContract,
+  useMetadata,
+  useTokenSymbol,
+  useWallet,
+} from 'useink';
 import metadata from '@/contract/open_payroll.json';
 import { pickDecoded } from 'useink/utils';
 
@@ -41,7 +49,7 @@ interface DappContextData {
   findContractCanClaimInLocalStorage: any;
   contractCanClaimFromLocalStorage: any;
   changeContractCanClaimNameInLocalStorage: any;
-  codeHash: string;
+  codeHash: string | undefined;
   ownerContracts: StorageContract[];
 }
 
@@ -207,12 +215,13 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   };
 
   //--------------------------------------Const----------------------------------
-  //TODO 👇
-  const codeHash = '0x194e2a7260a9886c604a2533eb3a09126b71fc9411657b6a248a9f1e580c3b69';
+
+  const [codeHash, setCodeHash] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     getStoredContracts();
     getAllStoredContractsCanClaim();
+    setCodeHash(metadata.source.hash);
   }, []);
 
   useEffect(() => {

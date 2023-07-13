@@ -40,24 +40,26 @@ const ContractsTable = () => {
   };
 
   return (
-    myContracts?.length > 0 && (
-      <div className="flex flex-col gap-[20px]">
-        <Text type="h4" text="The last contracts you claimed" />
-        <table className="flex flex-col gap-[10px]">
-          <tr className="flex">
-            <th className="w-[200px] flex">
-              <Text type="overline" text="name" />
-            </th>
-            <th className="w-[300px] flex">
-              <Text type="overline" text="contract Address" />
-            </th>
-          </tr>
-          {myContracts.map((c: any) => (
-            <ContractRow key={c} contract={c} />
-          ))}
-        </table>
-      </div>
-    )
+    <>
+      {myContracts?.length > 0 && (
+        <div className="flex flex-col gap-[20px]">
+          <Text type="h4" text="The last contracts you claimed" />
+          <table className="flex flex-col gap-[10px]">
+            <tr className="flex">
+              <th className="w-[200px] flex">
+                <Text type="overline" text="name" />
+              </th>
+              <th className="w-[300px] flex">
+                <Text type="overline" text="contract Address" />
+              </th>
+            </tr>
+            {myContracts.map((c: any) => (
+              <ContractRow key={c} contract={c} />
+            ))}
+          </table>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 {
   "source": {
-    "hash": "0x194e2a7260a9886c604a2533eb3a09126b71fc9411657b6a248a9f1e580c3b69",
-    "language": "ink! 4.2.0",
+    "hash": "0x9ab36b5a8a89ba0a409ac2251be01de1c0c25d544fdb0d3d6246209978616183",
+    "language": "ink! 4.2.1",
     "compiler": "rustc 1.69.0",
     "build_info": {
       "build_mode": "Release",
@@ -465,7 +465,9 @@
         ],
         "default": false,
         "docs": [
-          " Claim payment for a single account id"
+          " Claim payment for a single account id",
+          " If the amount is 0 no money is transferred. However, the \"unclaimed_payments\" field is set to the total",
+          " value that the beneficiary has yet to claim."
         ],
         "label": "claim_payment",
         "mutates": true,
@@ -535,24 +537,6 @@
           "type": 14
         },
         "selector": "0xaafc7985"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Reads the paused state from the contract"
-        ],
-        "label": "is_paused",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 19
-        },
-        "selector": "0xfa7d505b"
       },
       {
         "args": [
@@ -796,6 +780,44 @@
         "args": [],
         "default": false,
         "docs": [
+          " Pause the contract",
+          " Pausing will only avoid to call the claim function"
+        ],
+        "label": "pause",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 14
+        },
+        "selector": "0x81e0c604"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Resume the contract",
+          " Resuming will allow to call the claim function"
+        ],
+        "label": "resume",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 14
+        },
+        "selector": "0xc3a8f39e"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
           " Ensure if all payments up to date or storage unclaiumed_payments is up-to-date",
           " TODO: this function should be renamed and separated in two different functions",
           " The view function should just return a bool, and the ensure function should return an error"
@@ -811,6 +833,24 @@
           "type": 14
         },
         "selector": "0xec4f0f62"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [
+          " Reads the paused state from the contract"
+        ],
+        "label": "is_paused",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0xfa7d505b"
       },
       {
         "args": [
@@ -855,73 +895,6 @@
         ],
         "default": false,
         "docs": [
-          " Get amount in storage without transferring the funds",
-          " Read Only function"
-        ],
-        "label": "get_amount_to_claim_for_one_period",
-        "mutates": false,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 21
-        },
-        "selector": "0xfd2fae4a"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Pause the contract",
-          " Pausing will only avoid to call the claim function"
-        ],
-        "label": "pause",
-        "mutates": true,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 14
-        },
-        "selector": "0x81e0c604"
-      },
-      {
-        "args": [],
-        "default": false,
-        "docs": [
-          " Resume the contract",
-          " Resuming will allow to call the claim function"
-        ],
-        "label": "resume",
-        "mutates": true,
-        "payable": false,
-        "returnType": {
-          "displayName": [
-            "ink",
-            "MessageResult"
-          ],
-          "type": 14
-        },
-        "selector": "0xc3a8f39e"
-      },
-      {
-        "args": [
-          {
-            "label": "account_id",
-            "type": {
-              "displayName": [
-                "AccountId"
-              ],
-              "type": 0
-            }
-          }
-        ],
-        "default": false,
-        "docs": [
           " Get beneficiary only read",
           " Read Only function"
         ],
@@ -942,7 +915,12 @@
         "default": false,
         "docs": [
           " Get current block period",
-          " Read Only function"
+          " Read Only function",
+          " The calculation current_block - ((current_block - self.initial_block) % self.periodicity) might be a bit tricky to understand at first glance.",
+          " Let's use an example to understand it. Assume self.initial_block to be 10, self.periodicity to be 20, and the current_block to be 65.",
+          " current_block - self.initial_block = 65 - 10 = 55 55 % self.periodicity = 55 % 20 = 15.",
+          " This gives us the number of blocks past the last \"period start\" in relation to initial_block and periodicity.  current_block - 15 = 65 - 15 = 50.",
+          " This is the block number where the current period started."
         ],
         "label": "get_current_period_initial_block",
         "mutates": false,
@@ -1869,7 +1847,7 @@
               },
               {
                 "index": 20,
-                "name": "Overflow"
+                "name": "MultiplierIdOverflow"
               }
             ]
           }
@@ -1999,22 +1977,17 @@
           "variant": {
             "variants": [
               {
+                "index": 0,
+                "name": "None"
+              },
+              {
                 "fields": [
                   {
                     "type": 5
                   }
                 ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 17
-                  }
-                ],
                 "index": 1,
-                "name": "Err"
+                "name": "Some"
               }
             ]
           }
@@ -2023,14 +1996,10 @@
           {
             "name": "T",
             "type": 5
-          },
-          {
-            "name": "E",
-            "type": 17
           }
         ],
         "path": [
-          "Result"
+          "Option"
         ]
       }
     },
@@ -2083,22 +2052,17 @@
           "variant": {
             "variants": [
               {
+                "index": 0,
+                "name": "None"
+              },
+              {
                 "fields": [
                   {
                     "type": 25
                   }
                 ],
-                "index": 0,
-                "name": "Ok"
-              },
-              {
-                "fields": [
-                  {
-                    "type": 17
-                  }
-                ],
                 "index": 1,
-                "name": "Err"
+                "name": "Some"
               }
             ]
           }
@@ -2107,14 +2071,10 @@
           {
             "name": "T",
             "type": 25
-          },
-          {
-            "name": "E",
-            "type": 17
           }
         ],
         "path": [
-          "Result"
+          "Option"
         ]
       }
     },

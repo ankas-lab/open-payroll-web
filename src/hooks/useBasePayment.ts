@@ -20,7 +20,7 @@ export function useBasePayment(_contract: any) {
   useEffect(() => {
     if (getBasePayment.result?.ok && chainDecimals) {
       const decoded = pickDecoded(getBasePayment.result);
-      const decodedToNumber = parseInt(decoded);
+      const decodedToNumber = parseInt(decoded as string);
       const decodedNumberWithDecimals = decodedToNumber * 10 ** chainDecimals;
       const toBalance = bnToBalance(api?.api, BigInt(decodedNumberWithDecimals));
       const finalBasePayment = parseInt(toBalance.toHuman().slice(0, -4)).toFixed(2);

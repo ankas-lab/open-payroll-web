@@ -84,7 +84,9 @@ const BeneficiaryRow = ({
     const multToArray = Object.values(newMultipliers);
     let sum = 0;
     for (let i = 0; i < multToArray.length; i++) {
-      multToArray[i] === '' ? (sum += parseInt(oldMultToArray[i]) / 100) : (sum += parseInt(multToArray[i]) / 100);
+      multToArray[i] === ''
+        ? (sum += parseInt(String(oldMultToArray[i])) / 100)
+        : (sum += parseInt(String(multToArray[i])) / 100);
     }
     const rawBasePaymentBN = new BN(rawBasePayment);
     const result = rawBasePaymentBN.mul(new BN(sum));
