@@ -51,10 +51,7 @@ const ClaimInput = () => {
 
   useEffect(() => {
     if (rawContractBalance !== undefined && rawAmountToClaim !== undefined) {
-      //calculateMax();
     }
-    console.log(rawContractBalance);
-    console.log(rawAmountToClaim);
   }, [rawContractBalance, rawAmountToClaim]);
 
   const context = useContext(DappContext);

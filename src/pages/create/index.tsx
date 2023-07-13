@@ -92,7 +92,6 @@ const Index = () => {
           ) : steps === 5 && D.status === 'Finalized' && !D.wasDeployed ? (
             <Link href={'/'}>
               <Button type="outlined" text="go home" action={() => setSteps(4)} />
-              {/*TODO  Cant go back while deploy */}
             </Link>
           ) : steps === 5 && D.status !== 'Finalized' && D.status !== 'None' ? (
             <div>

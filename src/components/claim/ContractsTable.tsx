@@ -13,8 +13,6 @@ const ContractsTable = () => {
   const [myContracts, setMyContracts] = useState<any | undefined>();
 
   const getMyContracts = () => {
-    console.log(allContractsCanClaim);
-
     const myContracts = allContractsCanClaim.filter((c) => c.claimer === account?.address);
     setMyContracts(myContracts);
   };

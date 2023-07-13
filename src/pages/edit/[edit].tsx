@@ -39,7 +39,6 @@ export default function Edit() {
   useEffect(() => {
     if (_contract !== undefined) {
       setLoading('done');
-      //console.log(_contract);
     }
   }, [_contract]);
 

@@ -129,10 +129,6 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   };
 
   const removeBeneficiaryFromLocalStorage = (contractAddress: string, beneficiaryAddress: string) => {
-    console.log('BORRANDO');
-    console.log('contractAddress', contractAddress);
-    console.log('beneficiaryAddress', beneficiaryAddress);
-
     const findedContract = contracts.find((c) => c.address === contractAddress);
     if (findedContract) {
       const beneficiariesUpdated = findedContract.beneficiaries.filter((b) => b.address !== beneficiaryAddress);
@@ -211,7 +207,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
   };
 
   //--------------------------------------Const----------------------------------
-  //const codeHash = '0x4a8a55c4a112cb4d754d89966ee3b3f788b96c3f87f73493a33cf7c1ea3261f5';
+  //TODO 👇
   const codeHash = '0x194e2a7260a9886c604a2533eb3a09126b71fc9411657b6a248a9f1e580c3b69';
 
   useEffect(() => {

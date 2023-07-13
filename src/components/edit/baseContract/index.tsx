@@ -124,7 +124,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                     text="You still can't update this information, you need all your beneficiaries to claim their payment or do it for them."
                   />
                 </div>
-                {/* TODO Link to permaClaim */}
               </div>
             </div>
           )}

@@ -84,7 +84,6 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   }, [getBeneficiary.result]);
 
   useEffect(() => {
-    //FIXME is updated
     if (beneficiary?.multipliers !== beneficiaryMultipliers) {
       getBeneficiaryMultipliersToArray(beneficiary.multipliers);
       setBeneficiaryMultipliers(beneficiary.multipliers);

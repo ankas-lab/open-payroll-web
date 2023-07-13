@@ -26,7 +26,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const blockHeader = useBlockHeader();
   const decimals = useChainDecimals('rococo-contracts-testnet');
   const token = useTokenSymbol('rococo-contracts-testnet');
-  // TODO: ChainContract<ContractPromise> | undefined
 
   const [contractBalance, setContractBalance] = useState<undefined | string | any>(undefined);
   const [rawContractBalance, setRawContractBalance] = useState<undefined | number>(undefined);
@@ -101,7 +100,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getTotalDebts.result && api?.api) {
       let data = stringNumberToBN(pickDecoded(getTotalDebts.result!));
-      // TODO: format millions
       setTotalDebts(planckToDecimal(data, { api: api?.api, decimals: decimals })?.toFixed(2) + ' ' + token!);
     }
   }, [getTotalDebts.result, api?.api]);
@@ -110,8 +108,6 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     if (getBasePayment.result && api?.api) {
       let data = stringNumberToBN(pickDecoded(getBasePayment.result!));
       setRawBasePayment(data);
-
-      // TODO: format millions
       setBasePayment(planckToDecimal(data, { api: api?.api, decimals: decimals })?.toFixed(2) + ' ' + token!);
     }
   }, [getBasePayment.result, api?.api]);

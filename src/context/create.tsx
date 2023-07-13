@@ -199,7 +199,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         totalMultipliers += parseFloat(multiplier[1]);
       }),
     );
-    console.log('totalMultipliers', totalMultipliers);
     return totalMultipliers / 100;
   };
 
@@ -234,13 +233,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       setRawOwnerBalance(planckToDecimal(balance?.freeBalance, { api: api?.api })!.toString().replace('.', ''));
   }, [account, balance]);
 
-  useEffect(() => {
-    console.log(rawOwnerBalance);
-  }, [rawOwnerBalance]);
-
-  useEffect(() => {
-    console.log('rawFundsToTransfer', rawFundsToTransfer);
-  }, [rawFundsToTransfer]);
+  useEffect(() => {}, [rawOwnerBalance]);
 
   //---------------------------------Create contract---------------------------------
 
@@ -378,10 +371,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     C.set(metadata.source.hash);
     setM;
   }, []);
-
-  useEffect(() => {
-    console.log(formatedConstructorParams);
-  }, [formatedConstructorParams]);
 
   //---------------------------------Clear data---------------------------------
   const clearAllInfo = () => {

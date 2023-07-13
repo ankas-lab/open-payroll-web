@@ -19,10 +19,6 @@ export function useRemoveBeneficiary(contract: any, contractAddress: string, ben
   };
 
   useEffect(() => {
-    deleteFromLS && console.log('deleteFromLS', deleteFromLS);
-  }, [deleteFromLS]);
-
-  useEffect(() => {
     if (isPendingSignature(removeBeneficiary)) {
       toast(`✍ Please sign the transaction in your wallet`);
     }

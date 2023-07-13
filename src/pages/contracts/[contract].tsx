@@ -109,25 +109,6 @@ export default function Contract() {
                   <Link href={`/edit/${contractAddress}`}>
                     <Button type="active" text="edit" />
                   </Link>
-                  {/*<div ref={menuRef} className="cursor-pointer w-12">
-                    {showMenu ? (
-                      <div className="absolute right-0 pt-[10px] py-[5px] px-[5px] border-2 border-oppurple rounded-[5px] bg-[#FFFFFF] flex flex-col gap-[16px] w-[300px] z-[100]">
-                        <Link
-                          className="rounded hover:bg-opwhite p-1.5 cursor-pointer"
-                          href={`/edit/${contractAddress}`}
-                        >
-                          <Text text="Edit" type="" />
-                        </Link>
-                      </div>
-                    ) : (
-                      <div
-                        onClick={() => setShowMenu(true)}
-                        className="text-center border-oppurple border-2 flex gap-[10px] rounded-[5px] py-[13px] px-[13px] bg-opwhite text-[14px] uppercase w-full justify-center hover:bg-opwhite transition duration-100"
-                      >
-                        <GoKebabHorizontal className="leading-none p-0 m-0 text-base rotate-90" />
-                      </div>
-                    )}
-                    </div>*/}
                 </div>
               </div>
               {/* CONTRACT INFO */}

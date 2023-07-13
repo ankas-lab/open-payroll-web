@@ -88,20 +88,6 @@ To eliminate a multiplier it is necessary that it be paused for a period."
             action={() => setCreateNewMultuplier(true)}
           />
         </div>
-        {/*
-        <div className="flex flex-col gap-[20px]">
-          <Text type="h5" text="Paused" />
-          <div className="grid grid-cols-1 gap-[10px]">
-            {multipliersIdList !== undefined ? (
-              multipliersIdList?.map((m) => (
-                <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={false} />
-              ))
-            ) : (
-              <Loader />
-            )}
-          </div>
-        </div>
-            */}
       </div>
     </div>
   );
