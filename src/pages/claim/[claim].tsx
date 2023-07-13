@@ -67,8 +67,12 @@ export default function Claim() {
     isBeneficiary && findContractCanClaimInLocalStorage(contractAddress, account?.address);
   }, [isBeneficiary]);
 
+  useEffect(() => {
+    account === undefined && router.push('/');
+  }, [account]);
+
   return (
-    <main className={`flex flex-col md:flex-row ${archivo.className}`}>
+    <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
       <Nav />
       <div className="w-10/12 md:w-8/12 overflow-x-auto min-h-screen mx-auto flex flex-col gap-[40px] py-[10vh] md:py-0 md:pb-[20vh]">
         <div className="hidden md:flex h-[100px] justify-end">

@@ -95,14 +95,14 @@ const Index = () => {
               </div>
             </div>
           ) : (
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-3 items-center" onClick={() => setShowWallets(true)}>
               <p
                 className={`items-center text-center bg-oppurple text-[14px] uppercase w-full justify-center text-opwhite font-normal tracking-[1.25px] ${archivo.className}`}
               >
                 connect
               </p>
               <div className="p-2 cursor-pointer">
-                <FaAngleDown onClick={() => setShowWallets(true)} />
+                <FaAngleDown />
               </div>
             </div>
           )}

@@ -61,21 +61,18 @@ export default function Contract() {
     const textToCopy = contractAddress;
     textToCopy !== undefined && navigator.clipboard.writeText(textToCopy.toString());
     setCopied(true);
+    toast('👍 Address copied');
     setTimeout(function () {
       setCopied(false);
     }, 5000);
   };
 
-  const [toAdd, settoAdd] = useState<any | undefined>(undefined);
-  const transfer = useTransfer();
-
   useEffect(() => {
-    console.log('toAdd', toAdd);
-    console.log('contractAddress', contractAddress);
-  }, [toAdd]);
+    account === undefined && router.push('/');
+  }, [account]);
 
   return (
-    <main className={`flex flex-col md:flex-row ${archivo.className}`}>
+    <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
       <Nav />
       <Toaster
         position="top-right"
@@ -120,16 +117,6 @@ export default function Contract() {
                   )}
                 </div>
                 <div className="flex gap-[20px] ml-auto md:ml-0">
-                  <div>
-                    {/* TODO: Add funds */}
-                    <Button
-                      type="active"
-                      text="add funds"
-                      action={() => transfer?.signAndSend(contractAddress!, toAdd)}
-                    />
-                    <input type="number" onChange={(e) => settoAdd(e.target.value)} />
-                    <p>Hash {transfer?.hash || '--'}</p>
-                  </div>
                   <Link href={`/edit/${contractAddress}`}>
                     <Button type="active" text="edit" />
                   </Link>

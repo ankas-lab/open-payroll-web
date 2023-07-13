@@ -31,9 +31,7 @@ export default function Contracts() {
   const { ownerContracts, getStoredContracts } = context;
 
   useEffect(() => {
-    console.log(account);
     account === undefined && router.push('/');
-    // router.push('/dashboard')
   }, [account]);
 
   useEffect(() => {

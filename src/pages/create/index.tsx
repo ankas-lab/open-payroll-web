@@ -13,7 +13,6 @@ import StepTwo from '../../components/create/steps/stepTwo';
 import StepThree from '../../components/create/steps/stepThree';
 import StepFour from '../../components/create/steps/stepFour';
 import StepFive from '../../components/create/steps/stepFive';
-import Result from '../../components/create/results';
 import Text from '@/components/generals/text';
 
 import { useWallet } from 'useink';
@@ -27,6 +26,8 @@ import { Toaster } from 'react-hot-toast';
 //---------------------------------Interfaces---------------------------------
 
 const Index = () => {
+  const router = useRouter();
+  const { account } = useWallet();
   const createContext = useContext(CreateContext);
 
   if (!createContext) {
@@ -45,8 +46,12 @@ const Index = () => {
     }
   };
 
+  useEffect(() => {
+    account === undefined && router.push('/');
+  }, [account]);
+
   return (
-    <main className={`flex flex-col md:flex-row ${archivo.className}`}>
+    <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
       <Nav />
       <Toaster
         position="top-right"

@@ -23,7 +23,7 @@ export default function Claim() {
     useFindContractToClaim();
 
   return (
-    <main className={`flex flex-col md:flex-row ${archivo.className}`}>
+    <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
       <Nav />
       <Toaster
         position="top-right"

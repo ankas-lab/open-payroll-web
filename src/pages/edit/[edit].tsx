@@ -4,7 +4,7 @@ import Text from '../../components/generals/text';
 import Button from '../../components/generals/button';
 import { Archivo } from 'next/font/google';
 import { useRouter } from 'next/router';
-import { useContract } from 'useink';
+import { useContract, useWallet } from 'useink';
 import WalletManager from '@/components/walletManager';
 const archivo = Archivo({ subsets: ['latin'] });
 import metadata from '../../contract/open_payroll.json';
@@ -16,6 +16,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import Loader from '@/components/generals/Loader';
 
 export default function Edit() {
+  const { account } = useWallet();
   //---------------------------------Get contract address---------------------------------
   const router = useRouter();
   const {
@@ -28,7 +29,9 @@ export default function Edit() {
   //---------------------------------Get contract---------------------------------
   const _contract = useContract(contractAddress, metadata);
 
-  // Tabs
+  useEffect(() => {
+    account === undefined && router.push('/');
+  }, [account]);
 
   useEffect(() => {
     if (edit?.toString()) {
@@ -43,7 +46,7 @@ export default function Edit() {
   }, [_contract]);
 
   return (
-    <main className={`flex flex-col md:flex-row ${archivo.className}`}>
+    <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
       <Nav />
       <Toaster
         position="top-right"
