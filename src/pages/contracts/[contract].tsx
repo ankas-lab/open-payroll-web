@@ -7,7 +7,7 @@ import Button from '../../components/generals/button';
 import { Archivo } from 'next/font/google';
 const archivo = Archivo({ subsets: ['latin'] });
 
-import { useContract, useWallet } from 'useink';
+import { useContract, useWallet, useTransfer } from 'useink';
 import metadata from '../../contract/open_payroll.json';
 import { useRouter } from 'next/router';
 import BeneficiaryRow from '@/components/contracts/beneficiaryRow';
@@ -23,6 +23,7 @@ import { useGetOwner } from '@/hooks/useGetOwner';
 import toast, { Toaster } from 'react-hot-toast';
 import Loader from '@/components/generals/Loader';
 import NotOwner from '@/components/contracts/NotOwner';
+import { AiFillCheckCircle } from 'react-icons/ai';
 
 export default function Contract() {
   //---------------------------------Get contract address---------------------------------
@@ -55,10 +56,23 @@ export default function Contract() {
   } = usePayrollContract(_contract);
 
   //---------------------------------Copy to Clipboard---------------------------------
+  const [copied, setCopied] = useState<boolean>(false);
   const copyToClipboard = () => {
     const textToCopy = contractAddress;
     textToCopy !== undefined && navigator.clipboard.writeText(textToCopy.toString());
+    setCopied(true);
+    setTimeout(function () {
+      setCopied(false);
+    }, 5000);
   };
+
+  const [toAdd, settoAdd] = useState<any | undefined>(undefined);
+  const transfer = useTransfer();
+
+  useEffect(() => {
+    console.log('toAdd', toAdd);
+    console.log('contractAddress', contractAddress);
+  }, [toAdd]);
 
   return (
     <main className={`flex flex-col md:flex-row ${archivo.className}`}>
@@ -86,9 +100,13 @@ export default function Contract() {
               <div className="flex flex-col-reverse gap-[40px] md:flex-row md:justify-between">
                 <div className="flex flex-col">
                   {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress).name}`} />}
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-2">
                     <Text type="overline" text={`${contractAddress}`} />
-                    <IoIosCopy className="text-oppurple mx-2" onClick={() => copyToClipboard()} />
+                    {copied ? (
+                      <AiFillCheckCircle className="text-opgreen cursor-pointer" onClick={() => copyToClipboard()} />
+                    ) : (
+                      <IoIosCopy className="text-oppurple cursor-pointer" onClick={() => copyToClipboard()} />
+                    )}
                   </div>
                   {contractAddress && (
                     <Text
@@ -104,7 +122,13 @@ export default function Contract() {
                 <div className="flex gap-[20px] ml-auto md:ml-0">
                   <div>
                     {/* TODO: Add funds */}
-                    <Button type="active" text="add funds" />
+                    <Button
+                      type="active"
+                      text="add funds"
+                      action={() => transfer?.signAndSend(contractAddress!, toAdd)}
+                    />
+                    <input type="number" onChange={(e) => settoAdd(e.target.value)} />
+                    <p>Hash {transfer?.hash || '--'}</p>
                   </div>
                   <Link href={`/edit/${contractAddress}`}>
                     <Button type="active" text="edit" />

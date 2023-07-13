@@ -4,7 +4,7 @@ import Button from '../generals/button';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link.js';
-import { useWallet, useAllWallets } from 'useink';
+import { useWallet, useInstalledWallets } from 'useink';
 import WalletManager from '@/components/walletManager';
 import { BsFillArrowLeftCircleFill, BsFillArrowRightCircleFill } from 'react-icons/bs';
 
@@ -18,22 +18,26 @@ const Index = () => {
     setshowMenu(!showMenu);
   };
 
+  const wallets = useInstalledWallets();
+  useEffect(() => console.log(wallets), [wallets]);
+
   return (
     //NO CONNECTED
     account === undefined ? (
       <nav className="bg-opwhite flex justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md top-0 left-0 sticky">
-        <Link href={'/'}>
-          <div className="flex md:hidden">
+        <Link href={'/'} className="flex md:hidden">
+          <div>
             <OPLogo width={40} height={36.6} />
           </div>
         </Link>
-        <Link href={'/'}>
-          <div className="hidden md:flex">
+        <Link href={'/'} className="hidden md:flex">
+          <div>
             <OPLogo width={50} height={46.6} />
           </div>
         </Link>
-        <div>
-          <Button text="connect" action={connect('polkadot-js')} />
+
+        <div className="hidden md:flex h-[100px] justify-end">
+          <WalletManager />
         </div>
       </nav>
     ) : (

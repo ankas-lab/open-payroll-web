@@ -15,8 +15,12 @@ import { DappContext } from '@/context';
 import WalletManager from '@/components/walletManager';
 
 import { Toaster } from 'react-hot-toast';
+import { useWallet } from 'useink';
+import { useRouter } from 'next/router';
 
 export default function Contracts() {
+  const { account } = useWallet();
+  const router = useRouter();
   //---------------------------------Get contracts from context---------------------------------
   const context = useContext(DappContext);
 
@@ -27,11 +31,17 @@ export default function Contracts() {
   const { ownerContracts, getStoredContracts } = context;
 
   useEffect(() => {
+    console.log(account);
+    account === undefined && router.push('/');
+    // router.push('/dashboard')
+  }, [account]);
+
+  useEffect(() => {
     getStoredContracts();
   }, []);
 
   return (
-    <main className={`flex flex-col md:flex-row ${archivo.className}`}>
+    <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
       <Nav />
       <Toaster
         position="top-right"
