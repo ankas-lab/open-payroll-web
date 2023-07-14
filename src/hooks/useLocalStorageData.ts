@@ -1,5 +1,6 @@
 import { DappContext } from '@/context';
 import React, { useContext, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 export function useLocalStorageData(_contractAddress: string | undefined) {
   const context = useContext(DappContext);
   const { findContractInLocalStorage, contracts, getStoredContracts } = context!;
@@ -29,6 +30,7 @@ export function useLocalStorageData(_contractAddress: string | undefined) {
       setLocalStorageData(undefined);
       setNewLocalStorageData(undefined);
       getStoredContracts();
+      toast('👍 Contract data updated');
     } else {
       console.error('❌ Contract to update was not found.');
     }

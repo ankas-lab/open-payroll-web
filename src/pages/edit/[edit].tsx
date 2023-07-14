@@ -16,6 +16,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import Loader from '@/components/generals/Loader';
 import NotOwner from '@/components/contracts/NotOwner';
 import { useGetOwner } from '@/hooks/useGetOwner';
+import Link from 'next/link';
+import { BsFillArrowLeftCircleFill } from 'react-icons/bs';
 
 export default function Edit() {
   const { account } = useWallet();
@@ -74,6 +76,9 @@ export default function Edit() {
             owner === account?.address ? (
               <>
                 <div className="flex flex-col gap-[40px]">
+                  <Link href={`/contracts/${contractAddress}`}>
+                    <BsFillArrowLeftCircleFill className="w-5 h-5 text-oppurple cursor-pointer" />
+                  </Link>
                   <Text type="h2" text="Edit contract" />
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
                     {tab === 'contract' ? (

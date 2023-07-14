@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import Button from '@/components/generals/button';
 
 import { Archivo } from 'next/font/google';
@@ -68,14 +68,15 @@ const BeneficiaryRow = ({
 
   const handleInputChange = (event: any) => {
     const { id, value } = event.target;
+
     const floatValue = parseFloat(value.replace(',', '.'));
     const roundedValue = floatValue.toFixed(2);
     const decimalValue = parseFloat(roundedValue) * 100;
 
-    const newValues =
-      value === ''
-        ? { ...newMultipliers, [id]: beneficiaryMultipliers?.[id] }
-        : { ...newMultipliers, [id]: decimalValue };
+    const newValues = Number.isNaN(decimalValue)
+      ? { ...initialMultipliers }
+      : { ...initialMultipliers, [id]: String(decimalValue) };
+
     setNewMultipliers(newValues);
   };
 
@@ -94,7 +95,7 @@ const BeneficiaryRow = ({
   };
 
   const handleUpdate = () => {
-    if (newMultipliers !== beneficiary.multipliers) {
+    if (newMultipliers !== initialMultipliers) {
       handleUpdateBeneficiary(beneficiaryAddress, newMultipliers);
     }
     if (newBeneficiaryName !== undefined) {
@@ -117,9 +118,10 @@ const BeneficiaryRow = ({
   };
 
   //---------------------------------Initialize functions---------------------------------
+
   useEffect(() => {
-    beneficiary && setNewMultipliers(beneficiary.multipliers);
-    beneficiary && setInitialMultipliers(beneficiary.multipliers);
+    newMultipliers === undefined && setNewMultipliers(beneficiary?.multipliers);
+    initialMultipliers === undefined && setInitialMultipliers(beneficiary?.multipliers);
   }, [beneficiary]);
 
   useEffect(() => {

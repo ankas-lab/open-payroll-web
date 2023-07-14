@@ -91,7 +91,7 @@ export default function Contract() {
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />
         </div>
-        {contract && owner !== undefined ? (
+        {contractAddress && owner !== undefined ? (
           owner === account?.address ? (
             <div className="flex flex-col gap-[40px]">
               <div className="flex flex-col-reverse gap-[40px] md:flex-row md:justify-between">
