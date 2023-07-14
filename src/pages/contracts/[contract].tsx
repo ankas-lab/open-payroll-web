@@ -67,10 +67,6 @@ export default function Contract() {
     }, 5000);
   };
 
-  useEffect(() => {
-    account === undefined && router.push('/');
-  }, [account]);
-
   return (
     <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
       <Nav />
@@ -96,7 +92,7 @@ export default function Contract() {
             <div className="flex flex-col gap-[40px]">
               <div className="flex flex-col-reverse gap-[40px] md:flex-row md:justify-between">
                 <div className="flex flex-col">
-                  {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress).name}`} />}
+                {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress)?.name}`} />}
                   <div className="flex items-center gap-2">
                     <Text type="overline" text={`${contractAddress}`} />
                     {copied ? (
@@ -109,7 +105,7 @@ export default function Contract() {
                     <Text
                       type="overline"
                       text={`${
-                        findContractInLocalStorage(contractAddress).email !== undefined
+                        findContractInLocalStorage(contractAddress)?.email !== undefined
                           ? findContractInLocalStorage(contractAddress).email
                           : ''
                       }`}
