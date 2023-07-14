@@ -99,7 +99,7 @@ const Index = () => {
               <p
                 className={`items-center text-center text-[14px] uppercase w-full justify-center text-opwhite font-normal tracking-[1.25px] ${archivo.className}`}
               >
-                connect wallet
+                connect
               </p>
               <div className="p-2 cursor-pointer">
                 <FaAngleDown />
