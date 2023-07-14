@@ -30,8 +30,8 @@ const Index = () => {
             <p
               className={
                 show
-                  ? `text-[14px] uppercase p-4 w-full cursor-pointer text-oppurple font-normal tracking-[1.25px] rounded ${archivo.className} hover:bg-oppurple hover:text-opwhite transition duration-200`
-                  : `text-[14px] uppercase w-full cursor-pointer text-oppurple font-normal tracking-[1.25px] rounded ${archivo.className} hover:bg-oppurple hover:text-opwhite transition duration-200`
+                  ? `text-[14px] uppercase p-4 w-full cursor-pointer text-oppurple font-normal tracking-[1.25px] rounded ${archivo.className}`
+                  : `text-[14px] uppercase w-full cursor-pointer text-oppurple font-normal tracking-[1.25px] rounded ${archivo.className}`
               }
             >
               {account?.name} ({account?.address.slice(0, 5)}...
