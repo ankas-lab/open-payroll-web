@@ -14,6 +14,7 @@ const Index = () => {
   const pathname = usePathname();
   const [showMenu, setshowMenu] = React.useState<boolean>(false);
   const [closeLateralNav, setCloseLateralNav] = React.useState<boolean>(false);
+
   const openCloseMenu = () => {
     setshowMenu(!showMenu);
   };
@@ -24,17 +25,31 @@ const Index = () => {
   return (
     //NO CONNECTED
     account === undefined ? (
-      <nav className="bg-opwhite flex justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md top-0 left-0 sticky">
-        <Link href={'/'} className="flex md:hidden">
-          <div>
-            <OPLogo width={40} height={36.6} />
+      <nav className="bg-opwhite flex flex-col md:flex-row justify-between items-center w-full h-fit py-[10px] px-[20px] drop-shadow-md top-0 left-0 sticky">
+        <div className="flex justify-between w-full">
+          <Link href={'/'} className="flex md:hidden">
+            <div>
+              <OPLogo width={40} height={36.6} />
+            </div>
+          </Link>
+          <Link href={'/'} className="hidden md:flex">
+            <div>
+              <OPLogo width={50} height={46.6} />
+            </div>
+          </Link>
+
+          <div className="flex md:hidden">
+            <Button type="text" text="" icon="menu" action={openCloseMenu} />
           </div>
-        </Link>
-        <Link href={'/'} className="hidden md:flex">
-          <div>
-            <OPLogo width={50} height={46.6} />
+        </div>
+
+        {showMenu && (
+          <div className="w-full h-[93vh] flex flex-col justify-around">
+            <div className="relative h-[100px]">
+              <WalletManager />
+            </div>
           </div>
-        </Link>
+        )}
 
         <div className="hidden md:flex h-[100px] justify-end">
           <WalletManager />

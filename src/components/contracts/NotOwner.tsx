@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const NotOwner = () => {
   return (
-    <div className="flex flex-col gap-[20px]">
+    <div className="flex flex-col gap-[40px]">
       <Text type="h1" text="You do not own the contract" />
       <Text
         type=""

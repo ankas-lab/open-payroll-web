@@ -14,6 +14,8 @@ import Multipliers from '@/components/edit/multipliers';
 import Beneficiaries from '@/components/edit/beneficiaries';
 import toast, { Toaster } from 'react-hot-toast';
 import Loader from '@/components/generals/Loader';
+import NotOwner from '@/components/contracts/NotOwner';
+import { useGetOwner } from '@/hooks/useGetOwner';
 
 export default function Edit() {
   const { account } = useWallet();
@@ -28,7 +30,7 @@ export default function Edit() {
   const [contractAddress, setContractAddress] = useState<string>('');
   //---------------------------------Get contract---------------------------------
   const _contract = useContract(contractAddress, metadata);
-
+  const { owner } = useGetOwner(_contract);
   useEffect(() => {
     account === undefined && router.push('/');
   }, [account]);
@@ -68,29 +70,39 @@ export default function Edit() {
           <div className="hidden md:flex h-[100px] justify-end">
             <WalletManager />
           </div>
-          <div className="flex flex-col gap-[40px]">
-            <Text type="h2" text="Edit contract" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
-              {tab === 'contract' ? (
-                <Button type="active" text="contract" action={() => setTab('contract')} />
-              ) : (
-                <Button type="outlined" text="contract" action={() => setTab('contract')} />
-              )}
-              {tab === 'multipliers' ? (
-                <Button type="active" text="multipliers" action={() => setTab('multipliers')} />
-              ) : (
-                <Button type="outlined" text="multipliers" action={() => setTab('multipliers')} />
-              )}
-              {tab === 'beneficiaries' ? (
-                <Button type="active" text="beneficiaries" action={() => setTab('beneficiaries')} />
-              ) : (
-                <Button type="outlined" text="beneficiaries" action={() => setTab('beneficiaries')} />
-              )}
-            </div>
-          </div>
-          {tab === 'contract' && <Contract _contractAddress={contractAddress} _contract={_contract} />}
-          {tab === 'multipliers' && <Multipliers _contract={_contract} />}
-          {tab === 'beneficiaries' && <Beneficiaries _contractAddress={contractAddress} _contract={_contract} />}
+          {_contract && owner !== undefined ? (
+            owner === account?.address ? (
+              <>
+                <div className="flex flex-col gap-[40px]">
+                  <Text type="h2" text="Edit contract" />
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
+                    {tab === 'contract' ? (
+                      <Button type="active" text="contract" action={() => setTab('contract')} />
+                    ) : (
+                      <Button type="outlined" text="contract" action={() => setTab('contract')} />
+                    )}
+                    {tab === 'multipliers' ? (
+                      <Button type="active" text="multipliers" action={() => setTab('multipliers')} />
+                    ) : (
+                      <Button type="outlined" text="multipliers" action={() => setTab('multipliers')} />
+                    )}
+                    {tab === 'beneficiaries' ? (
+                      <Button type="active" text="beneficiaries" action={() => setTab('beneficiaries')} />
+                    ) : (
+                      <Button type="outlined" text="beneficiaries" action={() => setTab('beneficiaries')} />
+                    )}
+                  </div>
+                </div>
+                {tab === 'contract' && <Contract _contractAddress={contractAddress} _contract={_contract} />}
+                {tab === 'multipliers' && <Multipliers _contract={_contract} />}
+                {tab === 'beneficiaries' && <Beneficiaries _contractAddress={contractAddress} _contract={_contract} />}
+              </>
+            ) : (
+              <NotOwner />
+            )
+          ) : (
+            <Loader />
+          )}
         </div>
       )}
     </main>
