@@ -50,7 +50,7 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
         {totalDebts! > contractBalance! ? (
           <td
             className="w-[25px] flex"
-            onMouseEnter={() => toast(`❗ You do not have sufficient funds in ${contract.name}`)}
+            onMouseEnter={() => toast(`❗ You do not have enough funds in ${contract.name}`)}
           >
             <div className="flex w-full">
               <IoIosAlert className="w-5 h-5 text-opdanger m-auto" />

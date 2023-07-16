@@ -23,7 +23,7 @@ export function useUpdatePeriodicty(_contract: any) {
 
     if (isInBlock(updatePeriodicity)) {
       setIsUpdatingBasePeriodicity(false);
-      toast('👍 The periodicity was correctly updated');
+      toast('👍 The periodicity was successfully updated');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

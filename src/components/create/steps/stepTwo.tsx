@@ -35,7 +35,7 @@ const StepTwo = () => {
         <div className="">
           <Text
             type=""
-            text={`Now it's time to create the base salary multipliers, for example "seniority", "antiquity", etc. Then you can assign a number for each type of multipliers.`}
+            text={`Now, let's establish the base salary multipliers, such as "seniority" and "performance." You can assign a numerical value to each type of multiplier.`}
           />
         </div>
       </div>
