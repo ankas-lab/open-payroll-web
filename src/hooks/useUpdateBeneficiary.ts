@@ -25,7 +25,7 @@ export function useUpdateBeneficiary(address: string, contract: ChainContract<an
     }
 
     if (isInBlock(updateBeneficiary)) {
-      toast('👍 The beneficiary was correctly updated');
+      toast('👍 The beneficiary was successfully updated');
       setIsProcessing(false);
       setFinalized(true);
       setEdit(false);

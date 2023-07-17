@@ -125,7 +125,7 @@ const index = () => {
             <div className="w-full md:w-6/12 flex flex-col gap-2">
               <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className}`}>Overview</h2>
               <p className={`text-[15px] font-regular ${archivo.className}`}>
-                The objective of Open Payroll is to meet the needs of organizations that wish to make transparent
+                The goal of Open Payroll is to meet the needs of organizations that wish to make transparent
                 payments during a given period, creating a contract that enables anyone to configure and generate their
                 own payroll system. The payroll contract is owned entirely by its creator.This creator could be a DAO
                 address, a multisig or a single person. The contract manages a treasury from where all the payments are

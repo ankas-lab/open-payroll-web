@@ -24,7 +24,7 @@ export function useFindContractToClaim() {
           if (result.codeHash === codeHash) {
             router.push(`/claim/${contractAddress}`);
           } else {
-            toast('❌ You entered an incorrect address');
+            toast('❌ You entered an invalid address');
           }
         } else {
           toast('😢 Something went wrong, try again');

@@ -67,7 +67,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
     <div className="w-full flex flex-col gap-[40px]">
       <div className="">
         <Text type="h4" text="Contract" />
-        <Text type="" text="These are the basic data of your contract." />
+        <Text type="" text="Here is the primary information for your contract." />
       </div>
       <div className="flex flex-col gap-[40px]">
         <div className="flex flex-col gap-[20px]">
@@ -101,7 +101,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
               />
             </div>
           </div>
-          <Text type="" text="This data are stored in your browser, not in the blockchain." />
+          <Text type="" text="This information is stored in your browser, not in the blockchain." />
           <div className="">
             <Button
               type={newLocalStorageData !== undefined ? 'outlined' : 'disabled'}
@@ -121,7 +121,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                   <Text type="h6" text="You can't update yet" />
                   <Text
                     type=""
-                    text="You still can't update this information, you need all your beneficiaries to claim their payment or do it for them."
+                    text="You can't update this information yet, you need all your beneficiaries to claim their payment (or you can do it for them.)"
                   />
                 </div>
               </div>

@@ -28,8 +28,7 @@ const Index = ({ _contract }: ContractProps) => {
         <Text type="h4" text="Multipliers" />
         <Text
           type=""
-          text="These are the multipliers of your contract, you can create new ones, pause them or delete them.
-To eliminate a multiplier it is necessary that it be paused for a period."
+          text="Here are the multipliers for your contract. You have the option to create new ones or delete existing ones."
         />
       </div>
 

@@ -38,7 +38,7 @@ const StepFour = () => {
   useEffect(() => {
     rawFundsToTransfer > parseInt(rawOwnerBalance) ? setCanContinue(false) : setCanContinue(true);
     rawFundsToTransfer > parseInt(rawOwnerBalance) &&
-      toast('❌ you cannot send more funds to the contract than the amount in your wallet ');
+      toast('❌ Sending an amount greater than what is available in your wallet is not permitted.');
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   return (
@@ -51,7 +51,7 @@ const StepFour = () => {
         <div className="">
           <Text
             type=""
-            text={`Add funds to your contract, you can do it now or later. Remember that if your contract does not have sufficient funds you will not be able to pay your beneficiaries.`}
+            text={`You have the option to add funds to your contract either immediately or at a later time. It's important to note that if your contract lacks sufficient funds, you won't be able to fulfill payments to your beneficiaries.`}
           />
         </div>
       </div>

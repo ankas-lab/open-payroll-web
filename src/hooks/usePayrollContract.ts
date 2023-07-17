@@ -133,12 +133,12 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
       let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result);
       let nextBlockPeriod = stringNumberToBN(getNextBlockPeriodValueString).words[0];
 
-      nextBlockPeriod - blockHeader?.blockNumber! > 7200 &&
+      nextBlockPeriod - blockHeader?.blockNumber! >= 7200 &&
         setNextBlockPeriod(`${((nextBlockPeriod - blockHeader?.blockNumber!) / 7200).toFixed(0)} days`);
-      nextBlockPeriod - blockHeader?.blockNumber! < 7200 &&
-        nextBlockPeriod - blockHeader?.blockNumber! > 300 &&
+      nextBlockPeriod - blockHeader?.blockNumber! <= 7200 &&
+        nextBlockPeriod - blockHeader?.blockNumber! >= 300 &&
         setNextBlockPeriod(`${((nextBlockPeriod - blockHeader?.blockNumber!) / 300).toFixed(0)} hours`);
-      nextBlockPeriod - blockHeader?.blockNumber! < 300 &&
+      nextBlockPeriod - blockHeader?.blockNumber! <= 300 &&
         setNextBlockPeriod(`${((nextBlockPeriod - blockHeader?.blockNumber!) / 5).toFixed(0)} minutes`);
     }
   }, [getNextBlockPeriod.result]);

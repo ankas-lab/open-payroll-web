@@ -48,7 +48,7 @@ const StepOne = () => {
           <Text type="h6" text="1/4" />
         </div>
         <div className="">
-          <Text type="" text="We are going to create the contract with which you will pay your beneficiaries." />
+          <Text type="" text="We are going to create the contract for paying your beneficiaries." />
         </div>
       </div>
       <form className="md:w-6/12 lg:w-4/12 flex flex-col gap-[20px]">
@@ -145,15 +145,15 @@ const StepOne = () => {
       <div className="flex flex-col gap-[10px]">
         <Text
           type=""
-          text="* These data are stored in your browser, not in the blockchain, the emails will be used to send notifications to you or your beneficiaries and the names to more easily identify the data in the interface, surely it is easier to remember a name than a code, or no?"
+          text="* The information is stored locally in your browser and not on the blockchain. Emails will be utilized for sending notifications to you or your beneficiaries, while names serve the purpose of conveniently identifying the data in the interface. Considering the ease of remembering a name compared to a code, would you agree that names are more memorable?"
         />
         <Text
           type=""
-          text="** This is the base payment of your beneficiaries, on this the multipliers will be applied and added to this amount."
+          text="** This is the base payment of your beneficiaries, all later multipliers will be applied and added to this amount."
         />
         <Text
           type=""
-          text="*** If you select the 'custom' option, please note that you must enter the number of blocks, and that 5 blocks are generated per minute."
+          text="*** If you select the 'custom' option, please note that you must enter the number of blocks, blocks production is generally 5 blocks per minute depending on each chain."
         />
       </div>
     </div>
