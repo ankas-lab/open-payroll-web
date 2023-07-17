@@ -303,7 +303,7 @@ const StepFive = () => {
             <hr className="border rounded my-[10px] w-full"></hr>
             <div className="flex justify-between">
               <Text type="h4" text="Total payment per period" />
-              <Text type="h4" text={`${totalToPay} ${chainSymbol}`} />
+              <Text type="h4" text={`${parseFloat(totalToPay).toFixed(2)} ${chainSymbol}`} />
             </div>
           </div>
         </div>

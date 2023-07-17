@@ -91,7 +91,7 @@ const StepOne = () => {
               value={basePayment}
               className="bg-opwhite without-ring w-full"
               onChange={(e) => {
-                setBasePayment(e.target.value);
+                setBasePayment(parseFloat(e.target.value));
               }}
             />
             <p className="mx-5">{chainSymbol}</p>

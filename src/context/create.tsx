@@ -153,14 +153,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         if (value === '') {
           beneficiary.multipliers.splice(index, 1);
         } else {
-          multiplier[1] = parseInt(value) * 100;
+          multiplier[1] = parseFloat(value) * 100;
         }
         found = true;
       }
     });
 
     if (!found && value !== '') {
-      const newMultiplier = [multiplierIndex, parseInt(value) * 100];
+      const newMultiplier = [multiplierIndex, parseFloat(value) * 100];
       beneficiary.multipliers.push(newMultiplier);
     }
 
@@ -180,13 +180,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const getFinalPayByBeneficiary = (beneficiaryIndex: number) => {
     const beneficiary = initialBeneficiaries[beneficiaryIndex];
+
     let totalMultiplier = 0;
     if (beneficiary && beneficiary.multipliers) {
       beneficiary.multipliers.forEach((multiplier: any) => {
         totalMultiplier += parseFloat(multiplier[1]);
       });
     }
-    return (totalMultiplier === 0 ? 0 : (totalMultiplier * parseInt(basePayment!.replace(/,/g, ''))) / 100).toFixed(2);
+    return (totalMultiplier === 0 ? 0 : (totalMultiplier * parseFloat(basePayment!)) / 100).toFixed(2);
   };
 
   const hasBeneficiaryWithoutAddress = () => {
@@ -226,12 +227,13 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   };
 
   const calculateTotalToPay = () => {
-    const total = getTotalMultipliers() * parseInt(basePayment!);
+    const total = getTotalMultipliers() * parseFloat(basePayment!);
     setTotalToPay(total);
   };
 
   useEffect(() => {
     hasBeneficiaryWithoutAddress() ? setCanContinue(true) : setCanContinue(false);
+    console.log(initialBeneficiaries);
   }, [initialBeneficiaries]);
 
   useEffect(() => {

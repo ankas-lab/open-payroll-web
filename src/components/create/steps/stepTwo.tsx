@@ -39,10 +39,11 @@ const StepTwo = () => {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-[20px]">
+      <div className="flex flex-col  gap-[20px]">
         <Text type="h4" text="Multipliers" />
         {initialBaseMultipliers?.map((multiplier: any, i: number) => (
-          <div key={i} className="flex gap-[10px]">
+          <div key={i} className="flex items-center gap-[10px]">
+            <Text type="h6" text={`Name: `} />
             <input
               type="text"
               value={multiplier}
