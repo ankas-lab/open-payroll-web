@@ -101,7 +101,7 @@ export default function Claim() {
                   <Text type="h4" text="Yeah! You have funds to claim here!" />
                   <Text
                     type=""
-                    text="You can claim everything or choose when you want to claim, you can also add a name to the contract to easily identify it."
+                    text="You can claim everything or choose how much you want to claim, you can also add a name to the contract to easily identify it."
                   />
                 </div>
               )}

@@ -55,7 +55,7 @@ const StepFive = () => {
   useEffect(() => {
     rawFundsToTransfer > parseInt(rawOwnerBalance) ? setCanContinue(false) : setCanContinue(true);
     rawFundsToTransfer > parseInt(rawOwnerBalance) &&
-      toast('❌ you cannot send more funds to the contract than the amount in your wallet ');
+      toast('❌ Sending an amount greater than what is available in your wallet is not permitted.');
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   useEffect(() => {
@@ -69,11 +69,11 @@ const StepFive = () => {
     <div className="flex flex-col gap-[40px]">
       <div className="flex flex-col gap-[20px]">
         <div className="flex justify-between items-baseline">
-          <Text type="h2" text="Confirm the contract" />
+          <Text type="h2" text="Contract Summary" />
           <Text type="h6" text="final" />
         </div>
         <div className="">
-          <Text type="" text="Make sure that all the data you entered is correct to finish." />
+          <Text type="" text="Make sure all the data you entered is ok." />
         </div>
       </div>
       <div className="w-full flex flex-col">
@@ -302,7 +302,7 @@ const StepFive = () => {
             </div>
             <hr className="border rounded my-[10px] w-full"></hr>
             <div className="flex justify-between">
-              <Text type="h4" text="Total pay" />
+              <Text type="h4" text="Total payment per period" />
               <Text type="h4" text={`${totalToPay} ${chainSymbol}`} />
             </div>
           </div>

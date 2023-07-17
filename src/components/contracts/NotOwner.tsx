@@ -7,10 +7,10 @@ import Link from 'next/link';
 const NotOwner = () => {
   return (
     <div className="flex flex-col gap-[40px]">
-      <Text type="h1" text="You do not own the contract" />
+      <Text type="h1" text="You are not the contract owner" />
       <Text
         type=""
-        text="Go back to your list of contracts and choose one you own or change the account you are trying to use to access the contract!"
+        text="Go back to your contracts list and choose one of your own, or change the account you are using to access the contract!"
       />
       <div className="md:w-4/12">
         <Link href={'/contracs'}>

@@ -114,7 +114,7 @@ const ClaimInput = () => {
                 <div>
                   <Text
                     type=""
-                    text={`You cannot claim your payment now, possibly the contract has no funds, contact the owner of the contract or try again in ${nextBlockPeriod}`}
+                    text={`You cannot claim your payment now, maybe the contract has no funds, contact the owner of the contract or try again in ${nextBlockPeriod}`}
                   />
                 </div>
               </div>

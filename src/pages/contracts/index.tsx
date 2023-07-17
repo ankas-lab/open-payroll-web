@@ -67,7 +67,7 @@ export default function Contracts() {
           </div>
           <Text
             type=""
-            text="These are your contracts, you can select one to inspect what's inside, edit them or add funds to them. If you don't have any contract, create one!"
+            text="These are your contracts, you can select one to inspect what's inside, for editing or adding funds. If you don't have any contract, you are able to create one!"
           />
         </div>
         <div className="overflow-x-auto">

@@ -51,7 +51,7 @@ const StepThree = () => {
           <Text type="h6" text="3/4" />
         </div>
         <div className="">
-          <Text type="" text="Now it's time for the beneficiaries, add their wallets and corresponding multipliers." />
+          <Text type="" text="It's time to include the beneficiaries. Please provide their wallet addresses along with the corresponding multipliers applicable to each beneficiary." />
         </div>
       </div>
       <div className="flex flex-col gap-[20px]">

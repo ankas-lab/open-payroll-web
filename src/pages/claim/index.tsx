@@ -47,7 +47,7 @@ export default function Claim() {
           <div className="flex flex-col gap-[20px] md:w-8/12">
             <div className="">
               <Text type="h4" text="Find new contract" />
-              <Text type="" text="Enter the contractAddress of the contract to claim your payment" />
+              <Text type="" text="Enter the contract address for claiming your payment" />
             </div>
             <form className="flex flex-col gap-[10px]">
               <input
