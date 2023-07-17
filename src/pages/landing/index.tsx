@@ -40,25 +40,25 @@ const index = () => {
             <div className="w-full flex flex-col gap-2 items-center">
               {/* Hero */}
               <Link
-                href={'/'}
-                className={`max-w-[550px] items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} bg-opwhite transition-all duration-200 hover:shadow`}
+                href={'#create'}
+                className={`max-w-[550px] cursor-pointer items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} bg-opwhite transition-all duration-200 hover:shadow`}
               >
                 what is this?
               </Link>
               <Link
                 href={'/'}
-                className={`max-w-[550px] items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} bg-gradient-to-r from-oplightpurple to-oplightgreen hover:bg-gradient-to-l transition-all duration-200 hover:shadow`}
+                className={`max-w-[550px] items-center text-center flex gap-[10px] rounded-[5px] py-[12px] px-[15px] text-[14px] uppercase w-full justify-center text-oppurple font-normal tracking-[1.25px] ${archivo.className} shadow bg-gradient-to-r from-oplightpurple to-oplightgreen hover:bg-gradient-to-l transition-all duration-200 hover:shadow`}
               >
                 LAUNCH DAPP
               </Link>
             </div>
           </div>
           <div className="flex gap-[10px]">
-            <a>
-              <FaGithub className="text-opwhite w-7 h-7" />
+            <a href="https://github.com/polkadrys/openPayroll/" target="_blanck">
+              <FaGithub className="text-opwhite w-7 h-7 hover:text-oplightpurple transition duration-150" />
             </a>
-            <a>
-              <FaTelegram className="text-opwhite w-7 h-7" />
+            <a href="https://t.me/+n2tR4KFf_Is1Zjc5" target="_blanck">
+              <FaTelegram className="text-opwhite w-7 h-7 hover:text-oplightpurple transition duration-150" />
             </a>
           </div>
         </div>
@@ -66,7 +66,7 @@ const index = () => {
       {/* Oval */}
       <div className=" bg-opwhite w-[150vw] md:w-[110vw] h-[30vh] oval shadow-inner -mt-[10vh] z-[2]"></div>
       {/* Create contracts in simple steps */}
-      <div className=" bg-opwhite w-[100vw] -mt-[20vh] pb-[5vh] md:pb-[10vh] z-[3]">
+      <div id="create" className=" bg-opwhite w-[100vw] -mt-[20vh] pb-[5vh] md:pb-[10vh] z-[3]">
         <div className="w-11/12 md:w-8/12 gap-5 flex flex-col mx-auto leading-none">
           <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className}`}>
             Create contracts in simple steps
@@ -110,7 +110,6 @@ const index = () => {
         <div className="w-11/12 md:w-9/12 mx-auto flex flex-col">
           <h2 className={`text-[32px] md:text-[51px] font-regular ${podkova.className} md:mx-auto`}>Our stack</h2>
           <div className="grid grid-cols-2 align-middle md:flex md:justify-between">
-            {/* TODO:change imgs */}
             <Image src={Kusama} alt="Kusama" className="m-auto scale-75" />
             <Image src={W3f} alt="W3f" className="m-auto scale-75" />
             <Image src={Polkadot} alt="Polkadot" className="m-auto scale-75" />
@@ -155,7 +154,7 @@ const index = () => {
               <p className={`text-[15px] font-regular ${archivo.className}`}>
                 Build an{' '}
                 <a
-                  className="links hover:font-semibold transition duration-200 my-auto"
+                  className="links hover:font-medium transition duration-200 my-auto"
                   href="https://use.ink/"
                   target="_blanck"
                 >
@@ -167,13 +166,12 @@ const index = () => {
                 be helpful in the case of migrating to a new version of openPayroll, amending a mistake of sending too
                 much funds, etc. Further information about the contract can be found{' '}
                 <a
-                  className="links hover:font-semibold transition duration-200 my-auto"
-                  href="https://use.ink/"
+                  className="links hover:font-medium transition duration-200 my-auto"
+                  href="https://github.com/polkadrys/openPayroll/"
                   target="_blanck"
                 >
                   here
                 </a>
-                {/* TODO: add link */}
               </p>
             </div>
           </div>
@@ -213,15 +211,23 @@ const index = () => {
           <div className={`flex gap-8 ${archivo.className} text-sm`}>
             <div className="flex gap-4">
               <FaGithub className="text-oppurple w-8 h-8" />
-              {/* TODO: add link */}
-              <a className="links hover:font-semibold transition duration-200 my-auto" target="_blanck">
+
+              <a
+                className="links hover:font-medium transition duration-200 my-auto"
+                href="https://github.com/polkadrys/openPayroll/"
+                target="_blanck"
+              >
                 See the docs
               </a>
             </div>
             <div className="flex gap-4">
               <FaTelegram className="text-oppurple w-8 h-8" />
-              {/* TODO: add link */}
-              <a className="links hover:font-semibold transition duration-200 my-auto" target="_blanck">
+
+              <a
+                href="https://t.me/+n2tR4KFf_Is1Zjc5"
+                className="links hover:font-medium transition duration-200 my-auto"
+                target="_blanck"
+              >
                 Contact us
               </a>
             </div>
@@ -229,7 +235,7 @@ const index = () => {
         </div>
       </div>
       {/* Footer */}
-      {/* TODO: add links */}
+
       <div className="w-[100vw] px-[5vh] pt-[5vh] pb-[1vh]">
         <div className="flex flex-col md:flex-row gap-12 md:gap-[200px] mb-7 md:mb-0">
           <div className="flex items-center w-fit mx-auto">
@@ -241,12 +247,14 @@ const index = () => {
               <h3 className={`text-[20px] font-regular text-opwhite ${podkova.className}`}>The project</h3>
               <a
                 className={`text-opwhite ${archivo.className} text-sm hover:text-oplightgreen transition duration-200`}
+                href="https://github.com/polkadrys/openPayroll/"
                 target="_blanck"
               >
                 Docs
               </a>
               <a
                 className={`text-opwhite ${archivo.className} text-sm hover:text-oplightgreen transition duration-200`}
+                href="https://www.figma.com/file/Rz6IVoEhQ26ebZ8XmZ4Lby/OpenPayroll-Brand?type=design&node-id=0%3A1&mode=design&t=koTLP6QkmoKwyjFw-1"
                 target="_blanck"
               >
                 Brand
@@ -256,12 +264,14 @@ const index = () => {
               <h3 className={`text-[20px] font-regular text-opwhite ${podkova.className}`}>Contact</h3>
               <a
                 className={`text-opwhite ${archivo.className} text-sm hover:text-oplightgreen transition duration-200`}
+                href="https://t.me/+n2tR4KFf_Is1Zjc5"
                 target="_blanck"
               >
                 Telegram
               </a>
               <a
                 className={`text-opwhite ${archivo.className} text-sm hover:text-oplightgreen transition duration-200`}
+                href="https://github.com/polkadrys/openPayroll/"
                 target="_blanck"
               >
                 Github
