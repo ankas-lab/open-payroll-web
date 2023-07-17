@@ -57,7 +57,7 @@ const index = () => {
             <a href="https://github.com/polkadrys/openPayroll/" target="_blanck">
               <FaGithub className="text-opwhite w-7 h-7 hover:text-oplightpurple transition duration-150" />
             </a>
-            <a href="https://t.me/+n2tR4KFf_Is1Zjc5" target="_blanck">
+            <a href="https://t.me/+SgOMIrl7JZ5hZGEx" target="_blanck">
               <FaTelegram className="text-opwhite w-7 h-7 hover:text-oplightpurple transition duration-150" />
             </a>
           </div>
@@ -224,7 +224,7 @@ const index = () => {
               <FaTelegram className="text-oppurple w-8 h-8" />
 
               <a
-                href="https://t.me/+n2tR4KFf_Is1Zjc5"
+                href="https://t.me/+SgOMIrl7JZ5hZGEx"
                 className="links hover:font-medium transition duration-200 my-auto"
                 target="_blanck"
               >
@@ -264,7 +264,7 @@ const index = () => {
               <h3 className={`text-[20px] font-regular text-opwhite ${podkova.className}`}>Contact</h3>
               <a
                 className={`text-opwhite ${archivo.className} text-sm hover:text-oplightgreen transition duration-200`}
-                href="https://t.me/+n2tR4KFf_Is1Zjc5"
+                href="https://t.me/+SgOMIrl7JZ5hZGEx"
                 target="_blanck"
               >
                 Telegram
