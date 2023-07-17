@@ -1,0 +1,84 @@
+@tailwind base;
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: '#25064C';
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+  background: '#25064C';
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: '#25064C';
+  border-radius: 14px;
+  border: 3px solid '#25064C';
+}
+@tailwind components;
+@tailwind utilities;
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.without-ring {
+  @apply focus:ring-0 focus:ring-offset-0;
+  outline: none;
+}
+
+.oval {
+  border-radius: 110.1% 110% 0% 0%;
+  box-shadow: inset 0 0 10px 5px rgba(0, 0, 0, 0.5);
+}
+
+.links {
+  color: #7f7eff;
+  text-decoration: underline;
+}
+
+@media (min-width: 320px) and (max-width: 768px) {
+  .arrow {
+    background-image: url('../assets/logo/LogoHero.png');
+    background-size: 200%;
+    background-repeat: no-repeat;
+    background-position: -100vw 10vh, right 3em bottom 2em;
+  }
+}
+@media (min-width: 769px) and (max-width: 1023px) {
+  .arrow {
+    background-image: url('../assets/logo/LogoHero.png');
+    background-size: 150%;
+    background-repeat: no-repeat;
+    background-position: -60vw 10vh, right 3em bottom 2em;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1574px) {
+  .arrow {
+    background-image: url('../assets/logo/LogoHero.png');
+    background-size: 85%;
+    background-position: 0px -10vh, right 3em bottom 2em;
+    background-repeat: no-repeat;
+  }
+}
+@media (min-width: 1575px) {
+  .arrow {
+    background-image: url('../assets/logo/LogoHero.png');
+    background-size: 75%;
+    background-position: 0px -10vh, right 3em bottom 2em;
+    background-repeat: no-repeat;
+  }
+}
