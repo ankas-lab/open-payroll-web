@@ -187,7 +187,9 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         totalMultiplier += parseFloat(multiplier[1]);
       });
     }
-    return (totalMultiplier === 0 ? 0 : (totalMultiplier * parseFloat(basePayment!)) / 100).toFixed(2);
+    return (
+      totalMultiplier === 0 ? parseFloat(basePayment!) : (totalMultiplier * parseFloat(basePayment!)) / 100
+    ).toFixed(2);
   };
 
   const hasBeneficiaryWithoutAddress = () => {
@@ -218,11 +220,16 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const getTotalMultipliers = () => {
     let totalMultipliers = 0;
-    initialBeneficiaries.forEach((beneficiary: any) =>
+    initialBeneficiaries.forEach((beneficiary: any) => {
+      let totalMultipliersByBeneficiary = 0;
+
       beneficiary.multipliers.forEach((multiplier: any) => {
-        totalMultipliers += parseFloat(multiplier[1]);
-      }),
-    );
+        totalMultipliersByBeneficiary += parseFloat(multiplier[1]);
+      });
+      totalMultipliersByBeneficiary === 0
+        ? (totalMultipliers += 100)
+        : (totalMultipliers += totalMultipliersByBeneficiary);
+    });
     return totalMultipliers / 100;
   };
 

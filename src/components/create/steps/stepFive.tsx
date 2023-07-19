@@ -59,8 +59,10 @@ const StepFive = () => {
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   useEffect(() => {
-    if (periodicity !== '7200' || periodicity !== '36000' || periodicity !== '216000') {
-      setPeriodicityType('custom');
+    console.log(periodicity);
+
+    if (periodicity === '7200' || periodicity === '36000' || periodicity === '216000') {
+      setPeriodicityType('fixed');
     }
   }, [periodicity]);
 
