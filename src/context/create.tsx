@@ -80,11 +80,11 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const [basePayment, setBasePayment] = useState<string | undefined>(undefined);
 
   //---------------------------------initialBaseMultipliers---------------------------------
-  const [initialBaseMultipliers, setInitialBaseMultipliers] = useState<string[]>(['']);
+  const [initialBaseMultipliers, setInitialBaseMultipliers] = useState<string[]>(['New multiplier']);
 
   const addInitialBaseMultiplier = () => {
     const newMultipliers = [...initialBaseMultipliers];
-    newMultipliers.push('');
+    newMultipliers.push('New multiplier');
     setInitialBaseMultipliers(newMultipliers);
   };
 
@@ -101,11 +101,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   };
 
   const hasEmptyString = () => {
-    return initialBaseMultipliers.includes('');
+    const filledMultipliers = initialBaseMultipliers.filter((filled) => filled !== '');
+    setInitialBaseMultipliers(filledMultipliers);
   };
 
   useEffect(() => {
-    hasEmptyString() ? setCanContinue(false) : setCanContinue(true);
+    hasEmptyString();
   }, [initialBaseMultipliers]);
 
   //---------------------------------initialBeneficiaries---------------------------------

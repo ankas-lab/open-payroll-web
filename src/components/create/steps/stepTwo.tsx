@@ -22,7 +22,7 @@ const StepTwo = () => {
   } = createContext;
 
   useEffect(() => {
-    setCanContinue(false);
+    //setCanContinue(false);
   }, []);
 
   return (
