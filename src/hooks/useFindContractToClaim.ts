@@ -19,7 +19,6 @@ export function useFindContractToClaim() {
       try {
         const res = await api.api.query.contracts.contractInfoOf(contractAddress);
         let result = res.toHuman();
-        console.log(result);
         if (result !== null) {
           if (result.codeHash === codeHash) {
             router.push(`/claim/${contractAddress}`);
@@ -30,7 +29,7 @@ export function useFindContractToClaim() {
           toast('😢 Something went wrong, try again');
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
   };

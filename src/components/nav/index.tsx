@@ -20,7 +20,6 @@ const Index = () => {
   };
 
   const wallets = useInstalledWallets();
-  useEffect(() => console.log(wallets), [wallets]);
 
   return (
     //NO CONNECTED
