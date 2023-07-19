@@ -32,7 +32,7 @@ export function useLocalStorageData(_contractAddress: string | undefined) {
       getStoredContracts();
       toast('👍 Contract data updated');
     } else {
-      console.error('❌ Contract to update was not found.');
+      console.error('❌ The contract to update was not found.');
     }
   };
 

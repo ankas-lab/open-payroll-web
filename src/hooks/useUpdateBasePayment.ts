@@ -26,7 +26,7 @@ export function useUpdateBasePayment(_contract: any) {
 
     if (isInBlock(updateBasePayment)) {
       setIsUpdatingBasePayment(false);
-      toast('👍 The base payment was updated correctly');
+      toast('👍 The base payment was successfully updated');
     }
 
     if (isErrored(updateBasePayment)) {
