@@ -24,6 +24,7 @@ interface CreateContextData {
   contractName: any;
   setContractName: any;
   ownerEmail: any;
+  validateEmail: any;
   setOwnerEmail: any;
   setPeriodicity: any;
   setBasePayment: any;
@@ -78,6 +79,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const [ownerEmail, setOwnerEmail] = useState<string | undefined>(undefined);
   const [periodicity, setPeriodicity] = useState<string | undefined>('7200');
   const [basePayment, setBasePayment] = useState<string | undefined>(undefined);
+
+  function validateEmail() {
+    const regularExpression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return regularExpression.test(ownerEmail!);
+  }
 
   //---------------------------------initialBaseMultipliers---------------------------------
   const [initialBaseMultipliers, setInitialBaseMultipliers] = useState<string[]>(['']);
@@ -424,6 +431,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     contractName,
     setContractName,
     ownerEmail,
+    validateEmail,
     setOwnerEmail,
     setPeriodicity,
     periodicity,
