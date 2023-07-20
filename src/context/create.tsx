@@ -88,7 +88,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   }
 
   //---------------------------------initialBaseMultipliers---------------------------------
-  const [initialBaseMultipliers, setInitialBaseMultipliers] = useState<string[]>(['New multiplier']);
+  const [initialBaseMultipliers, setInitialBaseMultipliers] = useState<string[]>(['']);
 
   const addInitialBaseMultiplier = () => {
     const newMultipliers = [...initialBaseMultipliers];
@@ -197,7 +197,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       });
     }
 
-    return totalMultiplier * parseFloat(basePayment!.replace(/,/g, ''));
+    return totalMultiplier * parseFloat(basePayment!);
   };
 
   const hasBeneficiaryWithoutAddress = () => {

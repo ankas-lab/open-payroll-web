@@ -8,6 +8,7 @@ import { useBeneficiary, usePayrollContract } from '@/hooks';
 import MultiplierCell from '@/components/contracts/multiplerCell';
 import { useAmountToClaim } from '@/hooks/useAmountToClaim';
 import Loader from '../generals/Loader';
+import { DappContext } from '@/context';
 
 interface BeneficiarieRowProps {
   contract: any | undefined;
@@ -18,6 +19,10 @@ const BeneficiaryDataRow = ({ beneficiaryAddress, contract }: BeneficiarieRowPro
   const { beneficiaryMultipliersToArray, finalPay, lastClaim } = useBeneficiary(beneficiaryAddress, contract);
   const { amountToClaim } = useAmountToClaim(contract, beneficiaryAddress);
   const { multipliersIdList } = usePayrollContract(contract);
+
+  const context = useContext(DappContext);
+
+  const { chainSymbol } = context!;
 
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
@@ -46,7 +51,7 @@ const BeneficiaryDataRow = ({ beneficiaryAddress, contract }: BeneficiarieRowPro
       {/* Final pay */}
       {finalPay !== undefined ? (
         <td className="w-[100px]">
-          <p>{finalPay}</p>
+          <p>{finalPay + ' ' + chainSymbol}</p>
         </td>
       ) : (
         <td className="w-[100px]">

@@ -51,6 +51,7 @@ interface DappContextData {
   changeContractCanClaimNameInLocalStorage: any;
   codeHash: string | undefined;
   ownerContracts: StorageContract[];
+  getOwner: any;
 }
 
 export const DappContext = createContext<DappContextData | null>(null);
@@ -243,6 +244,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
     changeContractCanClaimNameInLocalStorage,
     codeHash,
     ownerContracts,
+    getOwner,
   };
 
   return <DappContext.Provider value={contextValue}>{children}</DappContext.Provider>;

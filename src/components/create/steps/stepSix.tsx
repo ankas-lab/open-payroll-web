@@ -8,6 +8,7 @@ import { DappContext } from '@/context';
 
 import { IoIosCopy } from 'react-icons/io';
 import Loader from '@/components/generals/Loader';
+import { asContractInstantiatedEvent, formatEventName, isContractInstantiatedEvent } from 'useink/utils';
 
 const StepSix = () => {
   const context = useContext(DappContext);
@@ -19,7 +20,7 @@ const StepSix = () => {
     return null;
   }
 
-  const { D } = createContext;
+  const { D, M } = createContext;
 
   const copyToClipboard = () => {
     const textToCopy = D.contractAddress;
@@ -58,12 +59,11 @@ const StepSix = () => {
         )}
         {D.status === 'Finalized' && !D.wasDeployed && (
           <div className="flex justify-between items-baseline">
-            <Text
-              type=""
-              text="Something went wrong while deploying the contract, please try again."
-            />
+            <Text type="" text="Something went wrong while deploying the contract, please try again." />
           </div>
         )}
+
+        {D.status}
 
         {D.status === 'Finalized' && D.wasDeployed && (
           <div className="flex flex-col gap-[20px]">

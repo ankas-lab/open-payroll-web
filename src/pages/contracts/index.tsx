@@ -28,7 +28,7 @@ export default function Contracts() {
     return null;
   }
 
-  const { ownerContracts, getStoredContracts } = context;
+  const { ownerContracts, getStoredContracts, getOwner } = context;
 
   useEffect(() => {
     account === undefined && router.push('/');
@@ -36,6 +36,7 @@ export default function Contracts() {
 
   useEffect(() => {
     getStoredContracts();
+    getOwner();
   }, []);
 
   return (
