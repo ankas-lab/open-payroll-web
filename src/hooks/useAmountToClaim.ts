@@ -14,7 +14,8 @@ export function useAmountToClaim(_contract: any, address: string) {
     if (getAmountToClaim.result?.ok) {
       const data = pickDecoded(getAmountToClaim.result);
 
-      const dataToNumber = parseInt(String(data).replace(/,/g, ''));
+      const dataToNumber = parseFloat(String(data).replace(/,/g, ''));
+
       if (dataToNumber === 0) {
         setAmountToClaim(dataToNumber + ' ' + chainSymbol);
       } else {

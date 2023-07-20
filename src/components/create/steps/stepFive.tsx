@@ -291,10 +291,10 @@ const StepFive = () => {
                       </div>
                     ))}
                     <div className="w-[150px]">
-                      <p>{getTotalMultiplierByBeneficiary(bIndex)}</p>
+                      <p>{getTotalMultiplierByBeneficiary(bIndex).toFixed(2)}</p>
                     </div>
                     <div className="w-[150px]">
-                      <p>{getFinalPayByBeneficiary(bIndex)}</p>
+                      <p>{getFinalPayByBeneficiary(bIndex).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}

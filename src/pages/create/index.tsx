@@ -134,7 +134,7 @@ const Index = () => {
           {steps === 4 && (
             <div>
               <Button
-                type={rawFundsToTransfer < rawOwnerBalance ? 'active' : 'disabled'}
+                type={rawFundsToTransfer <= rawOwnerBalance ? 'active' : 'disabled'}
                 text="confirm"
                 action={() => {
                   check(), setSteps(steps + 1);
