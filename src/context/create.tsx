@@ -160,14 +160,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         if (value === '') {
           beneficiary.multipliers.splice(index, 1);
         } else {
-          multiplier[1] = parseInt(value) * 100;
+          multiplier[1] = parseFloat(value) * 100;
         }
         found = true;
       }
     });
 
     if (!found && value !== '') {
-      const newMultiplier = [multiplierIndex, parseInt(value) * 100];
+      const newMultiplier = [multiplierIndex, parseFloat(value) * 100];
       beneficiary.multipliers.push(newMultiplier);
     }
 
@@ -176,24 +176,28 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const getTotalMultiplierByBeneficiary = (beneficiaryIndex: number) => {
     const beneficiary = initialBeneficiaries[beneficiaryIndex];
-    let totalMultiplier = 0;
+
+    let totalMultiplier = 1;
+
     if (beneficiary && beneficiary.multipliers) {
       beneficiary.multipliers.forEach((multiplier: any) => {
-        totalMultiplier += parseFloat(multiplier[1]);
+        totalMultiplier *= parseFloat(multiplier[1]) / 100;
       });
     }
-    return (totalMultiplier / 100).toFixed(2);
+
+    return totalMultiplier;
   };
 
   const getFinalPayByBeneficiary = (beneficiaryIndex: number) => {
     const beneficiary = initialBeneficiaries[beneficiaryIndex];
-    let totalMultiplier = 0;
+    let totalMultiplier = 1;
     if (beneficiary && beneficiary.multipliers) {
       beneficiary.multipliers.forEach((multiplier: any) => {
-        totalMultiplier += parseFloat(multiplier[1]);
+        totalMultiplier *= parseFloat(multiplier[1]) / 100;
       });
     }
-    return (totalMultiplier === 0 ? 0 : (totalMultiplier * parseInt(basePayment!.replace(/,/g, ''))) / 100).toFixed(2);
+
+    return totalMultiplier * parseFloat(basePayment!.replace(/,/g, ''));
   };
 
   const hasBeneficiaryWithoutAddress = () => {
@@ -224,16 +228,34 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const getTotalMultipliers = () => {
     let totalMultipliers = 0;
+
     initialBeneficiaries.forEach((beneficiary: any) =>
       beneficiary.multipliers.forEach((multiplier: any) => {
-        totalMultipliers += parseFloat(multiplier[1]);
+        let totalMultipliersByBeneficiary = 1;
+        console.log('totalMultipliersByBeneficiary', totalMultipliersByBeneficiary);
+
+        totalMultipliersByBeneficiary *= parseFloat(multiplier[1]) / 100;
+        totalMultipliers += totalMultipliersByBeneficiary;
       }),
     );
-    return totalMultipliers / 100;
+
+    return totalMultipliers;
   };
 
   const calculateTotalToPay = () => {
-    const total = getTotalMultipliers() * parseInt(basePayment!);
+    let totalMultipliers = 0;
+
+    initialBeneficiaries.forEach((beneficiary: any) => {
+      let totalMultipliersByBeneficiary = 1; // Inicializamos aquí para cada beneficiario
+
+      beneficiary.multipliers.forEach((multiplier: any) => {
+        totalMultipliersByBeneficiary *= parseFloat(multiplier[1]) / 100;
+      });
+
+      totalMultipliers += totalMultipliersByBeneficiary;
+    });
+
+    const total = totalMultipliers * parseFloat(basePayment!);
     setTotalToPay(total);
   };
 

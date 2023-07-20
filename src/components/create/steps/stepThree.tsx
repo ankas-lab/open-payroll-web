@@ -51,7 +51,10 @@ const StepThree = () => {
           <Text type="h6" text="3/4" />
         </div>
         <div className="">
-          <Text type="" text="It's time to include the beneficiaries. Please provide their wallet addresses along with the corresponding multipliers applicable to each beneficiary." />
+          <Text
+            type=""
+            text="It's time to include the beneficiaries. Please provide their wallet addresses along with the corresponding multipliers applicable to each beneficiary."
+          />
         </div>
       </div>
       <div className="flex flex-col gap-[20px]">
@@ -112,10 +115,10 @@ const StepThree = () => {
                 </div>
               ))}
               <div className="w-[150px]">
-                <p>{getTotalMultiplierByBeneficiary(bIndex)}</p>
+                <p>{getTotalMultiplierByBeneficiary(bIndex).toFixed(2)}</p>
               </div>
               <div className="w-[150px]">
-                <p>{getFinalPayByBeneficiary(bIndex)}</p>
+                <p>{getFinalPayByBeneficiary(bIndex).toFixed(2)}</p>
               </div>
               <div className="w-[100px]">
                 <Button type="text" text="" icon="delete" action={() => removeInitialBeneficiary(bIndex)} />
@@ -127,7 +130,7 @@ const StepThree = () => {
         <hr className="border rounded w-full"></hr>
         <div className="flex w-full justify-between">
           <Text type="h4" text="Total to pay" />
-          <Text type="h4" text={`${parseInt(totalToPay).toFixed(2)} ${chainSymbol}`} />
+          <Text type="h4" text={`${parseFloat(totalToPay).toFixed(2)} ${chainSymbol}`} />
         </div>
         <div className="w-[200px]"></div>
       </div>

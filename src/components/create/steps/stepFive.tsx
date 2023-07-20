@@ -59,8 +59,8 @@ const StepFive = () => {
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   useEffect(() => {
-    if (periodicity !== '7200' || periodicity !== '36000' || periodicity !== '216000') {
-      setPeriodicityType('custom');
+    if (periodicity === '7200' || periodicity === '36000' || periodicity === '216000') {
+      setPeriodicityType('fixed');
     }
   }, [periodicity]);
 
@@ -195,7 +195,7 @@ const StepFive = () => {
             <Text type="h4" text="Add funds" />
             <div className="flex flex-col gap-[10px]">
               <Text type="h6" text="Total required" />
-              <Text type="" text={`${totalToPay + ' ' + chainSymbol} `} />
+              <Text type="" text={`${parseFloat(totalToPay).toFixed(2) + ' ' + chainSymbol} `} />
             </div>
             <div className="flex flex-col gap-[10px]">
               <Text type="h6" text={`Total funds in ${account.name} `} />
@@ -303,7 +303,7 @@ const StepFive = () => {
             <hr className="border rounded my-[10px] w-full"></hr>
             <div className="flex justify-between">
               <Text type="h4" text="Total payment per period" />
-              <Text type="h4" text={`${totalToPay} ${chainSymbol}`} />
+              <Text type="h4" text={`${parseFloat(totalToPay).toFixed(2) + ' ' + chainSymbol}`} />
             </div>
           </div>
         </div>
