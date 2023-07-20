@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x9ab36b5a8a89ba0a409ac2251be01de1c0c25d544fdb0d3d6246209978616183",
+    "hash": "0x25df25f4ba29b516b8cf82954bdf6c925cddc6f124dccdf4d32387fa60dbad66",
     "language": "ink! 4.2.1",
     "compiler": "rustc 1.69.0",
     "build_info": {
@@ -63,7 +63,7 @@
         ],
         "default": false,
         "docs": [
-          "Constructor for initializing the owner, the base payment, the periodicity, the initial block, the base multipliers,",
+          "Constructor that initializes the owner, the base payment, the periodicity, the initial block, the base multipliers,",
           "and the initial beneficiaries"
         ],
         "label": "new",
@@ -496,7 +496,7 @@
         "default": false,
         "docs": [
           " Deactivate a multiplier",
-          " It can be deleted a period after deactivation, only when every beneficiary has claimed the payment"
+          " It can be deleted one period after deactivation if every beneficiary has claimed the payment"
         ],
         "label": "deactivate_multiplier",
         "mutates": true,
@@ -553,7 +553,7 @@
         "default": false,
         "docs": [
           " Change ownership of the contract",
-          " This is for proposing a new owner who has to accept the ownership"
+          " This is proposing a new owner that has to accept the ownership"
         ],
         "label": "propose_transfer_ownership",
         "mutates": true,
@@ -733,7 +733,7 @@
         "default": false,
         "docs": [
           " Add a new base multiplier",
-          " It's not checking for duplicates."
+          " It's not checking for duplicates because it's just a string"
         ],
         "label": "add_base_multiplier",
         "mutates": true,
@@ -781,7 +781,7 @@
         "default": false,
         "docs": [
           " Pause the contract",
-          " Pausing will avoid the claim function only"
+          " Pausing will only avoid to call the claim function"
         ],
         "label": "pause",
         "mutates": true,
@@ -916,9 +916,9 @@
         "docs": [
           " Get current block period",
           " Read Only function",
-          " The calculation current_block - ((current_block - initial_block) % periodicity) might be a bit tricky to understand at first glance.",
-          " Let's use an example to explain it. Let's assume initial_block to be 10, periodicity to be 20, and the current_block to be 65.",
-          " current_block - self.initial_block = 65 - 10 = 55 55 % periodicity = 55 % 20 = 15.",
+          " The calculation current_block - ((current_block - self.initial_block) % self.periodicity) might be a bit tricky to understand at first glance.",
+          " Let's use an example to understand it. Assume self.initial_block to be 10, self.periodicity to be 20, and the current_block to be 65.",
+          " current_block - self.initial_block = 65 - 10 = 55 55 % self.periodicity = 55 % 20 = 15.",
           " This gives us the number of blocks past the last \"period start\" in relation to initial_block and periodicity.  current_block - 15 = 65 - 15 = 50.",
           " This is the block number where the current period started."
         ],
@@ -1051,7 +1051,7 @@
         "args": [],
         "default": false,
         "docs": [
-          " Get remaining balance after paying debts",
+          " Get total balance after paying debts",
           " Read Only function"
         ],
         "label": "get_balance_with_debts",

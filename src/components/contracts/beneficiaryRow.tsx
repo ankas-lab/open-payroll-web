@@ -26,7 +26,7 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract, contra
 
   const context = useContext(DappContext);
 
-  const { addressToShort, getBeneficiaryName } = context!;
+  const { addressToShort, getBeneficiaryName, chainSymbol } = context!;
 
   //---------------------------------UseStates---------------------------------
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
@@ -66,7 +66,7 @@ const BeneficiaryRow = ({ beneficiaryAddress, indexBeneficiary, contract, contra
       {/* Final pay */}
       {finalPay !== undefined ? (
         <td className="w-[100px]">
-          <p>{finalPay}</p>
+          <p>{finalPay.toFixed(2) + ' ' + chainSymbol}</p>
         </td>
       ) : (
         <td className="w-[100px]">

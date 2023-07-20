@@ -5,6 +5,7 @@ import Text from '../../generals/text';
 import Button from '../../generals/button';
 import { CreateContext } from '@/context/create';
 import { DappContext } from '@/context';
+import toast from 'react-hot-toast';
 
 const StepOne = () => {
   const context = useContext(DappContext);
@@ -29,6 +30,7 @@ const StepOne = () => {
     setPeriodicity,
     setBasePayment,
     basePayment,
+    validateEmail,
   } = createContext;
 
   const [periodicityType, setPeriodicityType] = useState<string>('fixed');
@@ -77,6 +79,7 @@ const StepOne = () => {
             onChange={(e) => {
               setOwnerEmail(e.target.value);
             }}
+            onBlur={() => !validateEmail() && toast('❌ Please enter a valid email address')}
           />
         </div>
         <div className="flex flex-col gap-[10px]">

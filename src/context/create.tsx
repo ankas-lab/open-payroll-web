@@ -24,6 +24,7 @@ interface CreateContextData {
   contractName: any;
   setContractName: any;
   ownerEmail: any;
+  validateEmail: any;
   setOwnerEmail: any;
   setPeriodicity: any;
   setBasePayment: any;
@@ -33,6 +34,7 @@ interface CreateContextData {
   addInitialBaseMultiplier: any;
   handleChangeInitialBaseMultiplier: any;
   handleRemoveInitialBaseMultiplier: any;
+  deleteEmptyMultipliers: any;
   initialBeneficiaries: any;
   addInitialBeneficiary: any;
   removeInitialBeneficiary: any;
@@ -79,6 +81,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const [periodicity, setPeriodicity] = useState<string | undefined>('7200');
   const [basePayment, setBasePayment] = useState<string | undefined>(undefined);
 
+  function validateEmail() {
+    const regularExpression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return regularExpression.test(ownerEmail!);
+  }
+
   //---------------------------------initialBaseMultipliers---------------------------------
   const [initialBaseMultipliers, setInitialBaseMultipliers] = useState<string[]>(['New multiplier']);
 
@@ -100,6 +108,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     setInitialBaseMultipliers(newMultipliers);
   };
 
+<<<<<<< HEAD
   const hasEmptyString = () => {
     const filledMultipliers = initialBaseMultipliers.filter((filled) => filled !== '');
     setInitialBaseMultipliers(filledMultipliers);
@@ -108,6 +117,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   useEffect(() => {
     hasEmptyString();
   }, [initialBaseMultipliers]);
+=======
+  const deleteEmptyMultipliers = () => {
+    const filledMultipliers = initialBaseMultipliers.filter((multiplier) => multiplier !== '');
+    setInitialBaseMultipliers(filledMultipliers);
+  };
+
+  useEffect(() => {}, [initialBaseMultipliers]);
+>>>>>>> la-nueva-dev
 
   //---------------------------------initialBeneficiaries---------------------------------
   const [initialBeneficiaries, setInitialBeneficiaries] = useState<any>([
@@ -170,27 +187,39 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const getTotalMultiplierByBeneficiary = (beneficiaryIndex: number) => {
     const beneficiary = initialBeneficiaries[beneficiaryIndex];
-    let totalMultiplier = 0;
+
+    let totalMultiplier = 1;
+
     if (beneficiary && beneficiary.multipliers) {
       beneficiary.multipliers.forEach((multiplier: any) => {
-        totalMultiplier += parseFloat(multiplier[1]);
+        totalMultiplier *= parseFloat(multiplier[1]) / 100;
       });
     }
-    return (totalMultiplier / 100).toFixed(2);
+
+    return totalMultiplier;
   };
 
   const getFinalPayByBeneficiary = (beneficiaryIndex: number) => {
     const beneficiary = initialBeneficiaries[beneficiaryIndex];
+<<<<<<< HEAD
 
     let totalMultiplier = 0;
+=======
+    let totalMultiplier = 1;
+>>>>>>> la-nueva-dev
     if (beneficiary && beneficiary.multipliers) {
       beneficiary.multipliers.forEach((multiplier: any) => {
-        totalMultiplier += parseFloat(multiplier[1]);
+        totalMultiplier *= parseFloat(multiplier[1]) / 100;
       });
     }
+<<<<<<< HEAD
     return (
       totalMultiplier === 0 ? parseFloat(basePayment!) : (totalMultiplier * parseFloat(basePayment!)) / 100
     ).toFixed(2);
+=======
+
+    return totalMultiplier * parseFloat(basePayment!.replace(/,/g, ''));
+>>>>>>> la-nueva-dev
   };
 
   const hasBeneficiaryWithoutAddress = () => {
@@ -221,6 +250,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const getTotalMultipliers = () => {
     let totalMultipliers = 0;
+<<<<<<< HEAD
     initialBeneficiaries.forEach((beneficiary: any) => {
       let totalMultipliersByBeneficiary = 0;
 
@@ -236,6 +266,36 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const calculateTotalToPay = () => {
     const total = getTotalMultipliers() * parseFloat(basePayment!);
+=======
+
+    initialBeneficiaries.forEach((beneficiary: any) =>
+      beneficiary.multipliers.forEach((multiplier: any) => {
+        let totalMultipliersByBeneficiary = 1;
+        console.log('totalMultipliersByBeneficiary', totalMultipliersByBeneficiary);
+
+        totalMultipliersByBeneficiary *= parseFloat(multiplier[1]) / 100;
+        totalMultipliers += totalMultipliersByBeneficiary;
+      }),
+    );
+
+    return totalMultipliers;
+  };
+
+  const calculateTotalToPay = () => {
+    let totalMultipliers = 0;
+
+    initialBeneficiaries.forEach((beneficiary: any) => {
+      let totalMultipliersByBeneficiary = 1; // Inicializamos aquí para cada beneficiario
+
+      beneficiary.multipliers.forEach((multiplier: any) => {
+        totalMultipliersByBeneficiary *= parseFloat(multiplier[1]) / 100;
+      });
+
+      totalMultipliers += totalMultipliersByBeneficiary;
+    });
+
+    const total = totalMultipliers * parseFloat(basePayment!);
+>>>>>>> la-nueva-dev
     setTotalToPay(total);
   };
 
@@ -434,6 +494,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     contractName,
     setContractName,
     ownerEmail,
+    validateEmail,
     setOwnerEmail,
     setPeriodicity,
     periodicity,
@@ -443,6 +504,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     addInitialBaseMultiplier,
     handleChangeInitialBaseMultiplier,
     handleRemoveInitialBaseMultiplier,
+    deleteEmptyMultipliers,
     initialBeneficiaries,
     addInitialBeneficiary,
     removeInitialBeneficiary,

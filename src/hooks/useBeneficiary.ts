@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useCall, useApi, ChainContract, useBlockHeader, useCallSubscription, useTokenSymbol } from 'useink';
 import { usePayrollContract } from '../hooks/usePayrollContract';
 
-import { pickDecoded, planckToDecimalFormatted } from 'useink/utils';
+import { pickDecoded, planckToDecimal, planckToDecimalFormatted } from 'useink/utils';
 import { BN } from 'bn.js';
 
 interface Beneficiary {
@@ -41,14 +41,17 @@ export function useBeneficiary(address: string, contract: ChainContract<any> | u
   };
 
   const getFinalPay = (mults: any) => {
-    let sum = 0;
+    let sum = 1;
+
     for (let i = 0; i < mults.length; i++) {
-      sum += mults[i].value / 100;
+      sum *= mults[i].value / 100;
     }
-    const rawBasePaymentBN = new BN(rawBasePayment);
-    const finalPay = rawBasePaymentBN.mul(new BN(sum));
-    const plancked = planckToDecimalFormatted(finalPay, { api: api?.api });
-    setFinalPay(plancked);
+
+    const basePayment = planckToDecimal(rawBasePayment, { api: api?.api });
+
+    const finalPay = basePayment! * sum;
+
+    setFinalPay(finalPay);
   };
 
   const getLastClaim = (lastClaim: any) => {

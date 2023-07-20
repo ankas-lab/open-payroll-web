@@ -21,10 +21,13 @@ const StepTwo = () => {
     handleRemoveInitialBaseMultiplier,
   } = createContext;
 
+<<<<<<< HEAD
   useEffect(() => {
     //setCanContinue(false);
   }, []);
 
+=======
+>>>>>>> la-nueva-dev
   return (
     <div className="flex flex-col gap-[40px]">
       <div className="flex flex-col gap-[20px]">

@@ -34,7 +34,8 @@ const Index = () => {
     return null;
   }
 
-  const { canContinue, check, deploy, D, clearAllInfo, rawFundsToTransfer, rawOwnerBalance } = createContext;
+  const { canContinue, check, deploy, D, clearAllInfo, rawFundsToTransfer, rawOwnerBalance, deleteEmptyMultipliers } =
+    createContext;
 
   //---------------------------------Steps
   const [steps, setSteps] = useState(0);
@@ -110,7 +111,17 @@ const Index = () => {
 
           {canContinue && steps < 4 && (
             <div>
-              <Button type="active" text="next" action={() => setSteps(steps + 1)} />
+              <Button
+                type="active"
+                text="next"
+                action={
+                  steps === 1
+                    ? () => {
+                        deleteEmptyMultipliers(), setSteps(steps + 1);
+                      }
+                    : () => setSteps(steps + 1)
+                }
+              />
             </div>
           )}
 
@@ -123,7 +134,7 @@ const Index = () => {
           {steps === 4 && (
             <div>
               <Button
-                type={rawFundsToTransfer < rawOwnerBalance ? 'active' : 'disabled'}
+                type={rawFundsToTransfer <= rawOwnerBalance ? 'active' : 'disabled'}
                 text="confirm"
                 action={() => {
                   check(), setSteps(steps + 1);

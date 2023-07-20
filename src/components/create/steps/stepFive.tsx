@@ -59,8 +59,11 @@ const StepFive = () => {
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   useEffect(() => {
+<<<<<<< HEAD
     console.log(periodicity);
 
+=======
+>>>>>>> la-nueva-dev
     if (periodicity === '7200' || periodicity === '36000' || periodicity === '216000') {
       setPeriodicityType('fixed');
     }
@@ -197,7 +200,7 @@ const StepFive = () => {
             <Text type="h4" text="Add funds" />
             <div className="flex flex-col gap-[10px]">
               <Text type="h6" text="Total required" />
-              <Text type="" text={`${totalToPay + ' ' + chainSymbol} `} />
+              <Text type="" text={`${parseFloat(totalToPay).toFixed(2) + ' ' + chainSymbol} `} />
             </div>
             <div className="flex flex-col gap-[10px]">
               <Text type="h6" text={`Total funds in ${account.name} `} />
@@ -293,10 +296,10 @@ const StepFive = () => {
                       </div>
                     ))}
                     <div className="w-[150px]">
-                      <p>{getTotalMultiplierByBeneficiary(bIndex)}</p>
+                      <p>{getTotalMultiplierByBeneficiary(bIndex).toFixed(2)}</p>
                     </div>
                     <div className="w-[150px]">
-                      <p>{getFinalPayByBeneficiary(bIndex)}</p>
+                      <p>{getFinalPayByBeneficiary(bIndex).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
@@ -305,7 +308,11 @@ const StepFive = () => {
             <hr className="border rounded my-[10px] w-full"></hr>
             <div className="flex justify-between">
               <Text type="h4" text="Total payment per period" />
+<<<<<<< HEAD
               <Text type="h4" text={`${parseFloat(totalToPay).toFixed(2)} ${chainSymbol}`} />
+=======
+              <Text type="h4" text={`${parseFloat(totalToPay).toFixed(2) + ' ' + chainSymbol}`} />
+>>>>>>> la-nueva-dev
             </div>
           </div>
         </div>

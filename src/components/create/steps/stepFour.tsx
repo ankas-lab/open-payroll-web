@@ -57,7 +57,7 @@ const StepFour = () => {
       </div>
       <div className="flex flex-col gap-[10px]">
         <Text type="h6" text="Total required" />
-        <Text type="" text={`${totalToPay + ' ' + chainSymbol} `} />
+        <Text type="" text={`${parseFloat(totalToPay).toFixed(2) + ' ' + chainSymbol} `} />
       </div>
       <div className="flex flex-col gap-[10px]">
         <Text type="h6" text={`Total funds in ${account.name} `} />

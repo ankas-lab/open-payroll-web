@@ -115,10 +115,10 @@ const StepThree = () => {
                 </div>
               ))}
               <div className="w-[150px]">
-                <p>{getTotalMultiplierByBeneficiary(bIndex)}</p>
+                <p>{getTotalMultiplierByBeneficiary(bIndex).toFixed(2)}</p>
               </div>
               <div className="w-[150px]">
-                <p>{getFinalPayByBeneficiary(bIndex)}</p>
+                <p>{getFinalPayByBeneficiary(bIndex).toFixed(2)}</p>
               </div>
               <div className="w-[100px]">
                 <Button type="text" text="" icon="delete" action={() => removeInitialBeneficiary(bIndex)} />
