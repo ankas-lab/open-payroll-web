@@ -108,23 +108,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     setInitialBaseMultipliers(newMultipliers);
   };
 
-<<<<<<< HEAD
-  const hasEmptyString = () => {
-    const filledMultipliers = initialBaseMultipliers.filter((filled) => filled !== '');
-    setInitialBaseMultipliers(filledMultipliers);
-  };
-
-  useEffect(() => {
-    hasEmptyString();
-  }, [initialBaseMultipliers]);
-=======
   const deleteEmptyMultipliers = () => {
     const filledMultipliers = initialBaseMultipliers.filter((multiplier) => multiplier !== '');
     setInitialBaseMultipliers(filledMultipliers);
   };
 
   useEffect(() => {}, [initialBaseMultipliers]);
->>>>>>> la-nueva-dev
 
   //---------------------------------initialBeneficiaries---------------------------------
   const [initialBeneficiaries, setInitialBeneficiaries] = useState<any>([
@@ -201,25 +190,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const getFinalPayByBeneficiary = (beneficiaryIndex: number) => {
     const beneficiary = initialBeneficiaries[beneficiaryIndex];
-<<<<<<< HEAD
-
-    let totalMultiplier = 0;
-=======
     let totalMultiplier = 1;
->>>>>>> la-nueva-dev
     if (beneficiary && beneficiary.multipliers) {
       beneficiary.multipliers.forEach((multiplier: any) => {
         totalMultiplier *= parseFloat(multiplier[1]) / 100;
       });
     }
-<<<<<<< HEAD
-    return (
-      totalMultiplier === 0 ? parseFloat(basePayment!) : (totalMultiplier * parseFloat(basePayment!)) / 100
-    ).toFixed(2);
-=======
 
     return totalMultiplier * parseFloat(basePayment!.replace(/,/g, ''));
->>>>>>> la-nueva-dev
   };
 
   const hasBeneficiaryWithoutAddress = () => {
@@ -250,23 +228,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   const getTotalMultipliers = () => {
     let totalMultipliers = 0;
-<<<<<<< HEAD
-    initialBeneficiaries.forEach((beneficiary: any) => {
-      let totalMultipliersByBeneficiary = 0;
-
-      beneficiary.multipliers.forEach((multiplier: any) => {
-        totalMultipliersByBeneficiary += parseFloat(multiplier[1]);
-      });
-      totalMultipliersByBeneficiary === 0
-        ? (totalMultipliers += 100)
-        : (totalMultipliers += totalMultipliersByBeneficiary);
-    });
-    return totalMultipliers / 100;
-  };
-
-  const calculateTotalToPay = () => {
-    const total = getTotalMultipliers() * parseFloat(basePayment!);
-=======
 
     initialBeneficiaries.forEach((beneficiary: any) =>
       beneficiary.multipliers.forEach((multiplier: any) => {
@@ -295,7 +256,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     });
 
     const total = totalMultipliers * parseFloat(basePayment!);
->>>>>>> la-nueva-dev
     setTotalToPay(total);
   };
 

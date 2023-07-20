@@ -59,11 +59,6 @@ const StepFive = () => {
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   useEffect(() => {
-<<<<<<< HEAD
-    console.log(periodicity);
-
-=======
->>>>>>> la-nueva-dev
     if (periodicity === '7200' || periodicity === '36000' || periodicity === '216000') {
       setPeriodicityType('fixed');
     }
@@ -308,11 +303,7 @@ const StepFive = () => {
             <hr className="border rounded my-[10px] w-full"></hr>
             <div className="flex justify-between">
               <Text type="h4" text="Total payment per period" />
-<<<<<<< HEAD
-              <Text type="h4" text={`${parseFloat(totalToPay).toFixed(2)} ${chainSymbol}`} />
-=======
               <Text type="h4" text={`${parseFloat(totalToPay).toFixed(2) + ' ' + chainSymbol}`} />
->>>>>>> la-nueva-dev
             </div>
           </div>
         </div>
