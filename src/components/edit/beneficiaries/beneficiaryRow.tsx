@@ -9,7 +9,7 @@ import { useApi } from 'useink';
 
 import { useBeneficiary, usePayrollContract } from '@/hooks';
 
-import { planckToDecimalFormatted } from 'useink/utils';
+import { planckToDecimal, planckToDecimalFormatted } from 'useink/utils';
 
 import { BN } from 'bn.js';
 
@@ -21,6 +21,7 @@ import { useUpdateBeneficiary } from '@/hooks/useUpdateBeneficiary';
 import Loader from '@/components/generals/Loader';
 import { IoIosCopy } from 'react-icons/io';
 import { AiFillCheckCircle } from 'react-icons/ai';
+import toast from 'react-hot-toast';
 
 interface BeneficiarieRowProps {
   indexBeneficiary: number;
@@ -55,7 +56,7 @@ const BeneficiaryRow = ({
 
   const context = useContext(DappContext);
 
-  const { addressToShort, updateBeneficiaryName, getBeneficiaryName, removeBeneficiaryFromLocalStorage } = context!;
+  const { addressToShort, updateBeneficiaryName, getBeneficiaryName, chainSymbol } = context!;
 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
@@ -73,6 +74,8 @@ const BeneficiaryRow = ({
     const roundedValue = floatValue.toFixed(2);
     const decimalValue = parseFloat(roundedValue) * 100;
 
+    decimalValue < 0 && toast('❗ Please do not enter negative numbers');
+
     const newValues = Number.isNaN(decimalValue)
       ? { ...initialMultipliers }
       : { ...initialMultipliers, [id]: String(decimalValue) };
@@ -81,17 +84,17 @@ const BeneficiaryRow = ({
   };
 
   const calculateNewFinalPayment = () => {
-    const oldMultToArray = Object.values(beneficiaryMultipliers);
     const multToArray = Object.values(newMultipliers);
-    let sum = 0;
+
+    let sum = 1;
     for (let i = 0; i < multToArray.length; i++) {
-      multToArray[i] === ''
-        ? (sum += parseInt(String(oldMultToArray[i])) / 100)
-        : (sum += parseInt(String(multToArray[i])) / 100);
+      sum *= parseFloat(String(multToArray[i])) / 100;
     }
-    const rawBasePaymentBN = new BN(rawBasePayment);
-    const result = rawBasePaymentBN.mul(new BN(sum));
-    return planckToDecimalFormatted(result, api?.api);
+
+    const basePayment = planckToDecimal(rawBasePayment, { api: api?.api });
+
+    const finalPay = basePayment! * sum;
+    return finalPay;
   };
 
   const handleUpdate = () => {
@@ -196,7 +199,13 @@ const BeneficiaryRow = ({
       {/* Final pay */}
 
       {finalPay !== undefined ? (
-        <td className="w-[100px]">{edit ? <p>{calculateNewFinalPayment()}</p> : <p>{finalPay}</p>}</td>
+        <td className="w-[100px]">
+          {edit ? (
+            <p>{calculateNewFinalPayment().toFixed(2) + ' ' + chainSymbol}</p>
+          ) : (
+            <p>{finalPay.toFixed(2) + ' ' + chainSymbol}</p>
+          )}
+        </td>
       ) : (
         <td className="w-[100px]">
           <Loader />

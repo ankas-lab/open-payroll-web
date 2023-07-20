@@ -51,9 +51,10 @@ const MultiplerCell = ({
             type="number"
             disabled={disabled}
             name={mult}
+            min={0.1}
+            step={0.1}
             max={999}
             maxLength={3}
-            pattern="[0-9]{3}"
             onChange={onChange}
             className={
               disabled
