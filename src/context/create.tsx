@@ -34,6 +34,7 @@ interface CreateContextData {
   addInitialBaseMultiplier: any;
   handleChangeInitialBaseMultiplier: any;
   handleRemoveInitialBaseMultiplier: any;
+  deleteEmptyMultipliers: any;
   initialBeneficiaries: any;
   addInitialBeneficiary: any;
   removeInitialBeneficiary: any;
@@ -107,13 +108,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     setInitialBaseMultipliers(newMultipliers);
   };
 
-  const hasEmptyString = () => {
-    return initialBaseMultipliers.includes('');
+  const deleteEmptyMultipliers = () => {
+    const filledMultipliers = initialBaseMultipliers.filter((multiplier) => multiplier !== '');
+    setInitialBaseMultipliers(filledMultipliers);
   };
 
-  useEffect(() => {
-    hasEmptyString() ? setCanContinue(false) : setCanContinue(true);
-  }, [initialBaseMultipliers]);
+  useEffect(() => {}, [initialBaseMultipliers]);
 
   //---------------------------------initialBeneficiaries---------------------------------
   const [initialBeneficiaries, setInitialBeneficiaries] = useState<any>([
@@ -441,6 +441,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     addInitialBaseMultiplier,
     handleChangeInitialBaseMultiplier,
     handleRemoveInitialBaseMultiplier,
+    deleteEmptyMultipliers,
     initialBeneficiaries,
     addInitialBeneficiary,
     removeInitialBeneficiary,
