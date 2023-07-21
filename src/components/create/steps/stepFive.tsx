@@ -266,16 +266,21 @@ const StepFive = () => {
                       />
                     </div>
 
-                    {initialBaseMultipliers.map((bm: any) => (
-                      <div key={'bm' + bm.id} className="w-[150px]">
-                        <input
-                          className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
-                          type="number"
-                          name={bIndex + bm.id}
-                          onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, bm.id, e)}
-                        />
-                      </div>
-                    ))}
+                    {initialBaseMultipliers.map((baseMultiplier: any) => {
+                      const multiplier = b.multipliers.find((m: any) => m[0] === baseMultiplier.id);
+                      const value = multiplier ? multiplier[1] : 100;
+                      return (
+                        <div key={'multiplier-' + baseMultiplier.id} className="w-[150px]">
+                          <input
+                            className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
+                            type="number"
+                            name={'multiplier-' + baseMultiplier.id}
+                            defaultValue={value / 100}
+                            onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, baseMultiplier.id, e)}
+                          />
+                        </div>
+                      );
+                    })}
 
                     {initialBaseMultipliers.length > 0 && (
                       <div className="w-[150px]">
