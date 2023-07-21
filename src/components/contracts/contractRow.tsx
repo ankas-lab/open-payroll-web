@@ -27,8 +27,15 @@ interface ContractRowProps {
 const ContractRow = ({ contract, i }: ContractRowProps) => {
   //---------------------------------Connect to contract---------------------------------
   const _contract = useContract(contract.address, metadata);
-  const { contractState, contractBalance, periodicity, totalDebts, nextBlockPeriod, amountBeneficiaries } =
-    usePayrollContract(_contract);
+  const {
+    contractState,
+    contractBalance,
+    listBeneficiaries,
+    periodicity,
+    totalDebts,
+    nextBlockPeriod,
+    amountBeneficiaries,
+  } = usePayrollContract(_contract);
 
   const [loading, setLoading] = useState<'loading' | 'done' | 'error'>('loading');
 
@@ -60,9 +67,19 @@ const ContractRow = ({ contract, i }: ContractRowProps) => {
           <td className="w-[25px] flex"></td>
         )}
         <td className="w-[150px]">
-          <p>{contract.name}</p>
+          {
+            //
+          }
+          <p>
+            {contract.name === ''
+              ? 'Contract ' + contract?.address.slice(contract?.address.length - 5, contract?.address.length)
+              : contract.name}
+          </p>
         </td>
-        <td className="w-[100px]">{amountBeneficiaries ? <p>{amountBeneficiaries}</p> : <Loader />}</td>
+        <td className="w-[100px]">
+          {' '}
+          {listBeneficiaries ? <p>{amountBeneficiaries === 0 ? 0 : amountBeneficiaries}</p> : <Loader />}
+        </td>
         <td className="w-[80px]">{periodicity ? <p>{periodicity}</p> : <Loader />}</td>
         <td className="w-[100px]">
           {contractBalance !== undefined ? (

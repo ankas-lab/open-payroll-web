@@ -36,9 +36,9 @@ const StepFour = () => {
   } = createContext;
 
   useEffect(() => {
-    rawFundsToTransfer > parseInt(rawOwnerBalance) ? setCanContinue(false) : setCanContinue(true);
-    rawFundsToTransfer > parseInt(rawOwnerBalance) &&
-      toast('❌ Sending an amount greater than what is available in your wallet is not permitted.');
+    rawFundsToTransfer > parseInt(rawOwnerBalance) || rawFundsToTransfer < 0
+      ? setCanContinue(false)
+      : setCanContinue(true);
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   return (

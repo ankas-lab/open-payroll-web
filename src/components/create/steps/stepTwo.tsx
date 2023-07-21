@@ -13,8 +13,6 @@ const StepTwo = () => {
   }
 
   const {
-    canContinue,
-    setCanContinue,
     initialBaseMultipliers,
     addInitialBaseMultiplier,
     handleChangeInitialBaseMultiplier,
@@ -42,18 +40,22 @@ const StepTwo = () => {
             <Text type="h6" text={`Name: `} />
             <input
               type="text"
-              value={multiplier}
-              onChange={(e) => handleChangeInitialBaseMultiplier(i, e.target.value)}
+              value={multiplier.name}
+              onChange={(e) => handleChangeInitialBaseMultiplier(multiplier.id, e.target.value)}
               className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
             />
             <div>
-              <Button type="text" text="" icon="delete" action={() => handleRemoveInitialBaseMultiplier(i)} />
+              <Button
+                type="text"
+                text=""
+                icon="delete"
+                action={() => handleRemoveInitialBaseMultiplier(multiplier.id)}
+              />
             </div>
           </div>
         ))}
       </div>
       <Button type="outlined" text="add another" icon="add" action={() => addInitialBaseMultiplier()} />
-      <div className="w-fit"></div>
     </div>
   );
 };

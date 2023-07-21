@@ -24,7 +24,6 @@ interface CreateContextData {
   contractName: any;
   setContractName: any;
   ownerEmail: any;
-  validateEmail: any;
   setOwnerEmail: any;
   setPeriodicity: any;
   setBasePayment: any;
@@ -76,44 +75,67 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const [canContinue, setCanContinue] = useState<boolean>(false);
 
   //---------------------------------Contract base---------------------------------
-  const [contractName, setContractName] = useState<string | undefined>(undefined);
-  const [ownerEmail, setOwnerEmail] = useState<string | undefined>(undefined);
+  const [contractName, setContractName] = useState<string | undefined>('');
+  const [ownerEmail, setOwnerEmail] = useState<string | undefined>('');
   const [periodicity, setPeriodicity] = useState<string | undefined>('7200');
   const [basePayment, setBasePayment] = useState<string | undefined>(undefined);
 
-  function validateEmail() {
-    const regularExpression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    return regularExpression.test(ownerEmail!);
-  }
+  useEffect(() => {
+    if (parseFloat(basePayment!) < 0) {
+      toast("❌ The contract's base payment cannot be negative.");
+    }
+  }, [basePayment]);
 
   //---------------------------------initialBaseMultipliers---------------------------------
-  const [initialBaseMultipliers, setInitialBaseMultipliers] = useState<string[]>(['']);
+  const [initialBaseMultipliers, setInitialBaseMultipliers] = useState([{ id: 0, name: '' }]);
 
   const addInitialBaseMultiplier = () => {
-    const newMultipliers = [...initialBaseMultipliers];
-    newMultipliers.push('New multiplier');
-    setInitialBaseMultipliers(newMultipliers);
+    setInitialBaseMultipliers((prevMultipliers) => {
+      const lastIndex = prevMultipliers.length > 0 ? prevMultipliers[prevMultipliers.length - 1].id : -1;
+      const newIndex = parseInt(String(lastIndex)) + 1;
+      return [...prevMultipliers, { id: newIndex, name: '' }];
+    });
   };
 
-  const handleChangeInitialBaseMultiplier = (index: number, value: string) => {
-    const newMultipliers = [...initialBaseMultipliers];
-    newMultipliers[index] = value;
-    setInitialBaseMultipliers(newMultipliers);
+  const handleChangeInitialBaseMultiplier = (id: number, value: string) => {
+    setInitialBaseMultipliers((prevMultipliers) => {
+      const updatedMultipliers = prevMultipliers.map((multiplier) =>
+        multiplier.id === id ? { ...multiplier, name: value } : multiplier,
+      );
+      return updatedMultipliers;
+    });
   };
 
-  const handleRemoveInitialBaseMultiplier = (index: number) => {
-    const newMultipliers = [...initialBaseMultipliers];
-    newMultipliers.splice(index, 1);
-    setInitialBaseMultipliers(newMultipliers);
+  const handleRemoveInitialBaseMultiplier = (id: number) => {
+    setInitialBaseMultipliers((prevMultipliers) => {
+      const filteredMultipliers = prevMultipliers.filter((multiplier) => multiplier.id !== id);
+      return filteredMultipliers;
+    });
+
+    handleRemoveMultipliersByBeneficiary(id);
   };
 
   const deleteEmptyMultipliers = () => {
-    const filledMultipliers = initialBaseMultipliers.filter((multiplier) => multiplier !== '');
-    setInitialBaseMultipliers(filledMultipliers);
+    setInitialBaseMultipliers((prevMultipliers) => {
+      const filledMultipliers = prevMultipliers.filter((multiplier) => multiplier.name !== '');
+      return filledMultipliers;
+    });
   };
 
-  useEffect(() => {}, [initialBaseMultipliers]);
+  const handleRemoveMultipliersByBeneficiary = (id: number) => {
+    setInitialBeneficiaries((prevBeneficiaries: any) => {
+      const newBeneficiaries = prevBeneficiaries.map((beneficiary: any) => {
+        const index = beneficiary.multipliers.findIndex((multiplier: any) => multiplier[0] === id);
+        if (index !== -1) {
+          const updatedMultipliers = [...beneficiary.multipliers];
+          updatedMultipliers.splice(index, 1);
+          return { ...beneficiary, multipliers: updatedMultipliers };
+        }
+        return beneficiary;
+      });
+      return newBeneficiaries;
+    });
+  };
 
   //---------------------------------initialBeneficiaries---------------------------------
   const [initialBeneficiaries, setInitialBeneficiaries] = useState<any>([
@@ -154,7 +176,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     const newBeneficiaries = [...initialBeneficiaries];
     const beneficiary = newBeneficiaries[beneficiaryIndex];
     let found = false;
-
     beneficiary.multipliers.forEach((multiplier: any, index: number) => {
       if (multiplier[0] === multiplierIndex) {
         if (value === '') {
@@ -197,7 +218,9 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       });
     }
 
-    return totalMultiplier * parseFloat(basePayment!);
+    const total = totalMultiplier * parseFloat(basePayment!);
+
+    return Number.isNaN(total) ? 0 : total;
   };
 
   const hasBeneficiaryWithoutAddress = () => {
@@ -216,7 +239,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       }
 
       if (addresses.has(beneficiary.address)) {
-        toast('❗ There cannot be two beneficiaries with the same addres ');
+        toast('❌ There cannot be two beneficiaries with the same addres ');
         return false;
       }
 
@@ -232,8 +255,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     initialBeneficiaries.forEach((beneficiary: any) =>
       beneficiary.multipliers.forEach((multiplier: any) => {
         let totalMultipliersByBeneficiary = 1;
-        console.log('totalMultipliersByBeneficiary', totalMultipliersByBeneficiary);
-
         totalMultipliersByBeneficiary *= parseFloat(multiplier[1]) / 100;
         totalMultipliers += totalMultipliersByBeneficiary;
       }),
@@ -246,7 +267,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     let totalMultipliers = 0;
 
     initialBeneficiaries.forEach((beneficiary: any) => {
-      let totalMultipliersByBeneficiary = 1; // Inicializamos aquí para cada beneficiario
+      let totalMultipliersByBeneficiary = 1;
 
       beneficiary.multipliers.forEach((multiplier: any) => {
         totalMultipliersByBeneficiary *= parseFloat(multiplier[1]) / 100;
@@ -256,13 +277,8 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     });
 
     const total = totalMultipliers * parseFloat(basePayment!);
-    setTotalToPay(total);
+    Number.isNaN(total) ? setTotalToPay(0) : setTotalToPay(total);
   };
-
-  useEffect(() => {
-    hasBeneficiaryWithoutAddress() ? setCanContinue(true) : setCanContinue(false);
-    console.log(initialBeneficiaries);
-  }, [initialBeneficiaries]);
 
   useEffect(() => {
     calculateTotalToPay();
@@ -286,7 +302,11 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       setRawOwnerBalance(planckToDecimal(balance?.freeBalance, { api: api?.api })!.toString().replace('.', ''));
   }, [account, balance]);
 
-  useEffect(() => {}, [rawOwnerBalance]);
+  useEffect(() => {
+    rawFundsToTransfer < 0 && toast('❌ You cannot add negative funds to the contract.');
+    rawFundsToTransfer > parseInt(rawOwnerBalance) &&
+      toast('❌ Sending an amount greater than what is available in your wallet is not permitted.');
+  }, [rawOwnerBalance, rawFundsToTransfer]);
 
   //---------------------------------Create contract---------------------------------
 
@@ -315,14 +335,31 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const formatConstructorParams = () => {
     let beneficiaries: any[][] = [];
 
+    let multipliers: string[] = [];
+
+    const newBeneficiaries = [...initialBeneficiaries];
+
+    newBeneficiaries.forEach((beneficiary: any) => {
+      const existingMultiplierIds = beneficiary.multipliers.map((m: any) => m[0]);
+      initialBaseMultipliers.forEach((baseMultiplier: any) => {
+        if (!existingMultiplierIds.includes(baseMultiplier.id)) {
+          beneficiary.multipliers.push([baseMultiplier.id, 100]);
+        }
+      });
+    });
+
     initialBeneficiaries.forEach((b: any) => {
       beneficiaries.push([b.address, b.multipliers]);
     });
 
+    initialBaseMultipliers.forEach((m: any) => {
+      multipliers.push(m.name);
+    });
+
     setFormatedConstructorParams({
       periodicity: periodicity,
-      basePayment: parseInt(basePayment!) * 10 ** decimals!,
-      initialBaseMultipliers: initialBaseMultipliers,
+      basePayment: parseFloat(basePayment!) * 10 ** decimals!,
+      initialBaseMultipliers: multipliers,
       initialBeneficiaries: beneficiaries,
     });
   };
@@ -427,11 +464,12 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   //---------------------------------Clear data---------------------------------
   const clearAllInfo = () => {
-    setContractName(undefined);
+    setContractName('');
     setOwnerEmail(undefined);
     setBasePayment(undefined);
-    setPeriodicity(undefined);
-    setInitialBaseMultipliers(['']);
+    setPeriodicity('7200');
+    setFundsToTransfer(0);
+    setInitialBaseMultipliers([{ id: 0, name: '' }]);
     setInitialBeneficiaries([
       {
         name: '',
@@ -445,7 +483,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
       initialBaseMultipliers: [],
       initialBeneficiaries: [],
     });
-    D.resetState;
+    D.resetState();
   };
 
   const contextValue: CreateContextData = {
@@ -454,7 +492,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     contractName,
     setContractName,
     ownerEmail,
-    validateEmail,
     setOwnerEmail,
     setPeriodicity,
     periodicity,

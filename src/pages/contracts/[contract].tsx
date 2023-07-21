@@ -92,7 +92,20 @@ export default function Contract() {
             <div className="flex flex-col gap-[40px]">
               <div className="flex flex-col-reverse gap-[40px] md:flex-row md:justify-between">
                 <div className="flex flex-col">
-                {contractAddress && <Text type="h2" text={`${findContractInLocalStorage(contractAddress)?.name}`} />}
+                  {contractAddress && (
+                    <Text
+                      type="h2"
+                      text={`${
+                        findContractInLocalStorage(contractAddress)?.name === ''
+                          ? 'Contract ' +
+                            findContractInLocalStorage(contractAddress)?.address.slice(
+                              findContractInLocalStorage(contractAddress)?.address.length - 5,
+                              findContractInLocalStorage(contractAddress)?.address.length,
+                            )
+                          : findContractInLocalStorage(contractAddress)?.name
+                      }`}
+                    />
+                  )}
                   <div className="flex items-center gap-2">
                     <Text type="overline" text={`${contractAddress}`} />
                     {copied ? (
@@ -135,7 +148,7 @@ export default function Contract() {
                 <div className="flex flex-col gap-[10px] ">
                   <Text type="overline" text="beneficiaries" />
 
-                  {amountBeneficiaries ? <p>{amountBeneficiaries}</p> : <Loader />}
+                  {listBeneficiaries ? <p>{amountBeneficiaries === 0 ? 0 : amountBeneficiaries}</p> : <Loader />}
                 </div>
                 <div className="flex flex-col gap-[10px] ">
                   <Text type="overline" text="base payment" />
@@ -157,43 +170,54 @@ export default function Contract() {
               <div className="flex flex-col gap-[20px]">
                 <Text type="h4" text="Beneficiaries" />
                 <div className="overflow-x-auto">
-                  <table>
-                    <tbody>
-                      <tr className="flex gap-[50px] text-left px-2">
-                        <th className="w-[150px]">
-                          <Text type="overline" text="name" />
-                        </th>
-                        <th className="w-[150px]">
-                          <Text type="overline" text="address" />
-                        </th>
-                        {multipliersIdList !== undefined &&
-                          multipliersIdList.map((m: string) => (
-                            <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
+                  {amountBeneficiaries === 0 ? (
+                    <div className="flex flex-col gap-[20px]">
+                      <Text type="h5" text="It seems that there are no beneficiaries in this contract, adds one!" />
+                      <div className="w-fit">
+                        <Link href={`/edit/${contractAddress}`}>
+                          <Button type="active" text="add beneficiary" />
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <table>
+                      <tbody>
+                        <tr className="flex gap-[50px] text-left px-2">
+                          <th className="w-[150px]">
+                            <Text type="overline" text="name" />
+                          </th>
+                          <th className="w-[150px]">
+                            <Text type="overline" text="address" />
+                          </th>
+                          {multipliersIdList !== undefined &&
+                            multipliersIdList.map((m: string) => (
+                              <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
+                            ))}
+                          <th className="w-[100px]">
+                            <Text type="overline" text="final pay" />
+                          </th>
+                          <th className="w-[100px]">
+                            <Text type="overline" text="total to claim" />
+                          </th>
+                          <th className="w-[100px]">
+                            <Text type="overline" text="last update" />
+                          </th>
+                        </tr>
+                        {listBeneficiaries &&
+                          amountBeneficiaries &&
+                          amountBeneficiaries > 0 &&
+                          listBeneficiaries.map((address: string, index: number) => (
+                            <BeneficiaryRow
+                              key={index}
+                              indexBeneficiary={index}
+                              beneficiaryAddress={address}
+                              contract={_contract}
+                              contractAddress={contractAddress}
+                            />
                           ))}
-                        <th className="w-[100px]">
-                          <Text type="overline" text="final pay" />
-                        </th>
-                        <th className="w-[100px]">
-                          <Text type="overline" text="total to claim" />
-                        </th>
-                        <th className="w-[100px]">
-                          <Text type="overline" text="last update" />
-                        </th>
-                      </tr>
-                      {listBeneficiaries &&
-                        amountBeneficiaries &&
-                        amountBeneficiaries > 0 &&
-                        listBeneficiaries.map((address: string, index: number) => (
-                          <BeneficiaryRow
-                            key={index}
-                            indexBeneficiary={index}
-                            beneficiaryAddress={address}
-                            contract={_contract}
-                            contractAddress={contractAddress}
-                          />
-                        ))}
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
+                  )}
                 </div>
               </div>
             </div>

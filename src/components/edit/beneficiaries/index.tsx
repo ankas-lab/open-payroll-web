@@ -33,49 +33,53 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="">
-          <tbody>
-            <tr className="flex gap-[50px] text-left px-2">
-              <th className="w-[100px]"></th>
-              <th className="w-[150px]">
-                <Text type="overline" text="name" />
-              </th>
-              <th className="w-[150px]">
-                <Text type="overline" text="address" />
-              </th>
-              {multipliersIdList !== undefined &&
-                multipliersIdList.map((m: string) => (
-                  <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
+      {amountBeneficiaries === 0 ? (
+        <Text type="h5" text="It seems that there are no beneficiaries in this contract, adds one!" />
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="">
+            <tbody>
+              <tr className="flex gap-[50px] text-left px-2">
+                <th className="w-[100px]"></th>
+                <th className="w-[150px]">
+                  <Text type="overline" text="name" />
+                </th>
+                <th className="w-[150px]">
+                  <Text type="overline" text="address" />
+                </th>
+                {multipliersIdList !== undefined &&
+                  multipliersIdList.map((m: string) => (
+                    <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
+                  ))}
+                <th className="w-[100px]">
+                  <Text type="overline" text="final pay" />
+                </th>
+              </tr>
+              {listBeneficiaries &&
+                amountBeneficiaries &&
+                amountBeneficiaries > 0 &&
+                listBeneficiaries.map((address: string, index: number) => (
+                  <BeneficiaryRow
+                    key={index}
+                    indexBeneficiary={index}
+                    beneficiaryAddress={address}
+                    contract={_contract}
+                    contractAddress={_contractAddress}
+                    multipliersIdList={multipliersIdList}
+                  />
                 ))}
-              <th className="w-[100px]">
-                <Text type="overline" text="final pay" />
-              </th>
-            </tr>
-            {listBeneficiaries &&
-              amountBeneficiaries &&
-              amountBeneficiaries > 0 &&
-              listBeneficiaries.map((address: string, index: number) => (
-                <BeneficiaryRow
-                  key={index}
-                  indexBeneficiary={index}
-                  beneficiaryAddress={address}
+              {showAddBeneficiary && (
+                <AddBeneficiaryRow
                   contract={_contract}
-                  contractAddress={_contractAddress}
                   multipliersIdList={multipliersIdList}
+                  contractAddress={_contractAddress!}
+                  show={setShowAddBeneficiary}
                 />
-              ))}
-            {showAddBeneficiary && (
-              <AddBeneficiaryRow
-                contract={_contract}
-                multipliersIdList={multipliersIdList}
-                contractAddress={_contractAddress!}
-                show={setShowAddBeneficiary}
-              />
-            )}
-          </tbody>
-        </table>
-      </div>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <Button
         type={showAddBeneficiary ? 'disabled' : 'outlined'}

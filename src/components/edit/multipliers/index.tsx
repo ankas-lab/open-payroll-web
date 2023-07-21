@@ -36,6 +36,9 @@ const Index = ({ _contract }: ContractProps) => {
         <div className="flex flex-col gap-[20px]">
           <Text type="h5" text="My multipliers" />
           <div className="grid grid-cols-1 w-full gap-[10px]">
+            {multipliersIdList !== undefined && multipliersIdList.length === 0 && (
+              <Text type="" text="There seems to be no multipliers in this contract, create one!" />
+            )}
             {multipliersIdList !== undefined ? (
               multipliersIdList?.map((m: any) => (
                 <MultiplierInput key={m} _contract={_contract} _multiplier={m} _active={true} />

@@ -5,6 +5,7 @@ import Button from '../../generals/button';
 import Text from '../../generals/text';
 import { CreateContext } from '@/context/create';
 import { DappContext } from '@/context';
+import toast from 'react-hot-toast';
 
 const StepThree = () => {
   const context = useContext(DappContext);
@@ -21,7 +22,6 @@ const StepThree = () => {
   const { chainSymbol } = context;
 
   const {
-    basePayment,
     initialBaseMultipliers,
     initialBeneficiaries,
     addInitialBeneficiary,
@@ -31,13 +31,11 @@ const StepThree = () => {
     getTotalMultiplierByBeneficiary,
     getFinalPayByBeneficiary,
     calculateTotalToPay,
-    setCanContinue,
     totalToPay,
     getTotalMultipliers,
   } = createContext;
 
   useEffect(() => {
-    setCanContinue(false);
     getTotalMultipliers();
     calculateTotalToPay();
   }, []);
@@ -70,12 +68,14 @@ const StepThree = () => {
             </div>
             {initialBaseMultipliers.map((m: any, i: number) => (
               <div key={'mh' + i} className="w-[150px]">
-                <Text type="overline" text={m} />
+                <Text type="overline" text={m.name} />
               </div>
             ))}
-            <div className="w-[150px]">
-              <Text type="overline" text="total multipliers" />
-            </div>
+            {initialBaseMultipliers.length > 0 && (
+              <div className="w-[150px]">
+                <Text type="overline" text="total multipliers" />
+              </div>
+            )}
             <div className="w-[150px]">
               <Text type="overline" text="final pay" />
             </div>
@@ -104,25 +104,35 @@ const StepThree = () => {
                   onChange={(e) => handleChangeInitialBeneficiary(bIndex, e)}
                 />
               </div>
-              {initialBaseMultipliers.map((bm: any, mIndex: any) => (
-                <div key={'bm' + mIndex} className="w-[150px]">
+
+              {initialBaseMultipliers.map((bm: any) => (
+                <div key={'bm' + bm.id} className="w-[150px]">
                   <input
                     className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
                     type="number"
-                    name={mIndex}
-                    onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, mIndex, e)}
+                    name={bIndex + bm.id}
+                    onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, bm.id, e)}
                   />
                 </div>
               ))}
-              <div className="w-[150px]">
-                <p>{getTotalMultiplierByBeneficiary(bIndex).toFixed(2)}</p>
-              </div>
+
+              {initialBaseMultipliers.length > 0 && (
+                <div className="w-[150px]">
+                  <p>{getTotalMultiplierByBeneficiary(bIndex).toFixed(2)}</p>
+                </div>
+              )}
               <div className="w-[150px]">
                 <p>{getFinalPayByBeneficiary(bIndex).toFixed(2)}</p>
               </div>
-              <div className="w-[100px]">
-                <Button type="text" text="" icon="delete" action={() => removeInitialBeneficiary(bIndex)} />
-              </div>
+              {initialBeneficiaries.length > 1 ? (
+                <div className="w-[100px]">
+                  <Button type="text" text="" icon="delete" action={() => removeInitialBeneficiary(bIndex)} />
+                </div>
+              ) : (
+                <div className="w-[100px]" onMouseEnter={() => toast('❗ You need at least one beneficiary.')}>
+                  <Button type="disabled outlined" text="" icon="delete" />
+                </div>
+              )}
             </div>
           ))}
         </div>

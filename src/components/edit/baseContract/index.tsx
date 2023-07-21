@@ -86,20 +86,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                 className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
               />
             </div>
-
-            <div className="flex flex-col w-full">
-              <label className={`text-[17px] font-normal text-black tracking-[0.15px] mb-[5px] ${podkova.className}`}>
-                Email
-              </label>
-              <input
-                placeholder={localStorageData !== undefined ? localStorageData.email : undefined}
-                id="email"
-                type="email"
-                name="email"
-                onChange={(e) => handleNewEmailLocalStorageData(e)}
-                className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 w-full"
-              />
-            </div>
           </div>
           <Text type="" text="This information is stored in your browser, not in the blockchain." />
           <div className="">

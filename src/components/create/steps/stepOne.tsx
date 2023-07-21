@@ -30,14 +30,15 @@ const StepOne = () => {
     setPeriodicity,
     setBasePayment,
     basePayment,
-    validateEmail,
   } = createContext;
 
   const [periodicityType, setPeriodicityType] = useState<string>('fixed');
 
   useEffect(() => {
-    if (basePayment !== undefined) {
+    if (basePayment !== undefined && basePayment > 0) {
       setCanContinue(true);
+    } else {
+      setCanContinue(false);
     }
   }, [basePayment]);
 
@@ -65,21 +66,6 @@ const StepOne = () => {
             onChange={(e) => {
               setContractName(e.target.value);
             }}
-          />
-        </div>
-        <div className="flex flex-col gap-[10px]">
-          <Text type="h6" text="Email*" />
-
-          <input
-            type="email"
-            name="ownerEmail"
-            id="ownerEmail"
-            value={ownerEmail}
-            className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
-            onChange={(e) => {
-              setOwnerEmail(e.target.value);
-            }}
-            onBlur={() => !validateEmail() && toast('❌ Please enter a valid email address')}
           />
         </div>
         <div className="flex flex-col gap-[10px]">
@@ -148,7 +134,7 @@ const StepOne = () => {
       <div className="flex flex-col gap-[10px]">
         <Text
           type=""
-          text="* The information is stored locally in your browser and not on the blockchain. Emails will be utilized for sending notifications to you or your beneficiaries, while names serve the purpose of conveniently identifying the data in the interface. Considering the ease of remembering a name compared to a code, would you agree that names are more memorable?"
+          text="* The information is stored locally in your browser and not on the blockchain. The name serve the purpose of conveniently identifying the data in the interface. Considering the ease of remembering a name compared to a code, would you agree that names are more memorable?"
         />
         <Text
           type=""

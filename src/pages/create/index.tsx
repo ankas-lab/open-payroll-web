@@ -34,8 +34,21 @@ const Index = () => {
     return null;
   }
 
-  const { canContinue, check, deploy, D, clearAllInfo, rawFundsToTransfer, rawOwnerBalance, deleteEmptyMultipliers } =
-    createContext;
+  const {
+    canContinue,
+    setCanContinue,
+    hasBeneficiaryWithoutAddress,
+    check,
+    deploy,
+    D,
+    clearAllInfo,
+    rawFundsToTransfer,
+    rawOwnerBalance,
+    deleteEmptyMultipliers,
+    initialBeneficiaries,
+    basePayment,
+    fundsToTransfer,
+  } = createContext;
 
   //---------------------------------Steps
   const [steps, setSteps] = useState(0);
@@ -47,9 +60,32 @@ const Index = () => {
     }
   };
 
+  const [canDryRun, setCanDryRun] = useState<boolean>(false);
+
   useEffect(() => {
     account === undefined && router.push('/');
   }, [account]);
+
+  useEffect(() => {
+    steps === 1 && setCanContinue(true);
+    if (steps === 2) {
+      hasBeneficiaryWithoutAddress() ? setCanContinue(true) : setCanContinue(false);
+    }
+  }, [steps, initialBeneficiaries]);
+
+  useEffect(() => {
+    if (
+      rawFundsToTransfer >= 0 &&
+      rawFundsToTransfer <= rawOwnerBalance &&
+      basePayment > 0 &&
+      basePayment !== undefined &&
+      initialBeneficiaries.length > 0
+    ) {
+      setCanDryRun(true);
+    } else {
+      setCanDryRun(false);
+    }
+  }, [rawFundsToTransfer, rawOwnerBalance, basePayment, initialBeneficiaries]);
 
   return (
     <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
@@ -97,7 +133,7 @@ const Index = () => {
             </div>
           ) : steps === 5 && D.status === 'Finalized' && !D.wasDeployed ? (
             <Link href={'/'}>
-              <Button type="outlined" text="go home" action={() => setSteps(4)} />
+              <Button type="outlined" text="go home" action={() => clearAllInfo()} />
             </Link>
           ) : steps === 5 && D.status !== 'Finalized' && D.status !== 'None' ? (
             <div>
@@ -134,7 +170,7 @@ const Index = () => {
           {steps === 4 && (
             <div>
               <Button
-                type={rawFundsToTransfer <= rawOwnerBalance ? 'active' : 'disabled'}
+                type={canDryRun ? 'active' : 'disabled'}
                 text="confirm"
                 action={() => {
                   check(), setSteps(steps + 1);
@@ -148,7 +184,11 @@ const Index = () => {
               <Button
                 type={D.status !== 'Finalized' && D.status !== 'None' ? 'disabled' : 'active'}
                 text={D.status !== 'Finalized' && D.status !== 'None' ? '' : 'deploy contract'}
-                icon={D.status !== 'Finalized' && D.status !== 'None' ? 'loading' : undefined}
+                icon={
+                  D.status === 'PendingSignature' || D.status === 'Broadcast' || D.status === 'InBlock'
+                    ? 'loading'
+                    : undefined
+                }
                 action={() => deploy()}
               />
             </div>
@@ -156,13 +196,19 @@ const Index = () => {
 
           {steps === 5 && D.wasDeployed && D.status === 'Finalized' && (
             <Link href={'/'}>
-              <Button type="active" text="go home" />
+              <Button type="active" text="go home" action={() => clearAllInfo()} />
             </Link>
           )}
 
           {steps === 5 && D.status === 'Finalized' && !D.wasDeployed && (
             <div>
-              <Button type="active" text="try again" action={() => setSteps(3)} />
+              <Button
+                type="active"
+                text="try again"
+                action={() => {
+                  setSteps(4), D.resetState();
+                }}
+              />
             </div>
           )}
         </div>

@@ -29,8 +29,6 @@ const StepFive = () => {
   const {
     contractName,
     setContractName,
-    ownerEmail,
-    setOwnerEmail,
     basePayment,
     setBasePayment,
     setPeriodicity,
@@ -51,12 +49,6 @@ const StepFive = () => {
     totalToPay,
   } = createContext;
   const { chainSymbol } = context;
-
-  useEffect(() => {
-    rawFundsToTransfer > parseInt(rawOwnerBalance) ? setCanContinue(false) : setCanContinue(true);
-    rawFundsToTransfer > parseInt(rawOwnerBalance) &&
-      toast('❌ Sending an amount greater than what is available in your wallet is not permitted.');
-  }, [rawOwnerBalance, rawFundsToTransfer]);
 
   useEffect(() => {
     if (periodicity === '7200' || periodicity === '36000' || periodicity === '216000') {
@@ -91,17 +83,6 @@ const StepFive = () => {
                   id="contractName"
                   className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
                   onChange={(e) => setContractName(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col gap-[10px] w-full">
-                <Text type="h6" text="Email" />
-                <input
-                  value={ownerEmail}
-                  type="email"
-                  name="ownerEmail"
-                  id="ownerEmail"
-                  className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
-                  onChange={(e) => setOwnerEmail(e.target.value)}
                 />
               </div>
               <div className="flex flex-col gap-[10px] w-full">
@@ -174,22 +155,30 @@ const StepFive = () => {
           </div>
 
           {/* ---------------------------------Multipliers--------------------------------- */}
-          <div className="flex flex-col gap-[20px] md:order-3">
-            <Text type="h4" text="Multipliers" />
-            {initialBaseMultipliers?.map((multiplier: any, i: number) => (
-              <div key={i} className="flex gap-[10px]">
-                <input
-                  type="text"
-                  value={multiplier}
-                  onChange={(e) => handleChangeInitialBaseMultiplier(i, e.target.value)}
-                  className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
-                />
-                <div>
-                  <Button type="text" text="" icon="delete" action={() => handleRemoveInitialBaseMultiplier(i)} />
+          {initialBaseMultipliers.length > 0 && (
+            <div className="flex flex-col gap-[20px] md:order-3">
+              <Text type="h4" text="Multipliers" />
+              {initialBaseMultipliers?.map((multiplier: any, i: number) => (
+                <div key={i} className="flex gap-[10px]">
+                  <input
+                    type="text"
+                    value={multiplier.name}
+                    onChange={(e) => handleChangeInitialBaseMultiplier(multiplier.id, e.target.value)}
+                    className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
+                  />
+                  <div>
+                    <Button
+                      type="text"
+                      text=""
+                      icon="delete"
+                      action={() => handleRemoveInitialBaseMultiplier(multiplier.id)}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
+
           {/* ---------------------------------Funds--------------------------------- */}
           <div className="flex flex-col gap-[20px] md:order-2 md:border-l-2 md:border-oppurple md:pl-[40px]">
             <Text type="h4" text="Add funds" />
@@ -231,7 +220,6 @@ const StepFive = () => {
           <div className="flex flex-col gap-[20px] md:order-4 col-span-2">
             <Text type="h4" text="Beneficiaries" />
             <div className="flex flex-col gap-[10px] overflow-x-auto">
-              {/* Header table row */}
               <div className="flex gap-[20px] text-left w-fit md:w-12/12">
                 <div className="w-[150px]">
                   <Text type="overline" text="name" />
@@ -240,21 +228,22 @@ const StepFive = () => {
                   <Text type="overline" text="address" />
                 </div>
                 {initialBaseMultipliers.map((m: any, i: number) => (
-                  <div key={'mh' + i} className="w-[150px]">
-                    <Text type="overline" text={m} />
+                  <div key={'mh' + m.id} className="w-[150px]">
+                    <Text type="overline" text={m.name} />
                   </div>
                 ))}
-                <div className="w-[150px]">
-                  <Text type="overline" text="total multipliers" />
-                </div>
+                {initialBaseMultipliers.length > 0 && (
+                  <div className="w-[150px]">
+                    <Text type="overline" text="total multipliers" />
+                  </div>
+                )}
                 <div className="w-[150px]">
                   <Text type="overline" text="final pay" />
                 </div>
                 <div className="w-[150px]"></div>
               </div>
-              {/* Beneficiarie row */}
               <div className="flex flex-col gap-[5px] pb-1">
-                {initialBeneficiaries.map((b: any, bIndex: number) => (
+                {initialBeneficiaries.map((b: any, bIndex: any) => (
                   <div key={'b' + bIndex} className="flex gap-[20px] text-left w-fit items-center">
                     <div className="w-[150px]">
                       <input
@@ -270,32 +259,33 @@ const StepFive = () => {
                       <input
                         className="w-full bg-opwhite border-2 rounded-[5px] p-1"
                         type="text"
-                        placeholder="Address"
                         value={initialBeneficiaries[bIndex]?.address!}
+                        placeholder="Address"
                         name="address"
                         onChange={(e) => handleChangeInitialBeneficiary(bIndex, e)}
                       />
                     </div>
-                    {initialBaseMultipliers.map((bm: any, mIndex: number) => (
-                      <div key={'bm' + mIndex} className="w-[150px]">
+
+                    {initialBaseMultipliers.map((bm: any) => (
+                      <div key={'bm' + bm.id} className="w-[150px]">
                         <input
                           className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] p-1"
                           type="number"
-                          value={
-                            initialBeneficiaries[bIndex]?.multipliers &&
-                            initialBeneficiaries[bIndex]?.multipliers[mIndex]?.[1] / 100
-                          }
-                          name={'mIndex' + mIndex}
-                          onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, mIndex, e)}
+                          name={bIndex + bm.id}
+                          onChange={(e) => handleChangeMultiplierInitialBeneficiary(bIndex, bm.id, e)}
                         />
                       </div>
                     ))}
-                    <div className="w-[150px]">
-                      <p>{getTotalMultiplierByBeneficiary(bIndex).toFixed(2)}</p>
-                    </div>
+
+                    {initialBaseMultipliers.length > 0 && (
+                      <div className="w-[150px]">
+                        <p>{getTotalMultiplierByBeneficiary(bIndex).toFixed(2)}</p>
+                      </div>
+                    )}
                     <div className="w-[150px]">
                       <p>{getFinalPayByBeneficiary(bIndex).toFixed(2)}</p>
                     </div>
+                    <div className="w-[100px]"></div>
                   </div>
                 ))}
               </div>
