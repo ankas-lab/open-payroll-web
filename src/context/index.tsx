@@ -52,6 +52,7 @@ interface DappContextData {
   codeHash: string | undefined;
   ownerContracts: StorageContract[];
   getOwner: any;
+  deleteContract: any;
 }
 
 export const DappContext = createContext<DappContextData | null>(null);
@@ -201,6 +202,14 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
     findContractCanClaimInLocalStorage(contractAddress, claimer);
   };
 
+  function deleteContract(contractAddressToDelete: string) {
+    setContracts((prevContracts) => {
+      const updatedContracts = prevContracts.filter((contract) => contract.address !== contractAddressToDelete);
+      localStorage.setItem('contracts', JSON.stringify(updatedContracts));
+      return updatedContracts;
+    });
+  }
+
   const getOwner = () => {
     const myContracts = contracts.filter((c) => c.owner === account?.address);
     setOwnerContracts(myContracts);
@@ -245,6 +254,7 @@ export const DappContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ chi
     codeHash,
     ownerContracts,
     getOwner,
+    deleteContract,
   };
 
   return <DappContext.Provider value={contextValue}>{children}</DappContext.Provider>;
