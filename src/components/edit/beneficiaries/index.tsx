@@ -34,7 +34,38 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
       </div>
 
       {amountBeneficiaries === 0 ? (
-        <Text type="h5" text="It seems that there are no beneficiaries in this contract, adds one!" />
+        <div className="overflow-x-auto flex flex-col gap-[40px]">
+          {showAddBeneficiary ? (
+            <table className="">
+              <tbody>
+                <tr className="flex gap-[50px] text-left px-2">
+                  <th className="w-[100px]"></th>
+                  <th className="w-[150px]">
+                    <Text type="overline" text="name" />
+                  </th>
+                  <th className="w-[150px]">
+                    <Text type="overline" text="address" />
+                  </th>
+                  {multipliersIdList !== undefined &&
+                    multipliersIdList.map((m: string) => (
+                      <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
+                    ))}
+                  <th className="w-[100px]">
+                    <Text type="overline" text="final pay" />
+                  </th>
+                </tr>
+                <AddBeneficiaryRow
+                  contract={_contract}
+                  multipliersIdList={multipliersIdList}
+                  contractAddress={_contractAddress!}
+                  show={setShowAddBeneficiary}
+                />
+              </tbody>
+            </table>
+          ) : (
+            <Text type="h5" text="It seems that there are no beneficiaries in this contract, adds one!" />
+          )}
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="">

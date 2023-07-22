@@ -11,6 +11,7 @@ import { planckToDecimalFormatted } from 'useink/utils';
 import { DappContext } from '@/context';
 import { useApi } from 'useink';
 import { BN } from 'bn.js';
+import toast from 'react-hot-toast';
 
 interface ContractProps {
   contract: any | undefined;
@@ -23,7 +24,7 @@ const AddBeneficiaryRow = ({ contract, multipliersIdList, contractAddress, show 
   //---------------------------------Api---------------------------------
   const api = useApi('rococo-contracts-testnet');
 
-  const { rawBasePayment } = usePayrollContract(contract);
+  const { rawBasePayment, listBeneficiaries } = usePayrollContract(contract);
 
   const { isAdded, handleAddBeneficiary, isProcessing } = useAddBeneficiary(contract);
 
@@ -67,6 +68,8 @@ const AddBeneficiaryRow = ({ contract, multipliersIdList, contractAddress, show 
 
   useEffect(() => {
     beneficiaryAddress !== undefined && beneficiaryAddress!.length >= 48 && setValidAddress(true);
+    listBeneficiaries?.includes(String(beneficiaryAddress)) &&
+      toast('❗ this beneficiary already exists in this contract.');
   }, [beneficiaryAddress]);
 
   useEffect(() => {
@@ -82,7 +85,13 @@ const AddBeneficiaryRow = ({ contract, multipliersIdList, contractAddress, show 
           <Button type="disabled outlined" icon="loading" />
         ) : (
           <>
-            <Button type={validAddress ? 'text' : 'disabled outlined'} icon="check" action={() => sendData()} />
+            <Button
+              type={
+                validAddress && !listBeneficiaries?.includes(String(beneficiaryAddress)) ? 'text' : 'disabled outlined'
+              }
+              icon="check"
+              action={() => sendData()}
+            />
             <Button type="text danger" icon="cancel" action={() => show(false)} />
           </>
         )}
