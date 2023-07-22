@@ -26,7 +26,7 @@ export function useDeactivateMultiplier(_contract: any) {
       setIsDeactivating(false);
       setIsDeactivated(true);
 
-      toast('👍 Multiplier successfully deactivated');
+      toast('👍 Multiplier successfully deleted');
     }
 
     if (isErrored(deactivateMultiplier)) {

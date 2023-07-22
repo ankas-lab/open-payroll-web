@@ -38,7 +38,7 @@ const BeneficiaryRow = ({
   contractAddress,
   multipliersIdList,
 }: BeneficiarieRowProps) => {
-  const { rawBasePayment } = usePayrollContract(contract);
+  const { rawBasePayment, amountBeneficiaries } = usePayrollContract(contract);
 
   const { beneficiaryMultipliersToArray, finalPay, beneficiary, beneficiaryMultipliers } = useBeneficiary(
     beneficiaryAddress,
@@ -151,7 +151,12 @@ const BeneficiaryRow = ({
           <div className="flex">
             <Button type={'text'} icon={'check'} action={() => handleUpdate()} />
             <Button type={'text'} icon={'cancel'} action={() => setEdit(false)} />
-            <Button type={'text danger'} icon={'delete'} action={() => handleDelete()} />
+
+            <Button
+              type={amountBeneficiaries! > 1 ? 'text danger' : 'disabled outlined'}
+              icon={'delete'}
+              action={() => handleDelete()}
+            />
           </div>
         )}
       </td>

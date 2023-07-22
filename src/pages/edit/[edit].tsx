@@ -96,25 +96,27 @@ export default function Edit() {
                   <Link href={`/contracts/${contractAddress}`}>
                     <BsFillArrowLeftCircleFill className="w-5 h-5 text-oppurple cursor-pointer" />
                   </Link>
-                  <Text
-                    type="h2"
-                    text={`Edit ${
-                      localStorageData.name ||
-                      localStorageData?.address.slice(0, 5) +
-                        '...' +
-                        localStorageData?.address.slice(
-                          localStorageData?.address.length - 5,
-                          localStorageData?.address.length,
-                        )
-                    }`}
-                  />
-                  <div className="flex items-center gap-2">
-                    <Text type="overline" text={`${contractAddress}`} />
-                    {copied ? (
-                      <AiFillCheckCircle className="text-opgreen cursor-pointer" onClick={() => copyToClipboard()} />
-                    ) : (
-                      <IoIosCopy className="text-oppurple cursor-pointer" onClick={() => copyToClipboard()} />
-                    )}
+                  <div className="flex flex-col">
+                    <Text
+                      type="h2"
+                      text={`Edit ${
+                        localStorageData.name ||
+                        localStorageData?.address.slice(0, 5) +
+                          '...' +
+                          localStorageData?.address.slice(
+                            localStorageData?.address.length - 5,
+                            localStorageData?.address.length,
+                          )
+                      }`}
+                    />
+                    <div className="flex items-center gap-2">
+                      <Text type="overline" text={`${contractAddress}`} />
+                      {copied ? (
+                        <AiFillCheckCircle className="text-opgreen cursor-pointer" onClick={() => copyToClipboard()} />
+                      ) : (
+                        <IoIosCopy className="text-oppurple cursor-pointer" onClick={() => copyToClipboard()} />
+                      )}
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
                     {tab === 'contract' ? (
