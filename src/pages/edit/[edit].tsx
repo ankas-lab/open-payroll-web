@@ -18,6 +18,9 @@ import NotOwner from '@/components/contracts/NotOwner';
 import { useGetOwner } from '@/hooks/useGetOwner';
 import Link from 'next/link';
 import { BsFillArrowLeftCircleFill } from 'react-icons/bs';
+import { useLocalStorageData } from '@/hooks/useLocalStorageData';
+import { AiFillCheckCircle } from 'react-icons/ai';
+import { IoIosCopy } from 'react-icons/io';
 
 export default function Edit() {
   const { account } = useWallet();
@@ -31,6 +34,8 @@ export default function Edit() {
   const [tab, setTab] = useState<string>('contract');
   const [contractAddress, setContractAddress] = useState<string>('');
   //---------------------------------Get contract---------------------------------
+  const { localStorageData } = useLocalStorageData(contractAddress);
+
   const _contract = useContract(contractAddress, metadata);
   const { owner } = useGetOwner(_contract);
   useEffect(() => {
@@ -48,6 +53,18 @@ export default function Edit() {
       setLoading('done');
     }
   }, [_contract]);
+
+  //---------------------------------Copy to Clipboard---------------------------------
+  const [copied, setCopied] = useState<boolean>(false);
+  const copyToClipboard = () => {
+    const textToCopy = contractAddress;
+    textToCopy !== undefined && navigator.clipboard.writeText(textToCopy.toString());
+    setCopied(true);
+    toast('👍 Address copied');
+    setTimeout(function () {
+      setCopied(false);
+    }, 5000);
+  };
 
   return (
     <main className={account ? `flex flex-col md:flex-row ${archivo.className}` : `flex flex-col ${archivo.className}`}>
@@ -79,7 +96,26 @@ export default function Edit() {
                   <Link href={`/contracts/${contractAddress}`}>
                     <BsFillArrowLeftCircleFill className="w-5 h-5 text-oppurple cursor-pointer" />
                   </Link>
-                  <Text type="h2" text="Edit contract" />
+                  <Text
+                    type="h2"
+                    text={`Edit ${
+                      localStorageData.name ||
+                      localStorageData?.address.slice(0, 5) +
+                        '...' +
+                        localStorageData?.address.slice(
+                          localStorageData?.address.length - 5,
+                          localStorageData?.address.length,
+                        )
+                    }`}
+                  />
+                  <div className="flex items-center gap-2">
+                    <Text type="overline" text={`${contractAddress}`} />
+                    {copied ? (
+                      <AiFillCheckCircle className="text-opgreen cursor-pointer" onClick={() => copyToClipboard()} />
+                    ) : (
+                      <IoIosCopy className="text-oppurple cursor-pointer" onClick={() => copyToClipboard()} />
+                    )}
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
                     {tab === 'contract' ? (
                       <Button type="active" text="contract" action={() => setTab('contract')} />
