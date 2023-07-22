@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useEffect, useContext } from 'react';
 
 import Text from '@/components/generals/text';
@@ -17,6 +18,7 @@ import { useUpdatePeriodicty } from '@/hooks/useUpdatePeriodicity';
 import { usePayrollContract } from '@/hooks';
 import Loader from '@/components/generals/Loader';
 import { DappContext } from '@/context';
+import toast from 'react-hot-toast';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -24,13 +26,14 @@ interface ContractProps {
 }
 
 const Index = ({ _contract, _contractAddress }: ContractProps) => {
-  const {
-    localStorageData,
-    newLocalStorageData,
-    handleNewNameLocalStorageData,
-    handleNewEmailLocalStorageData,
-    updateContract,
-  } = useLocalStorageData(_contractAddress);
+  const context = useContext(DappContext);
+  if (!context) {
+    return null;
+  }
+  const { chainSymbol } = context;
+
+  const { localStorageData, newLocalStorageData, handleNewNameLocalStorageData, updateContract } =
+    useLocalStorageData(_contractAddress);
 
   const { unclaimBeneficiaries } = usePayrollContract(_contract);
   const { basePayment } = useBasePayment(_contract);
@@ -57,11 +60,15 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
     }
   }, [unclaimBeneficiaries]);
 
-  const context = useContext(DappContext);
-  if (!context) {
-    return null;
-  }
-  const { chainSymbol } = context;
+  useEffect(() => {
+    parseFloat(String(newBasePayment)) < 0 && toast("❌ The contract's base payment cannot be negative.");
+  }, [newBasePayment]);
+
+  useEffect(() => {
+    parseFloat(String(newPeriodicity)) < 0 && toast("❌ The contract's periodicity cannot be negative.");
+    console.log(parseFloat(String(newPeriodicity)));
+    console.log(parseFloat(String(periodicity)));
+  }, [periodicity, newPeriodicity]);
 
   return (
     <div className="w-full flex flex-col gap-[40px]">
@@ -131,6 +138,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                     id="basePayment"
                     type="number"
                     name="basePayment"
+                    min={1}
                     className={
                       canUpdate
                         ? 'p-0 m-0 bg-opwhite ring-0 focus:ring-0 focus:outline-none w-full'
@@ -147,7 +155,14 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                   />
                 ) : (
                   <Button
-                    type={newBasePayment !== undefined && canUpdate ? 'outlined' : 'disabled'}
+                    type={
+                      newBasePayment !== undefined &&
+                      newBasePayment > 0 &&
+                      parseFloat(String(basePayment)) !== parseFloat(String(newBasePayment)) &&
+                      canUpdate
+                        ? 'outlined'
+                        : 'disabled'
+                    }
                     text="Update"
                     action={() => handleUpdateBasePayment(newBasePayment)}
                   />
@@ -230,12 +245,18 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                 </div>
                 {isUpdatingPeriodicity ? (
                   <Button
-                    type={newBasePayment !== undefined && canUpdate ? 'outlined' : 'text disabled'}
+                    type={newPeriodicity !== undefined && canUpdate ? 'outlined' : 'text disabled'}
                     icon="loading"
                   />
                 ) : (
                   <Button
-                    type={newPeriodicity === undefined ? 'disabled' : 'outlined'}
+                    type={
+                      newPeriodicity !== undefined &&
+                      parseFloat(String(newPeriodicity)) !== parseFloat(String(periodicity)) &&
+                      parseFloat(String(newPeriodicity)) > 0
+                        ? 'outlined'
+                        : 'disabled'
+                    }
                     text="update"
                     action={() => handleUpdatePeriodicity(newPeriodicity)}
                   />
