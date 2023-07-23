@@ -63,7 +63,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
               </tbody>
             </table>
           ) : (
-            <Text type="h5" text="It seems that there are no beneficiaries in this contract, adds one!" />
+            <Text type="h5" text="It seems that there are no beneficiaries in this contract, add one!" />
           )}
         </div>
       ) : (

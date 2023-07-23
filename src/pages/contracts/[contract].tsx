@@ -172,7 +172,7 @@ export default function Contract() {
                 <div className="overflow-x-auto">
                   {amountBeneficiaries === 0 ? (
                     <div className="flex flex-col gap-[20px]">
-                      <Text type="h5" text="It seems that there are no beneficiaries in this contract, adds one!" />
+                      <Text type="h5" text="It seems that there are no beneficiaries in this contract, add one!" />
                       <div className="w-fit">
                         <Link href={`/edit/${contractAddress}`}>
                           <Button type="active" text="add beneficiary" />

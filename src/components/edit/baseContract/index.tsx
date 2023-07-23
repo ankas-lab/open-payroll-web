@@ -79,7 +79,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
     <div className="w-full flex flex-col gap-[40px]">
       <div className="">
         <Text type="h4" text="Contract" />
-        <Text type="" text="Here is the primary information for your contract." />
+        <Text type="" text="This is the main information of your contract." />
       </div>
       <div className="flex flex-col gap-[40px]">
         <div className="flex flex-col gap-[20px]">
