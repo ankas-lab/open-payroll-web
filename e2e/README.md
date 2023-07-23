@@ -7,7 +7,7 @@ We embarked on this project with the full expectation that we would be able to f
 
 The primary challenge was tied to the transaction signing process. We couldn't find a way to make our tool to interface with the sign transactions and consequently, that interaction could not be recorded. Despite this setback, we redirected our approach to compensate for this shortfall. We committed to documenting all other processes that didn't involve the wallet interactions, and succeeded in this venture.
 
-As we proceeded further, we encountered yet another unanticipated hurdle while attempting to use the selenium-side-runner. This console tool, typically used to automate all interactions, failed to perform as anticipated because each test suite ran in a unique browser instance. This meant that none of these instances had the necessary preinstalled extensions. Most notably, they were devoid of the requisite wallet that would have been essential for complete execution of our initial plan.
+As we proceeded further, we encountered yet another unanticipated hurdle while attempting to use the [selenium-side-runner](https://www.selenium.dev/selenium-ide/docs/en/introduction/command-line-runner). This console tool, typically used to automate all interactions, failed to perform as anticipated because each test suite ran in a unique browser instance. This meant that none of these instances had the necessary preinstalled extensions. Most notably, they were devoid of the requisite wallet that would have been essential for complete execution of our initial plan.
 
 We remain committed to solving these challenges and optimising the testing process. Please be assured that our team will keep working to have this solved as soon as possible.
 
@@ -16,8 +16,8 @@ We remain committed to solving these challenges and optimising the testing proce
 Please follow these steps:
 
 1. **Install Extensions**
-   - Install the `Selenium IDE` extension.
-   - Install a wallet extension. We recommend `SubWallet`.
+   - Install the `Selenium IDE` extension. (https://www.selenium.dev/selenium-ide/)
+   - Install a wallet extension. We recommend `SubWallet`.(https://www.subwallet.app/)
 
 2. **Configure Wallet**
    - Set up your wallet to provide a valid account. 
