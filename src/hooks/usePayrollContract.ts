@@ -68,7 +68,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getContractBalance.result?.ok) {
       const data = pickDecoded(getContractBalance.result!);
-      const dataToNumber = parseInt(data?.replace(/,/g, ''));
+      const dataToNumber = parseFloat(data?.replace(/,/g, ''));
       setRawContractBalance(dataToNumber);
       setContractBalance(
         planckToDecimal(dataToNumber, { api: api?.api, decimals: decimals })?.toFixed(2) + ' ' + token!,
@@ -98,7 +98,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   }, [getListBeneficiaries.result]);
 
   useEffect(() => {
-    if (getTotalDebts.result && api?.api) {
+    if (getTotalDebts.result?.ok && api?.api) {
       let data = stringNumberToBN(pickDecoded(getTotalDebts.result!));
       setTotalDebts(planckToDecimal(data, { api: api?.api, decimals: decimals })?.toFixed(2) + ' ' + token!);
     }

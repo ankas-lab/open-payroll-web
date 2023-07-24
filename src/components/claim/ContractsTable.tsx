@@ -32,7 +32,7 @@ const ContractsTable = () => {
         </td>
         <td className="w-[100px] flex">
           <Link href={`claim/${contract.contract.contractAddress}`}>
-            <Button type="outlined" text="claim" />
+            <Button type="outlined" text="view" />
           </Link>
         </td>
       </tr>

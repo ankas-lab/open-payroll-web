@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useApi, useCallSubscription, useTokenSymbol } from 'useink';
+import { useApi, useCallSubscription, useChainDecimals, useTokenSymbol } from 'useink';
 import { pickDecoded, pickResultOk, planckToDecimal, planckToDecimalFormatted } from 'useink/utils';
 
 export function useAmountToClaim(_contract: any, address: string) {
   const api = useApi('rococo-contracts-testnet');
+  const decimals = useChainDecimals('rococo-contracts-testnet');
   const chainSymbol = useTokenSymbol('rococo-contracts-testnet');
   const [amountToClaim, setAmountToClaim] = useState<undefined | any>(undefined);
   const [rawAmountToClaim, setRawAmountToClaim] = useState<undefined | number>(undefined);
@@ -19,7 +20,7 @@ export function useAmountToClaim(_contract: any, address: string) {
       if (dataToNumber === 0) {
         setAmountToClaim(dataToNumber + ' ' + chainSymbol);
       } else {
-        setAmountToClaim(planckToDecimalFormatted(dataToNumber, { api: api?.api }));
+        setAmountToClaim(planckToDecimal(dataToNumber, { api: api?.api, decimals: decimals }) + ' ' + chainSymbol);
       }
       setRawAmountToClaim(dataToNumber);
     }

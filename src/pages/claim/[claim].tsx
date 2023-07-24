@@ -194,7 +194,7 @@ export default function Claim() {
                             <MultiplierHeaderCell key={m} contract={_contract} multiplierId={m} />
                           ))}
                         <th className="w-[100px]">
-                          <Text type="overline" text="final pay" />
+                          <Text type="overline" text="final payment per period" />
                         </th>
                         <th className="w-[100px]">
                           <Text type="overline" text="total to claim" />

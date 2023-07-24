@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useState, useEffect, useMemo, useContext } from 'react';
 import { BN } from 'bn.js';
 import {
   useApi,
@@ -17,6 +17,7 @@ import metadata from '@/contract/open_payroll.json';
 import { pickDecoded, planckToDecimal, stringNumberToBN } from 'useink/utils';
 import { useTxNotifications } from 'useink/notifications';
 import toast from 'react-hot-toast';
+import { DappContext } from '.';
 
 interface CreateContextData {
   canContinue: any;
@@ -68,6 +69,9 @@ interface Beneficiary {
 export const CreateContext = createContext<CreateContextData | null>(null);
 
 export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+  const context = useContext(DappContext);
+
+  const { getStoredContracts, getOwner } = context!;
   //---------------------------------Generals---------------------------------
   const { account } = useWallet();
   const api = useApi('rococo-contracts-testnet');
@@ -445,6 +449,8 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     }
 
     localStorage.setItem('contracts', JSON.stringify(contracts));
+    getStoredContracts();
+    getOwner();
   };
 
   useMemo(() => {

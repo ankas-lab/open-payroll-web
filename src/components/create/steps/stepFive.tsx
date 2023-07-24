@@ -11,6 +11,7 @@ import { DappContext } from '@/context';
 import { useApi, useBalance, useWallet } from 'useink';
 import { planckToDecimal } from 'useink/utils';
 import toast from 'react-hot-toast';
+import Loader from '@/components/generals/Loader';
 
 const StepFive = () => {
   const { account } = useWallet();
@@ -181,39 +182,45 @@ const StepFive = () => {
 
           {/* ---------------------------------Funds--------------------------------- */}
           <div className="flex flex-col gap-[20px] md:order-2 md:border-l-2 md:border-oppurple md:pl-[40px]">
-            <Text type="h4" text="Add funds" />
-            <div className="flex flex-col gap-[10px]">
-              <Text type="h6" text="Total required" />
-              <Text type="" text={`${parseFloat(totalToPay).toFixed(2) + ' ' + chainSymbol} `} />
-            </div>
-            <div className="flex flex-col gap-[10px]">
-              <Text type="h6" text={`Total funds in ${account.name} `} />
-              <Text
-                type=""
-                text={`${
-                  balance && planckToDecimal(balance.freeBalance, { api: api?.api })?.toFixed(2) + ' ' + chainSymbol
-                } `}
-              />
-            </div>
-            <div className="flex flex-col gap-[10px]">
-              <Text type="h6" text="To add" />
-              <div className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 flex">
-                <input
-                  type="number"
-                  name="fundsToTransfer"
-                  min={0}
-                  max={parseInt(rawOwnerBalance).toFixed(2)}
-                  step={0.01}
-                  value={fundsToTransfer}
-                  id="fundsToTransfer"
-                  className="bg-opwhite without-ring w-full"
-                  onChange={(e) => {
-                    handleChangeFundsToTransfer(e);
-                  }}
-                />
-                <p className="mx-5">{chainSymbol}</p>
-              </div>
-            </div>
+            {account && balance ? (
+              <>
+                <Text type="h4" text="Add funds" />
+                <div className="flex flex-col gap-[10px]">
+                  <Text type="h6" text="Total required" />
+                  <Text type="" text={`${parseFloat(totalToPay).toFixed(2) + ' ' + chainSymbol} `} />
+                </div>
+                <div className="flex flex-col gap-[10px]">
+                  <Text type="h6" text={`Total funds in ${account.name} `} />
+                  <Text
+                    type=""
+                    text={`${
+                      balance && planckToDecimal(balance.freeBalance, { api: api?.api })?.toFixed(2) + ' ' + chainSymbol
+                    } `}
+                  />
+                </div>
+                <div className="flex flex-col gap-[10px]">
+                  <Text type="h6" text="To add" />
+                  <div className="bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5 flex">
+                    <input
+                      type="number"
+                      name="fundsToTransfer"
+                      min={0}
+                      max={parseInt(rawOwnerBalance).toFixed(2)}
+                      step={0.01}
+                      value={fundsToTransfer}
+                      id="fundsToTransfer"
+                      className="bg-opwhite without-ring w-full"
+                      onChange={(e) => {
+                        handleChangeFundsToTransfer(e);
+                      }}
+                    />
+                    <p className="mx-5">{chainSymbol}</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Loader />
+            )}
           </div>
 
           {/* ---------------------------------Beneficiaries--------------------------------- */}

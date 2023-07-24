@@ -27,13 +27,11 @@ interface ContractProps {
 }
 
 const Index = ({ _contract, _contractAddress }: ContractProps) => {
-  const router = useRouter();
-
   const context = useContext(DappContext);
   if (!context) {
     return null;
   }
-  const { chainSymbol, deleteContract } = context;
+  const { chainSymbol } = context;
 
   const { localStorageData, newLocalStorageData, handleNewNameLocalStorageData, updateContract } =
     useLocalStorageData(_contractAddress);
@@ -48,8 +46,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
   const [newBasePayment, setNewBasePayment] = useState<number | bigint | undefined>(undefined);
   const [newPeriodicity, setNewPeriodicity] = useState<any | undefined>(undefined);
   const [canUpdate, setCanUpdate] = useState<boolean>(false);
-
-  const [contractAddressEntered, setContractAddressEntered] = useState<string | undefined>(undefined);
 
   const handleInputNewBasePayment = (e: any) => {
     setNewBasePayment(e.target.value);
@@ -119,7 +115,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
                   <Text type="h6" text="You can't update yet" />
                   <Text
                     type=""
-                    text="You can't update this information yet, you need all your beneficiaries to claim their payment (or you can do it for them.)"
+                    text="You cannot update this contract information, wait until all beneficiaries have claimed their payments."
                   />
                 </div>
               </div>
@@ -270,28 +266,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
             ) : (
               <Loader />
             )}
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-[20px]">
-          <Text type="h5" text="Forget contract" />
-          <Text type="" text="Enter the contract address to forget it from localStorage." />
-          <div className="flex gap-[20px]">
-            <input
-              className="w-full bg-opwhite border-2 border-oppurple rounded-[5px] py-1.5 px-1.5"
-              id="enteredAddress"
-              type="text"
-              name="enteredAddress"
-              onChange={(e) => setContractAddressEntered(e.target.value)}
-            />
-
-            <Button
-              type={contractAddressEntered === _contractAddress ? 'danger' : 'disabled'}
-              text="forget"
-              action={() => {
-                deleteContract(_contractAddress), router.push('/contracts');
-              }}
-            />
           </div>
         </div>
       </div>

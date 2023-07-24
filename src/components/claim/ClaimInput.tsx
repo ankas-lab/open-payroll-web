@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Text from '../../components/generals/text';
 import Button from '../../components/generals/button';
-import { useApi, useContract, useWallet } from 'useink';
+import { useApi, useBlockHeader, useChainDecimals, useContract, useWallet } from 'useink';
 import { useClaim } from '@/hooks/useClaim';
 import { useRouter } from 'next/router';
 import metadata from '../../contract/open_payroll.json';
@@ -19,7 +19,9 @@ const ClaimInput = () => {
   const contractAddress = claim?.toString();
 
   const api = useApi('rococo-contracts-testnet');
+  const decimals = useChainDecimals('rococo-contracts-testnet');
 
+  const blockHeader = useBlockHeader();
   const { account } = useWallet();
   const _contract = useContract(contractAddress!, metadata);
   const { handleClaimPayment, isClaiming, isClaimed } = useClaim(_contract);
@@ -38,10 +40,10 @@ const ClaimInput = () => {
       setMax(0);
     }
     if (rawContractBalance! >= rawAmountToClaim!) {
-      setMax(planckToDecimal(rawAmountToClaim, api?.api));
+      setMax(planckToDecimal(rawAmountToClaim, { api: api?.api, decimals: decimals }));
     }
     if (rawContractBalance! < rawAmountToClaim! && rawContractBalance! > 33333333) {
-      setMax(planckToDecimal(rawContractBalance, api?.api));
+      setMax(planckToDecimal(rawContractBalance, { api: api?.api, decimals: decimals }));
     }
   };
 
@@ -51,7 +53,10 @@ const ClaimInput = () => {
 
   useEffect(() => {
     if (rawContractBalance !== undefined && rawAmountToClaim !== undefined) {
+      calculateMax();
     }
+    console.log('rawContractBalance', rawContractBalance);
+    console.log('rawAmountToClaim', rawAmountToClaim);
   }, [rawContractBalance, rawAmountToClaim]);
 
   const context = useContext(DappContext);
@@ -90,7 +95,7 @@ const ClaimInput = () => {
           </div>
           <div className="flex flex-col gap-2">
             <Button
-              type={max! > 0 ? 'outlined' : 'disabled'}
+              type={max! > 0 && parseFloat(nextBlockPeriod!) < blockHeader?.blockNumber! ? 'outlined' : 'disabled'}
               text="max"
               action={() => setInputValue(max!.toFixed(2))}
             />
@@ -99,7 +104,7 @@ const ClaimInput = () => {
               <Button type={'disabled'} icon={'loading'} />
             ) : (
               <Button
-                type={max! > 0 ? 'active' : 'disabled'}
+                type={max! > 0 && parseFloat(nextBlockPeriod!) < blockHeader?.blockNumber! ? 'active' : 'disabled'}
                 text={'claim'}
                 action={() => {
                   handleClaimPayment(account?.address, inputValue);
@@ -107,7 +112,7 @@ const ClaimInput = () => {
               />
             )}
           </div>
-          {nextBlockPeriod! && (
+          {parseFloat(nextBlockPeriod!) > blockHeader?.blockNumber! && (
             <div className="bg-opdanger rounded p-[10px] pr-[20px] flex gap-3 text-[#FFFFFF]">
               <IoIosAlert className="h-12 w-12 m-0 " />
               <div className="flex flex-col gap-3">

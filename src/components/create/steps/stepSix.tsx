@@ -29,6 +29,10 @@ const StepSix = () => {
   };
 
   useEffect(() => {
+    console.log(M);
+  }, [M]);
+
+  useEffect(() => {
     D.status === 'PendingSignature' && toast(`✍ Please sign the transaction in your wallet`);
   }, [D.status]);
 
@@ -69,6 +73,26 @@ const StepSix = () => {
               <Text type="" text={`${D.contractAddress}`} />
               <IoIosCopy onClick={() => copyToClipboard()} className="w-4 h-4 text-oppurple cursor-pointer" />
             </div>
+          </div>
+        )}
+
+        {D.gasConsumed && (
+          <div className="rounded p-2 border-oppurple border-2">
+            <h3 className="test-xs uppercase font-semibold">Gas Consumed</h3>
+            <ul className="p-0 list-none">
+              <li>refTime: {D.gasConsumed.refTime.toString()}</li>
+              <li>proof size: {D.gasConsumed.proofSize.toString()}</li>
+            </ul>
+          </div>
+        )}
+
+        {D.gasRequired && (
+          <div className="rounded p-2 border-oppurple border-2">
+            <h3 className="test-xs uppercase font-semibold">Gas Required</h3>
+            <ul className="p-0 list-none">
+              <li>refTime: {D.gasRequired.refTime.toString()}</li>
+              <li>proof size: {D.gasRequired.proofSize.toString()}</li>
+            </ul>
           </div>
         )}
       </div>

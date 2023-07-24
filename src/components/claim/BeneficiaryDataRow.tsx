@@ -51,7 +51,7 @@ const BeneficiaryDataRow = ({ beneficiaryAddress, contract }: BeneficiarieRowPro
       {/* Final pay */}
       {finalPay !== undefined ? (
         <td className="w-[100px]">
-          <p>{finalPay + ' ' + chainSymbol}</p>
+          <p>{finalPay.toFixed(2) + ' ' + chainSymbol}</p>
         </td>
       ) : (
         <td className="w-[100px]">

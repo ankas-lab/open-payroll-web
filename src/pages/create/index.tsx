@@ -64,6 +64,7 @@ const Index = () => {
 
   useEffect(() => {
     account === undefined && router.push('/');
+    console.log(account);
   }, [account]);
 
   useEffect(() => {
