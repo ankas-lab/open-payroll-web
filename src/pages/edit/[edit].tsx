@@ -12,7 +12,7 @@ import metadata from '../../contract/open_payroll.json';
 import Contract from '@/components/edit/baseContract';
 import Multipliers from '@/components/edit/multipliers';
 import Beneficiaries from '@/components/edit/beneficiaries';
-import Forget from '@/components/edit/forget';
+import Forget from '@/components/edit/forget/forget';
 import toast, { Toaster } from 'react-hot-toast';
 import Loader from '@/components/generals/Loader';
 import NotOwner from '@/components/contracts/NotOwner';
@@ -99,8 +99,8 @@ export default function Edit() {
                   <Link href={`/contracts/${contractAddress}`}>
                     <BsFillArrowLeftCircleFill className="w-5 h-5 text-oppurple cursor-pointer" />
                   </Link>
-                  <div className="flex justify-between items-baseline">
-                    <div className="flex flex-col">
+                  <div className="flex justify-between items-baseline ">
+                    <div className="flex flex-col ">
                       <Text
                         type="h2"
                         text={`Edit ${
@@ -125,7 +125,9 @@ export default function Edit() {
                         )}
                       </div>
                     </div>
-                    <Button type="text" text="forget" action={() => setForget(true)} />
+                    <div>
+                      <Button type="text" text="forget" action={() => setForget(true)} />
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
                     {tab === 'contract' ? (
