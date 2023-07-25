@@ -33,12 +33,9 @@ const Index = ({ _contract }: ContractProps) => {
         />
       </div>
 
-      <div className="p-2 border-2 border-oppurple rounded-md flex gap-3">
+      <div className="p-2 border-2 border-oppurple rounded-md flex gap-3 w-fit">
         <IoIosAlert className="min-h-[20px] min-w-[20px] m-0 text-oppurple" />
-        <Text
-          type=""
-          text="Multipliers that are deleted in the current period will remain until the next period starts, once it starts, it will be deleted. "
-        />
+        <Text type="" text="Multipliers that are deleted will remain active until the next period starts. " />
       </div>
 
       <div className="flex flex-col gap-[40px]">
