@@ -67,8 +67,6 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
 
   useEffect(() => {
     parseFloat(String(newPeriodicity)) < 0 && toast("❌ The contract's periodicity cannot be negative.");
-    console.log(parseFloat(String(newPeriodicity)));
-    console.log(parseFloat(String(periodicity)));
   }, [periodicity, newPeriodicity]);
 
   return (

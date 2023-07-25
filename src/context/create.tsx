@@ -297,7 +297,6 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const handleChangeFundsToTransfer = (e: any) => {
     const { value } = e.target;
     setFundsToTransfer(value);
-    console.log(decimals);
 
     const raw = value * 10 ** decimals!;
     setRawFundsToTransfer(raw);

@@ -13,7 +13,6 @@ interface ContractProps {
 
 const Index = ({ _contractAddress, _setForget }: ContractProps) => {
   const router = useRouter();
-  console.log(_contractAddress);
   const context = useContext(DappContext);
   if (!context) {
     return null;

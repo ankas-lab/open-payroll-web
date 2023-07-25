@@ -62,11 +62,6 @@ const ClaimInput = () => {
     handleClaimPaymentTxGas(account?.address, inputValue);
   }, [inputValue]);
 
-  useEffect(() => {
-    console.log(rawNextBlockPeriod!);
-    console.log(blockHeader?.blockNumber!);
-  }, [rawNextBlockPeriod, blockHeader]);
-
   const context = useContext(DappContext);
 
   if (!context) {
