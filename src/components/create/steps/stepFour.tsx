@@ -37,9 +37,7 @@ const StepFour = () => {
   } = createContext;
 
   useEffect(() => {
-    rawFundsToTransfer > parseInt(rawOwnerBalance) || rawFundsToTransfer < 0
-      ? setCanContinue(false)
-      : setCanContinue(true);
+    fundsToTransfer >= rawOwnerBalance || fundsToTransfer < 0 ? setCanContinue(false) : setCanContinue(true);
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   return (
@@ -78,7 +76,6 @@ const StepFour = () => {
                 type="number"
                 name="fundsToTransfer"
                 min={0}
-                max={parseInt(rawOwnerBalance).toFixed(2)}
                 step={0.01}
                 value={fundsToTransfer}
                 id="fundsToTransfer"

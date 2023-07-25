@@ -76,8 +76,8 @@ const Index = () => {
 
   useEffect(() => {
     if (
-      rawFundsToTransfer >= 0 &&
-      rawFundsToTransfer <= rawOwnerBalance &&
+      fundsToTransfer >= 0 &&
+      fundsToTransfer <= rawOwnerBalance &&
       basePayment > 0 &&
       basePayment !== undefined &&
       initialBeneficiaries.length > 0
@@ -184,7 +184,13 @@ const Index = () => {
             <div>
               <Button
                 type={D.status !== 'Finalized' && D.status !== 'None' ? 'disabled' : 'active'}
-                text={D.status !== 'Finalized' && D.status !== 'None' ? '' : 'deploy contract'}
+                text={
+                  D.status !== 'Finalized' &&
+                  D.status !== 'None' &&
+                  D.gasRequired.proofSize.toString() < rawOwnerBalance
+                    ? ''
+                    : 'deploy contract'
+                }
                 icon={
                   D.status === 'PendingSignature' || D.status === 'Broadcast' || D.status === 'InBlock'
                     ? 'loading'

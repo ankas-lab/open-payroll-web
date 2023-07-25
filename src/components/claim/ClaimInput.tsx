@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Text from '../../components/generals/text';
 import Button from '../../components/generals/button';
-import { useApi, useBlockHeader, useChainDecimals, useContract, useWallet } from 'useink';
+import { useApi, useBalance, useBlockHeader, useChainDecimals, useContract, useWallet } from 'useink';
 import { useClaim } from '@/hooks/useClaim';
 import { useRouter } from 'next/router';
 import metadata from '../../contract/open_payroll.json';
-import { useBeneficiary, usePayrollContract } from '@/hooks';
-import { planckToDecimal, planckToDecimalFormatted } from 'useink/utils';
-import Loader from '../generals/Loader';
+import { usePayrollContract } from '@/hooks';
+import { planckToDecimal } from 'useink/utils';
+
 import { useAmountToClaim } from '@/hooks/useAmountToClaim';
 import { DappContext } from '@/context';
 import { IoIosAlert } from 'react-icons/io';
@@ -23,12 +23,13 @@ const ClaimInput = () => {
 
   const blockHeader = useBlockHeader();
   const { account } = useWallet();
+  const balance = useBalance(account);
   const _contract = useContract(contractAddress!, metadata);
-  const { handleClaimPayment, isClaiming, isClaimed } = useClaim(_contract);
+  const { handleClaimPayment, isClaiming, isClaimed, claimPaymentGas, handleClaimPaymentTxGas } = useClaim(_contract);
   const { rawAmountToClaim } = useAmountToClaim(_contract, account?.address);
-  const { rawContractBalance, nextBlockPeriod } = usePayrollContract(_contract);
+  const { rawContractBalance, nextBlockPeriod, rawNextBlockPeriod } = usePayrollContract(_contract);
 
-  const [inputValue, setInputValue] = useState<number | string | undefined>();
+  const [inputValue, setInputValue] = useState<number | string | undefined>(0);
   const [max, setMax] = useState<number | undefined>(0);
 
   const handleInputChange = (e: any) => {
@@ -55,9 +56,16 @@ const ClaimInput = () => {
     if (rawContractBalance !== undefined && rawAmountToClaim !== undefined) {
       calculateMax();
     }
-    console.log('rawContractBalance', rawContractBalance);
-    console.log('rawAmountToClaim', rawAmountToClaim);
   }, [rawContractBalance, rawAmountToClaim]);
+
+  useEffect(() => {
+    handleClaimPaymentTxGas(account?.address, inputValue);
+  }, [inputValue]);
+
+  useEffect(() => {
+    console.log(rawNextBlockPeriod!);
+    console.log(blockHeader?.blockNumber!);
+  }, [rawNextBlockPeriod, blockHeader]);
 
   const context = useContext(DappContext);
 
@@ -93,18 +101,26 @@ const ClaimInput = () => {
               of {max?.toFixed(2)} {chainSymbol}
             </p>
           </div>
+
           <div className="flex flex-col gap-2">
             <Button
-              type={max! > 0 && parseFloat(nextBlockPeriod!) < blockHeader?.blockNumber! ? 'outlined' : 'disabled'}
+              type={
+                max! > 0 && claimPaymentGas! < planckToDecimal(balance?.freeBalance, { api: api?.api })!
+                  ? 'outlined'
+                  : 'disabled'
+              }
               text="max"
               action={() => setInputValue(max!.toFixed(2))}
             />
-
             {isClaiming ? (
               <Button type={'disabled'} icon={'loading'} />
             ) : (
               <Button
-                type={max! > 0 && parseFloat(nextBlockPeriod!) < blockHeader?.blockNumber! ? 'active' : 'disabled'}
+                type={
+                  max! > 0 && claimPaymentGas! < planckToDecimal(balance?.freeBalance, { api: api?.api })!
+                    ? 'active'
+                    : 'disabled'
+                }
                 text={'claim'}
                 action={() => {
                   handleClaimPayment(account?.address, inputValue);
@@ -112,15 +128,28 @@ const ClaimInput = () => {
               />
             )}
           </div>
-          {parseFloat(nextBlockPeriod!) > blockHeader?.blockNumber! && (
+
+          {rawContractBalance! <= 33333333 ||
+            (rawAmountToClaim! <= 33333333 && (
+              <div className="bg-opdanger rounded p-[10px] pr-[20px] flex gap-3 text-[#FFFFFF]">
+                <IoIosAlert className="min-h-[20px] min-w-[20px] m-0" />
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <Text
+                      type=""
+                      text={`You cannot claim your payment yet. If the contract has no funds, try to contact the owner of the contract. If you still have no funds to claim, wait ${nextBlockPeriod} for the payment period to expire. `}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+          {claimPaymentGas! > planckToDecimal(balance?.freeBalance, { api: api?.api })! && (
             <div className="bg-opdanger rounded p-[10px] pr-[20px] flex gap-3 text-[#FFFFFF]">
-              <IoIosAlert className="h-12 w-12 m-0 " />
+              <IoIosAlert className="min-h-[20px] min-w-[20px] m-0 " />
               <div className="flex flex-col gap-3">
                 <div>
-                  <Text
-                    type=""
-                    text={`You cannot claim your payment now, maybe the contract has no funds, contact the owner of the contract or try again in ${nextBlockPeriod}`}
-                  />
+                  <Text type="" text={`You do not have sufficient funds to pay for the gas transaction.`} />
                 </div>
               </div>
             </div>

@@ -174,6 +174,7 @@ export default function Claim() {
                     <div className="flex flex-col gap-[10px]">
                       <Text type="h6" text="My multipliers" />
                       {multipliersIdList !== undefined &&
+                        multipliersIdList.length > 0 &&
                         multipliersIdList.map((m, i) => (
                           <MultiplierName key={i} multiplierId={m} _contract={_contract} />
                         ))}

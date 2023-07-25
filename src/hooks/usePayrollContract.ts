@@ -30,9 +30,11 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   const [contractBalance, setContractBalance] = useState<undefined | string | any>(undefined);
   const [rawContractBalance, setRawContractBalance] = useState<undefined | number>(undefined);
   const [periodicity, setPeriodicity] = useState<undefined | number | string>(undefined);
+  const [rawPeriodicity, setRawPeriodicity] = useState<undefined | number>(undefined);
   const [totalDebts, setTotalDebts] = useState<undefined | string>(undefined);
   const [rawTotalDebts, setRawTotalDebts] = useState<undefined | string>(undefined);
 
+  const [rawNextBlockPeriod, setRawNextBlockPeriod] = useState<undefined | number>(undefined);
   const [nextBlockPeriod, setNextBlockPeriod] = useState<undefined | string>(undefined);
   const [contractState, setContractState] = useState<undefined | boolean>(undefined);
   const [amountBeneficiaries, setAmountBeneficiaries] = useState<undefined | number>(undefined);
@@ -79,7 +81,8 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getPeriodicity.result?.ok) {
       const data = pickDecoded(getPeriodicity.result)!;
-      const periodicityToNumber = parseInt(String(data).replace(/,/g, ''));
+      const periodicityToNumber = parseFloat(String(data).replace(/,/g, ''));
+      setRawPeriodicity(periodicityToNumber);
 
       periodicityToNumber >= 7200 && setPeriodicity(`${(periodicityToNumber / 7200).toFixed(0)} days`);
       periodicityToNumber < 7200 &&
@@ -131,6 +134,7 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
   useEffect(() => {
     if (getNextBlockPeriod.result) {
       let getNextBlockPeriodValueString = pickDecoded(getNextBlockPeriod.result);
+      setRawNextBlockPeriod(parseFloat(String(getNextBlockPeriodValueString).replace(/,/g, '')));
       let nextBlockPeriod = stringNumberToBN(getNextBlockPeriodValueString).words[0];
 
       nextBlockPeriod - blockHeader?.blockNumber! >= 7200 &&
@@ -161,8 +165,10 @@ export function usePayrollContract(contract: ChainContract<any> | undefined) {
     contractState,
     contractBalance,
     periodicity,
+    rawPeriodicity,
     totalDebts,
     nextBlockPeriod,
+    rawNextBlockPeriod,
     amountBeneficiaries,
     listBeneficiaries,
     basePayment,

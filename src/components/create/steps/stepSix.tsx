@@ -6,12 +6,19 @@ import Text from '../../generals/text';
 import { CreateContext } from '@/context/create';
 import { DappContext } from '@/context';
 
-import { IoIosCopy } from 'react-icons/io';
+import { IoIosAlert, IoIosCopy } from 'react-icons/io';
 import Loader from '@/components/generals/Loader';
-import { asContractInstantiatedEvent, formatEventName, isContractInstantiatedEvent } from 'useink/utils';
+import {
+  asContractInstantiatedEvent,
+  formatEventName,
+  isContractInstantiatedEvent,
+  planckToDecimal,
+} from 'useink/utils';
 import toast from 'react-hot-toast';
+import { useApi } from 'useink';
 
 const StepSix = () => {
+  const api = useApi('rococo-contracts-testnet');
   const context = useContext(DappContext);
   const createContext = useContext(CreateContext);
   if (!context) {
@@ -20,17 +27,13 @@ const StepSix = () => {
   if (!createContext) {
     return null;
   }
-
-  const { D, M } = createContext;
+  const { chainDecimals } = context;
+  const { D, M, rawOwnerBalance } = createContext;
 
   const copyToClipboard = () => {
     const textToCopy = D.contractAddress;
     textToCopy !== undefined && navigator.clipboard.writeText(textToCopy.toString());
   };
-
-  useEffect(() => {
-    console.log(M);
-  }, [M]);
 
   useEffect(() => {
     D.status === 'PendingSignature' && toast(`✍ Please sign the transaction in your wallet`);
@@ -75,6 +78,20 @@ const StepSix = () => {
             </div>
           </div>
         )}
+
+        {/*
+        D.gasRequired.proofSize.toString()! * 10 ** chainDecimals > rawOwnerBalance && (
+          <div className="bg-opdanger rounded p-[10px] pr-[20px] flex gap-3 text-[#FFFFFF]">
+            <IoIosAlert className="h-12 w-12 m-0 " />
+            <div className="flex flex-col gap-3">
+              <div>
+                <Text type="h6" text="You can't deploy yet" />
+                <Text type="" text="You do not have sufficient funds to pay for the gas transaction." />
+              </div>
+            </div>
+          </div>
+        )
+        */}
 
         {D.gasConsumed && (
           <div className="rounded p-2 border-oppurple border-2">

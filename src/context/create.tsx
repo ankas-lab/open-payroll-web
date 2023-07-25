@@ -297,18 +297,19 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
   const handleChangeFundsToTransfer = (e: any) => {
     const { value } = e.target;
     setFundsToTransfer(value);
+    console.log(decimals);
+
     const raw = value * 10 ** decimals!;
     setRawFundsToTransfer(raw);
   };
 
   useEffect(() => {
-    balance &&
-      setRawOwnerBalance(planckToDecimal(balance?.freeBalance, { api: api?.api })!.toString().replace('.', ''));
+    balance && setRawOwnerBalance(planckToDecimal(balance.freeBalance, { api: api?.api }));
   }, [account, balance]);
 
   useEffect(() => {
-    rawFundsToTransfer < 0 && toast('❌ You cannot add negative funds to the contract.');
-    rawFundsToTransfer > parseInt(rawOwnerBalance) &&
+    fundsToTransfer < 0 && toast('❌ You cannot add negative funds to the contract.');
+    fundsToTransfer > parseInt(rawOwnerBalance) &&
       toast('❌ Sending an amount greater than what is available in your wallet is not permitted.');
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
