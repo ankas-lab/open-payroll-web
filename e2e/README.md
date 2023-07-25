@@ -9,9 +9,9 @@ The primary challenge was tied to the transaction signing process. We couldn't f
 
 As we proceeded further, we encountered yet another unanticipated hurdle while attempting to use the [selenium-side-runner](https://www.selenium.dev/selenium-ide/docs/en/introduction/command-line-runner). This console tool, typically used to automate all interactions, failed to perform as anticipated because each test suite ran in a unique browser instance. This meant that none of these instances had the necessary preinstalled extensions. Most notably, they were devoid of the requisite wallet that would have been essential for complete execution of our initial plan.
 
-We remain committed to solving these challenges and optimising the testing process. Please be assured that our team will keep working to have this solved as soon as possible.
+We remain dedicated to addressing these issues and refining the testing procedures for the future. Despite the setbacks, we successfully executed the subsequent instructions:
 
-## Temporary Guide to Execute the Test Suite
+## Guide to Execute the Test Suite
 
 Please follow these steps:
 
@@ -29,4 +29,4 @@ Please follow these steps:
    - Open the Selenium IDE extension and load the `e2e/OpenPayroll.side` file.
    - Initiate the suite by pressing the `Run All Tests` button. (It's like a play with a list in the right side.)
 
-_Note:_ We understand this method may seem complex. We're actively working on a solution to make test execution simpler, ideally with a single command.
+_Note:_ We understand this method may seem complex. We're actively working on a solution to make test execution simpler, ideally with a single command. For the further versions of the open payroll.
