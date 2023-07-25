@@ -54,6 +54,8 @@ const StepFive = () => {
   useEffect(() => {
     if (periodicity === '7200' || periodicity === '36000' || periodicity === '216000') {
       setPeriodicityType('fixed');
+    } else {
+      setPeriodicityType('custom');
     }
   }, [periodicity]);
 
