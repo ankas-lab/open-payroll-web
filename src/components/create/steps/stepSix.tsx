@@ -28,7 +28,7 @@ const StepSix = () => {
     return null;
   }
   const { chainDecimals } = context;
-  const { D, M, rawOwnerBalance } = createContext;
+  const { D, M, rawOwnerBalance, gasRequiredToDeploy } = createContext;
 
   const copyToClipboard = () => {
     const textToCopy = D.contractAddress;
@@ -79,8 +79,7 @@ const StepSix = () => {
           </div>
         )}
 
-        {/*
-        D.gasRequired.proofSize.toString()! * 10 ** chainDecimals > rawOwnerBalance && (
+        {gasRequiredToDeploy > rawOwnerBalance && (
           <div className="bg-opdanger rounded p-[10px] pr-[20px] flex gap-3 text-[#FFFFFF]">
             <IoIosAlert className="h-12 w-12 m-0 " />
             <div className="flex flex-col gap-3">
@@ -90,26 +89,12 @@ const StepSix = () => {
               </div>
             </div>
           </div>
-        )
-        */}
-
-        {D.gasConsumed && (
-          <div className="rounded p-2 border-oppurple border-2">
-            <h3 className="test-xs uppercase font-semibold">Gas Consumed</h3>
-            <ul className="p-0 list-none">
-              <li>refTime: {D.gasConsumed.refTime.toString()}</li>
-              <li>proof size: {D.gasConsumed.proofSize.toString()}</li>
-            </ul>
-          </div>
         )}
 
         {D.gasRequired && (
-          <div className="rounded p-2 border-oppurple border-2">
-            <h3 className="test-xs uppercase font-semibold">Gas Required</h3>
-            <ul className="p-0 list-none">
-              <li>refTime: {D.gasRequired.refTime.toString()}</li>
-              <li>proof size: {D.gasRequired.proofSize.toString()}</li>
-            </ul>
+          <div className="flex flex-col gap-2">
+            <Text type="h6" text="Gas Required" />
+            <Text type="" text={gasRequiredToDeploy} />
           </div>
         )}
       </div>

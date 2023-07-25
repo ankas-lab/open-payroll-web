@@ -14,7 +14,7 @@ import {
   useWallet,
 } from 'useink';
 import metadata from '@/contract/open_payroll.json';
-import { pickDecoded, planckToDecimal, stringNumberToBN } from 'useink/utils';
+import { pickDecoded, planckToDecimal, planckToDecimalFormatted, stringNumberToBN } from 'useink/utils';
 import { useTxNotifications } from 'useink/notifications';
 import toast from 'react-hot-toast';
 import { DappContext } from '.';
@@ -55,6 +55,7 @@ interface CreateContextData {
   M: any;
   S: any;
   D: any;
+  gasRequiredToDeploy: any;
   check: any;
   deploy: any;
   clearAllInfo: any;
@@ -185,14 +186,14 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
         if (value === '') {
           beneficiary.multipliers.splice(index, 1);
         } else {
-          multiplier[1] = parseFloat(value) * 100;
+          multiplier[1] = parseInt(String(parseFloat(value) * 100));
         }
         found = true;
       }
     });
 
     if (!found && value !== '') {
-      const newMultiplier = [multiplierIndex, parseFloat(value) * 100];
+      const newMultiplier = [multiplierIndex, parseInt(String(parseFloat(value) * 100))];
       beneficiary.multipliers.push(newMultiplier);
     }
 
@@ -286,6 +287,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
 
   useEffect(() => {
     calculateTotalToPay();
+    console.log(initialBeneficiaries);
   }, [initialBeneficiaries, basePayment]);
 
   //---------------------------------Fund to Transfer---------------------------------
@@ -329,6 +331,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     initialBaseMultipliers: [],
     initialBeneficiaries: [],
   });
+  const [gasRequiredToDeploy, setGasRequiredToDeploy] = useState<number | string | undefined>(0);
 
   const C = useCodeHash();
   const M = useMetadata({ requireWasm: false });
@@ -453,6 +456,10 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     getOwner();
   };
 
+  useEffect(() => {
+    console.log(formatedConstructorParams);
+  }, [formatedConstructorParams]);
+
   useMemo(() => {
     D.wasDeployed && D.contractAddress !== undefined && saveNewContractInLocalStorage(D.contractAddress);
   }, [D.wasDeployed]);
@@ -467,6 +474,16 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     C.set(metadata.source.hash);
     setM;
   }, []);
+
+  useEffect(() => {
+    D?.gasRequired !== undefined &&
+      setGasRequiredToDeploy(planckToDecimalFormatted(D.gasRequired.proofSize.toString(), { api: api?.api }));
+    console.log(D.gasRequired?.proofSize.toString());
+  }, [D.gasRequired]);
+
+  useEffect(() => {
+    console.log(gasRequiredToDeploy);
+  }, [gasRequiredToDeploy]);
 
   //---------------------------------Clear data---------------------------------
   const clearAllInfo = () => {
@@ -528,6 +545,7 @@ export const CreateContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ c
     M,
     S,
     D,
+    gasRequiredToDeploy,
     check,
     deploy,
     clearAllInfo,

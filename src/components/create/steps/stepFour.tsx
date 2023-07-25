@@ -37,7 +37,7 @@ const StepFour = () => {
   } = createContext;
 
   useEffect(() => {
-    fundsToTransfer >= rawOwnerBalance || fundsToTransfer < 0 ? setCanContinue(false) : setCanContinue(true);
+    fundsToTransfer > rawOwnerBalance || fundsToTransfer < 0 ? setCanContinue(false) : setCanContinue(true);
   }, [rawOwnerBalance, rawFundsToTransfer]);
 
   return (

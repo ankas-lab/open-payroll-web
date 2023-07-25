@@ -48,6 +48,7 @@ const Index = () => {
     initialBeneficiaries,
     basePayment,
     fundsToTransfer,
+    gasRequiredToDeploy,
   } = createContext;
 
   //---------------------------------Steps
@@ -182,14 +183,12 @@ const Index = () => {
           {steps === 5 && !D.wasDeployed && D.status !== 'Finalized' && (
             <div>
               <Button
-                type={D.status !== 'Finalized' && D.status !== 'None' ? 'disabled' : 'active'}
-                text={
-                  D.status !== 'Finalized' &&
-                  D.status !== 'None' &&
-                  D.gasRequired.proofSize.toString() < rawOwnerBalance
-                    ? ''
-                    : 'deploy contract'
+                type={
+                  D.status !== 'None' || gasRequiredToDeploy === undefined || gasRequiredToDeploy > rawOwnerBalance
+                    ? 'disabled'
+                    : 'active'
                 }
+                text={D.status !== 'Finalized' && D.status !== 'None' ? '' : 'deploy contract'}
                 icon={
                   D.status === 'PendingSignature' || D.status === 'Broadcast' || D.status === 'InBlock'
                     ? 'loading'
