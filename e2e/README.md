@@ -30,3 +30,5 @@ Please follow these steps:
    - Initiate the suite by pressing the `Run All Tests` button. (It's like a play with a list in the right side.)
 
 _Note:_ We understand this method may seem complex. We're actively working on a solution to make test execution simpler, ideally with a single command. For the further versions of the open payroll.
+
+_Note2:_ In this folder you can find the openPayroll-automation.mp4 file where we recorded the execution of e2e tests.
