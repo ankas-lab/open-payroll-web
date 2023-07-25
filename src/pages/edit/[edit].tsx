@@ -126,7 +126,7 @@ export default function Edit() {
                       </div>
                     </div>
                     <div>
-                      <Button type="text" text="forget" action={() => setForget(true)} />
+                      <Button type="text" text="forget" icon="delete" action={() => setForget(true)} />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
