@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useApi, useCall, useChainDecimals } from 'useink';
-import { pickDecoded, bnToBalance } from 'useink/utils';
+import { pickDecoded, bnToBalance, planckToDecimal } from 'useink/utils';
 
 export function useBasePayment(_contract: any) {
-  const [basePayment, setBasePayment] = useState<string | undefined>(undefined);
+  const [basePayment, setBasePayment] = useState<any | undefined>(undefined);
 
   const api = useApi('rococo-contracts-testnet');
 
@@ -24,7 +24,8 @@ export function useBasePayment(_contract: any) {
       const decodedNumberWithDecimals = decodedToNumber * 10 ** chainDecimals;
       const toBalance = bnToBalance(api?.api, BigInt(decodedNumberWithDecimals));
       const finalBasePayment = parseInt(toBalance.toHuman().slice(0, -4)).toFixed(2);
-      setBasePayment(finalBasePayment);
+      const planck = planckToDecimal(decodedToNumber, { api: api?.api });
+      setBasePayment(planck);
     }
   }, [getBasePayment.result?.ok]);
 

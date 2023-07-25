@@ -36,8 +36,7 @@ const Index = ({ _contract, _contractAddress }: ContractProps) => {
   const { localStorageData, newLocalStorageData, handleNewNameLocalStorageData, updateContract } =
     useLocalStorageData(_contractAddress);
 
-  const { unclaimBeneficiaries } = usePayrollContract(_contract);
-  const { basePayment } = useBasePayment(_contract);
+  const { unclaimBeneficiaries, basePayment } = usePayrollContract(_contract);
   const { handleUpdateBasePayment, isUpdatingBasePayment } = useUpdateBasePayment(_contract);
 
   const { periodicity, periodicityType, setPeriodicityType } = usePeriodicty(_contract);

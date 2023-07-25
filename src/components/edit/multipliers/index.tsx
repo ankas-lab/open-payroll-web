@@ -5,6 +5,7 @@ import { useMultipliers } from '@/hooks/useMultipliers';
 import MultiplierInput from './multiplierIntput';
 import { useAddMultiplier } from '@/hooks/useAddMultiplier';
 import Loader from '@/components/generals/Loader';
+import { IoIosAlert } from 'react-icons/io';
 
 interface ContractProps {
   _contract: any | undefined;
@@ -29,6 +30,14 @@ const Index = ({ _contract }: ContractProps) => {
         <Text
           type=""
           text="Here are the multipliers for your contract. You have the option to create new ones or delete existing ones."
+        />
+      </div>
+
+      <div className="p-2 border-2 border-oppurple rounded-md flex gap-3">
+        <IoIosAlert className="min-h-[20px] min-w-[20px] m-0 text-oppurple" />
+        <Text
+          type=""
+          text="Multipliers that are deleted in the current period will remain until the next period starts, once it starts, it will be deleted. "
         />
       </div>
 

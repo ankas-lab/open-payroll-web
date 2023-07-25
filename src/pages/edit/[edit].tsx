@@ -113,7 +113,7 @@ export default function Edit() {
                             )
                         }`}
                       />
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 mt-2">
                         <Text type="overline" text={`${contractAddress}`} />
                         {copied ? (
                           <AiFillCheckCircle
