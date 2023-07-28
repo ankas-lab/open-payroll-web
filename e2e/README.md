@@ -17,7 +17,7 @@ Please follow these steps:
 
 1. **Install Extensions**
    - Install the `Selenium IDE` extension. (https://www.selenium.dev/selenium-ide/)
-   - Install `SubWallet` (https://www.subwallet.app/) extension.
+   - Install a wallet extension. Tests only work with `SubWallet` (https://www.subwallet.app/) extension for now.
 
 2. **Configure Wallet**
    - Set up your wallet to provide a valid account. 
