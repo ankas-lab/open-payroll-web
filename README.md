@@ -14,7 +14,7 @@ Open Payroll's web application is a user-centric platform that revolutionizes pa
 - Clone the repository with the following command and enter the project folder:
 
     ```bash
-    git clone https://github.com/polkadrys/open-payroll-web.git && cd open-payroll-web
+    git clone https://github.com/ankas-lab/open-payroll-web.git && cd open-payroll-web
     ```
 
 ### Docker
